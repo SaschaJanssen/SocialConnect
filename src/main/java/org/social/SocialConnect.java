@@ -26,9 +26,11 @@ public class SocialConnect {
 		SocialDataConsumer consumer = new SocialDataConsumer();
 		List<MessageData> messageDataList = consumer.consumeData();
 
-		// TODO 
+		// TODO
 		for (MessageData messageData : messageDataList) {
-			logger.info(messageData.toJson().toString());
+			System.out.println(messageData.getPlatform());
+			System.out.println(messageData.getGeoLocation() + " " + messageData.getMessage());
+			System.out.println("---");
 		}
 	}
 

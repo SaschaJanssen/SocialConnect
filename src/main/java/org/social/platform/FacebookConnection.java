@@ -12,6 +12,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.data.MessageData;
+import org.social.query.FacebookQuery;
 
 import com.restfb.Connection;
 import com.restfb.DefaultFacebookClient;
@@ -19,7 +20,7 @@ import com.restfb.FacebookClient;
 import com.restfb.Parameter;
 import com.restfb.json.JsonObject;
 
-public class FacebookConnection {
+public class FacebookConnection implements SocialNetworkConnection<FacebookQuery> {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -33,12 +34,11 @@ public class FacebookConnection {
 		fbClient = new DefaultFacebookClient(MY_ACCESS_TOKEN);
 	}
 
-	public List<MessageData> fetchPost(String query, String until) {
+	@Override
+	public List<MessageData> fetchMessages(FacebookQuery query) {
 		List<MessageData> results = new ArrayList<MessageData>();
 
-		Connection<JsonObject> searchResult = fbClient.fetchConnection("search", JsonObject.class,
-				Parameter.with("q", query), Parameter.with("type", "post"), Parameter.with("until", until),
-				Parameter.with("limit", "1500"));
+		Connection<JsonObject> searchResult = fbClient.fetchConnection(query.constructQuery(), JsonObject.class);
 		results.addAll(extractMessageData(searchResult));
 		String nextPageUrl = searchResult.getNextPageUrl();
 
@@ -68,6 +68,10 @@ public class FacebookConnection {
 		List<MessageData> results = new ArrayList<MessageData>();
 
 		for (JsonObject object : searchResult.getData()) {
+			if (!object.has("message")) {
+				// object could be ignored if no message attribute is set.
+				continue;
+			}
 			MessageData messageData = new MessageData(this.plattformName);
 
 			JsonObject userData = object.getJsonObject("from");

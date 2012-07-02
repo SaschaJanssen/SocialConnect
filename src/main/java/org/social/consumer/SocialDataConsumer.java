@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.social.data.MessageData;
 import org.social.platform.FacebookConnection;
 import org.social.platform.TwitterConnection;
+import org.social.query.FacebookQuery;
+import org.social.query.TwitterQuery;
 
 public class SocialDataConsumer {
 
@@ -27,13 +29,23 @@ public class SocialDataConsumer {
 	public List<MessageData> consumeData() {
 		List<Thread> threadList = new ArrayList<Thread>();
 
-		// TODO create parameter object and interface
+		FacebookQuery fbQuery = new FacebookQuery();
+		fbQuery.setDirect("Wolfgangs");
+		fbQuery.setSince("yesterday");
 
-		Thread fbThread = new Thread(new FacebookThread("Vapiano", "yesterday"));
+		Thread fbThread = new Thread(new FacebookThread(fbQuery));
 		threadList.add(fbThread);
 		executor.execute(fbThread);
 
-		Thread twitterThread = new Thread(new TwitterThread("Vapiano", "de", "2012-06-27"));
+		TwitterQuery twitterQuery = new TwitterQuery();
+		twitterQuery.setDirect("Wolfgangs");
+		twitterQuery.setHash("#WOLFGANGSSTEAKH");
+		twitterQuery.setMentioned("@WOLFGANGSSTEAKH");
+		twitterQuery.setLanguage("en");
+		twitterQuery.setSince("");
+		twitterQuery.setMinus("");
+
+		Thread twitterThread = new Thread(new TwitterThread(twitterQuery));
 		threadList.add(twitterThread);
 		executor.execute(twitterThread);
 
@@ -58,12 +70,10 @@ public class SocialDataConsumer {
 	}
 
 	private class FacebookThread implements Runnable {
-		private String query;
-		private String since;
+		private FacebookQuery query;
 
-		public FacebookThread(String query, String since) {
+		public FacebookThread(FacebookQuery query) {
 			this.query = query;
-			this.since = since;
 		}
 
 		@Override
@@ -71,20 +81,17 @@ public class SocialDataConsumer {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Start Facebook thread.");
 			}
+
 			FacebookConnection fbConnection = new FacebookConnection();
-			results.addAll(fbConnection.fetchPost(query, since));
+			results.addAll(fbConnection.fetchMessages(query));
 		}
 	}
 
 	private class TwitterThread implements Runnable {
-		private String query;
-		private String language;
-		private String since;
+		private TwitterQuery query;
 
-		public TwitterThread(String query, String language, String since) {
+		public TwitterThread(TwitterQuery query) {
 			this.query = query;
-			this.language = language;
-			this.since = since;
 		}
 
 		@Override
@@ -92,8 +99,9 @@ public class SocialDataConsumer {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Start Twitter thread.");
 			}
+
 			TwitterConnection twitterConnection = new TwitterConnection();
-			results.addAll(twitterConnection.fetchTweets(query, language, since));
+			results.addAll(twitterConnection.fetchMessages(query));
 		}
 	}
 
