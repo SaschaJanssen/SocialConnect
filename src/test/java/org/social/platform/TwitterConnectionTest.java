@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.data.MessageData;
+import org.social.query.TwitterQuery;
 
 public class TwitterConnectionTest {
 
@@ -30,8 +31,13 @@ public class TwitterConnectionTest {
 
 	@Test
 	public void testTwitterSearch() throws Exception {
+		TwitterQuery query = new TwitterQuery();
+		query.setDirect("Vapiano");
+		query.setLanguage("de");
+		query.setSince("2012-06-01");
+
 		TwitterConnection con = new TwitterConnection();
-		List<MessageData> result = con.fetchTweets("Vapiano", "de", "2012-06-01");
+		List<MessageData> result = con.fetchMessages(query);
 
 		assertNotNull(result);
 

@@ -31,8 +31,8 @@ public class FacebookQuery implements Query {
 		this.type = type;
 	}
 
-	public void setLimit(String limit) {
-		this.limit = limit;
+	public String getSearchUrl() {
+		return this.searchUrl;
 	}
 
 	@Override

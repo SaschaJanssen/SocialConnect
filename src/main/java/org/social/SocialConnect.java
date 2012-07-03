@@ -9,6 +9,8 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.consumer.SocialDataConsumer;
+import org.social.data.DataCrafter;
+import org.social.data.FilteredMessageList;
 import org.social.data.MessageData;
 
 public class SocialConnect {
@@ -26,8 +28,11 @@ public class SocialConnect {
 		SocialDataConsumer consumer = new SocialDataConsumer();
 		List<MessageData> messageDataList = consumer.consumeData();
 
+		DataCrafter crafter = new DataCrafter(messageDataList);
+		FilteredMessageList craftedResult = crafter.craft();
+
 		// TODO
-		for (MessageData messageData : messageDataList) {
+		for (MessageData messageData : craftedResult.getPositivList()) {
 			System.out.println(messageData.getPlatform());
 			System.out.println(messageData.getGeoLocation() + " " + messageData.getMessage());
 			System.out.println("---");

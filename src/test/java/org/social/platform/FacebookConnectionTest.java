@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.data.MessageData;
+import org.social.query.FacebookQuery;
 
 public class FacebookConnectionTest {
 
@@ -31,8 +32,13 @@ public class FacebookConnectionTest {
 
 	@Test
 	public void testFacebookSearch() {
+		FacebookQuery query = new FacebookQuery();
+		query.setDirect("Vapiano");
+		query.setSince("yesterday");
+		query.setType("post");
+
 		FacebookConnection con = new FacebookConnection();
-		List<MessageData> result = con.fetchPost("Vapiano", "yesterday");
+		List<MessageData> result = con.fetchMessages(query);
 
 		assertNotNull(result);
 		assertTrue(!result.isEmpty());
