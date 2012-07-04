@@ -10,16 +10,17 @@ public class MessageData {
 	private String fromUserId;
 	private String language;
 	private String geoLocation;
-	private String platform;
-	private String plattformMessageDate;
-	private String messageReceiveDate;
+	private String network;
+	private String networkMessageDate;
+	private String messageReceivedDate;
+	private String customerId;
 
-	public MessageData(String platform) {
-		this.platform = platform;
+	public MessageData(String network) {
+		this.network = network;
 	}
 
-	public String getPlatform() {
-		return platform;
+	public String getNetwork() {
+		return network;
 	}
 
 	public String getId() {
@@ -70,20 +71,28 @@ public class MessageData {
 		this.geoLocation = locale;
 	}
 
-	public String getPlattformMessageDate() {
-		return plattformMessageDate;
+	public String getNetworkMessageDate() {
+		return networkMessageDate;
 	}
 
-	public void setPlattformMessageDate(String messageSendDate) {
-		this.plattformMessageDate = messageSendDate;
+	public void setNetworkMessageDate(String networkMessageDate) {
+		this.networkMessageDate = networkMessageDate;
 	}
 
-	public String getMessageReceiveDate() {
-		return messageReceiveDate;
+	public String getMessageReceivedDate() {
+		return messageReceivedDate;
 	}
 
-	public void setMessageReceiveDate(String messageReceiveDate) {
-		this.messageReceiveDate = messageReceiveDate;
+	public void setMessageReceivedDate(String messageReceiveDate) {
+		this.messageReceivedDate = messageReceiveDate;
+	}
+
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
 	}
 
 	public JSON toJson() {

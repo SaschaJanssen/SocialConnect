@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="org.social.entity.domain">
+	<class name="Messages" table="MESSAGES">
+		<id name="messageId" column="MESSAGE_ID">
+			<generator class="native" />
+		</id>
+
+		<property name="message" type="string" column="MESSAGE" />
+		<property name="fromUserId" type="long" column="FROM_USER_ID" />
+		<property name="language" type="string" column="LANGUAGE" />
+		<property name="network" type="string" column="NETWORK" />
+		<property name="networkMessageDate" type="timestamp" column="NETWORK_MESSAGE_DATE" />
+		<property name="messageReceivedDate" type="timsestamp" column="MESSAGE_RECEIVED_DATE" />
+		<property name="customerId" type="long" column="CUSTOMER_ID" />
+		<property name="craftedStateId" type="long" column="CRAFTED_STATE_ID" />
+	</class>
+</hibernate-mapping>

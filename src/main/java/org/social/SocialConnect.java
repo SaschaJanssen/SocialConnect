@@ -36,7 +36,7 @@ public class SocialConnect {
 
 		// TODO
 		for (MessageData messageData : craftedResult.getPositivList()) {
-			System.out.println(messageData.getPlatform());
+			System.out.println(messageData.getNetwork());
 			System.out.println(messageData.getGeoLocation() + " " + messageData.getMessage());
 			System.out.println("---");
 		}
@@ -51,6 +51,8 @@ public class SocialConnect {
 
 		System.setProperty("http.proxyHost", properties.getProperty("http.proxyHost"));
 		System.setProperty("http.proxyPort", properties.getProperty("http.proxyPort"));
+
+		System.setProperty("derby.system.home", properties.getProperty("derby.system.home"));
 	}
 
 }

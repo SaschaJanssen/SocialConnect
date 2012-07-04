@@ -79,8 +79,8 @@ public class FacebookConnection implements SocialNetworkConnection<FacebookQuery
 			messageData.setFromUserId(userData.getString("id"));
 			messageData.setId(object.getString("id"));
 			messageData.setMessage(object.getString("message"));
-			messageData.setPlattformMessageDate(object.getString("created_time"));
-			messageData.setMessageReceiveDate(new Date().toString());
+			messageData.setNetworkMessageDate(object.getString("created_time"));
+			messageData.setMessageReceivedDate(new Date().toString());
 
 			results.add(messageData);
 		}

@@ -20,7 +20,7 @@ public class FilteredMessageListTest {
 		assertEquals(1, msgList.countNegativeMessages());
 
 		MessageData element = msgList.getNegativeList().get(0);
-		assertEquals("FB", element.getPlatform());
+		assertEquals("FB", element.getNetwork());
 	}
 
 	@Test
@@ -29,7 +29,7 @@ public class FilteredMessageListTest {
 		assertEquals(1, msgList.countPositivMessages());
 
 		MessageData element = msgList.getPositivList().get(0);
-		assertEquals("TW", element.getPlatform());
+		assertEquals("TW", element.getNetwork());
 	}
 
 	@Test

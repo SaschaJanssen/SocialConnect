@@ -115,8 +115,8 @@ public class TwitterConnection implements SocialNetworkConnection<TwitterQuery>{
 			messageData.setLanguage(jsonObj.getString("iso_language_code"));
 			messageData.setGeoLocation(jsonObj.getString("geo"));
 			messageData.setMessage(jsonObj.getString("text"));
-			messageData.setPlattformMessageDate(jsonObj.getString("created_at"));
-			messageData.setMessageReceiveDate(new Date().toString());
+			messageData.setNetworkMessageDate(jsonObj.getString("created_at"));
+			messageData.setMessageReceivedDate(new Date().toString());
 			resultList.add(messageData);
 		}
 
