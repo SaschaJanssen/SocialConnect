@@ -13,6 +13,7 @@ public class MentionedFilter {
 	public boolean mentioned(String phrase) {
 		boolean mentioned = false;
 		for (String tag : mentionedSet) {
+			
 			String pattern = " " + tag + " ";
 			if (phrase.contains(pattern)) {
 				mentioned = true;
@@ -21,7 +22,6 @@ public class MentionedFilter {
 				mentioned = true;
 				break;
 			} else if (phrase.startsWith(tag + " ")) {
-
 				mentioned = true;
 				break;
 			} else if (phrase.endsWith(tag)) {

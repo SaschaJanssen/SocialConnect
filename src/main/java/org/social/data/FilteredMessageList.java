@@ -36,4 +36,12 @@ public class FilteredMessageList {
 		return this.positiveList.size();
 	}
 
+	public void moveItemFromNegativeToPositiveList(MessageData negativeItem) {
+		if (this.negativeList.contains(negativeItem)) {
+			this.negativeList.remove(negativeItem);
+		}
+
+		this.positiveList.add(negativeItem);
+	}
+
 }

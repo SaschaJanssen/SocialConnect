@@ -1,7 +1,9 @@
 package org.social.data;
 
 import java.util.List;
+import java.util.Set;
 
+import org.social.filter.MentionedFilter;
 import org.social.filter.wordlists.FoodEng;
 
 public class DataCrafter {
@@ -13,12 +15,12 @@ public class DataCrafter {
 		this.rawData = rawList;
 	}
 
-	public FilteredMessageList craft() {
+	public FilteredMessageList craft(Set<String> mentionedSet) {
 		this.filteredMessages = new FilteredMessageList();
 
 
 		wordlistFilter();
-		//mentionedFilter();
+		mentionedFilter(mentionedSet);
 
 		return this.filteredMessages;
 	}
@@ -33,10 +35,16 @@ public class DataCrafter {
 		}
 	}
 
-	private void mentionedFilter() {
-		List<MessageData> tmpList = this.filteredMessages.getNegativeList();
-		// TODO
-		for (MessageData messageData : tmpList) {
+	private void mentionedFilter(Set<String> mentionedSet) {
+
+		MentionedFilter mentionFilter = new MentionedFilter(mentionedSet);
+		List<MessageData> negativeList = this.filteredMessages.getNegativeList();
+
+		for (MessageData negativeData : negativeList) {
+
+			if (mentionFilter.mentioned(negativeData.getMessage())) {
+				this.filteredMessages.moveItemFromNegativeToPositiveList(negativeData);
+			}
 		}
 
 	}

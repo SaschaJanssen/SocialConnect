@@ -3,8 +3,10 @@ package org.social;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +30,9 @@ public class SocialConnect {
 		SocialDataConsumer consumer = new SocialDataConsumer();
 		List<MessageData> messageDataList = consumer.consumeData();
 
+		Set<String> mentionedSet = new HashSet<String>();
 		DataCrafter crafter = new DataCrafter(messageDataList);
-		FilteredMessageList craftedResult = crafter.craft();
+		FilteredMessageList craftedResult = crafter.craft(mentionedSet);
 
 		// TODO
 		for (MessageData messageData : craftedResult.getPositivList()) {

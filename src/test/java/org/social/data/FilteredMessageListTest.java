@@ -32,4 +32,19 @@ public class FilteredMessageListTest {
 		assertEquals("TW", element.getPlatform());
 	}
 
+	@Test
+	public void testMoveItemFromNegativeToPositivList() throws Exception {
+		msgList = new FilteredMessageList();
+
+		MessageData negativeMessageData = new MessageData("FB");
+		msgList.addToNegativeList(negativeMessageData);
+
+		assertEquals(0, msgList.countPositivMessages());
+
+		msgList.moveItemFromNegativeToPositiveList(negativeMessageData);
+
+		assertEquals(0, msgList.countNegativeMessages());
+		assertEquals(1, msgList.countPositivMessages());
+	}
+
 }

@@ -3,7 +3,9 @@ package org.social.data;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
@@ -25,7 +27,9 @@ public class DataCrafterTest {
 
 	@Test
 	public void testCrafter() {
-		FilteredMessageList result = crafter.craft();
+		Set<String> mentionedSet = new HashSet<String>();
+
+		FilteredMessageList result = crafter.craft(mentionedSet);
 
 		assertEquals(2, result.countPositivMessages());
 		assertEquals(2, result.countNegativeMessages());
