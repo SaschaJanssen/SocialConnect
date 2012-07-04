@@ -37,6 +37,10 @@ public class MentionedFilterTest {
 		String phrase_2 = "Bewertung zu @Vapiano (Deutz, Köln,  von Golden_Ticket_Dunny): 4 von 5 Punkten";
 		matches = mentionedFilter.mentioned(phrase_2);
 		assertTrue(matches);
+
+		String phrase_3 = "Bewertung zu@Vapiano (Deutz, Köln,  von Golden_Ticket_Dunny): 4 von 5 Punkten";
+		matches = mentionedFilter.mentioned(phrase_3);
+		assertTrue(matches);
 	}
 
 	@Test

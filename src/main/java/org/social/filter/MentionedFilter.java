@@ -17,10 +17,14 @@ public class MentionedFilter {
 			if (phrase.contains(pattern)) {
 				mentioned = true;
 				break;
-			} else if (phrase.startsWith(tag + " ")) {
+			} else if (phrase.contains(tag + " ")) {
 				mentioned = true;
 				break;
-			} else if(phrase.endsWith(tag)) {
+			} else if (phrase.startsWith(tag + " ")) {
+
+				mentioned = true;
+				break;
+			} else if (phrase.endsWith(tag)) {
 				mentioned = true;
 				break;
 			}
@@ -28,5 +32,4 @@ public class MentionedFilter {
 
 		return mentioned;
 	}
-
 }
