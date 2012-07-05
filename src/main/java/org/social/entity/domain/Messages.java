@@ -1,12 +1,14 @@
 package org.social.entity.domain;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -18,11 +20,36 @@ public class Messages {
 	private String message;
 	private Long fromUserId;
 	private String language;
-	private String network;
+	private String networkId;
 	private Timestamp networkMessageDate;
 	private Timestamp messageReceivedDate;
 	private Long customerId;
-	private Long craftedStateId;
+	private String craftedStateId;
+	private Timestamp createdTs;
+	@Version
+	private Timestamp lastUpdatedTs;
+
+	public Messages() {
+		createdTs = new Timestamp(new Date().getTime());
+	}
+
+	@Column(name = "CREATED_TS")
+	public Timestamp getCreatedTs() {
+		return createdTs;
+	}
+
+	public void setCreatedTs(Timestamp createdTs) {
+		this.createdTs = createdTs;
+	}
+
+	@Column(name = "LAST_UPDATED_TS")
+	public Timestamp getLastUpdatedTs() {
+		return lastUpdatedTs;
+	}
+
+	public void setLastUpdatedTs(Timestamp lastUpdatedTs) {
+		this.lastUpdatedTs = lastUpdatedTs;
+	}
 
 	@Id
 	@GeneratedValue(generator = "increment")
@@ -63,13 +90,13 @@ public class Messages {
 		this.language = language;
 	}
 
-	@Column(name = "NETWORK")
-	public String getNetwork() {
-		return network;
+	@Column(name = "NETWORK_ID")
+	public String getNetworkId() {
+		return networkId;
 	}
 
-	public void setNetwork(String network) {
-		this.network = network;
+	public void setNetworkId(String networkId) {
+		this.networkId = networkId;
 	}
 
 	@Column(name = "NETWORK_MESSAGE_DATE")
@@ -100,11 +127,11 @@ public class Messages {
 	}
 
 	@Column(name = "CRAFTED_STATE_ID")
-	public Long getCraftedStateId() {
+	public String getCraftedStateId() {
 		return craftedStateId;
 	}
 
-	public void setCraftedStateId(Long craftedStateId) {
+	public void setCraftedStateId(String craftedStateId) {
 		this.craftedStateId = craftedStateId;
 	}
 
@@ -120,7 +147,7 @@ public class Messages {
 		builder.append(",language=");
 		builder.append(language);
 		builder.append("network=");
-		builder.append(network);
+		builder.append(networkId);
 		builder.append(",networkMessageDate=");
 		builder.append(networkMessageDate);
 		builder.append("messageReceivedDate=");

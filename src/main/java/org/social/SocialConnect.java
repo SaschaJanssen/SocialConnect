@@ -30,11 +30,14 @@ public class SocialConnect {
 		SocialDataConsumer consumer = new SocialDataConsumer();
 		List<MessageData> messageDataList = consumer.consumeData();
 
+		// TODO Store to Database
+
+		// TODO Read uncrafted from DB
 		Set<String> mentionedSet = new HashSet<String>();
 		DataCrafter crafter = new DataCrafter(messageDataList);
 		FilteredMessageList craftedResult = crafter.craft(mentionedSet);
 
-		// TODO
+		// TODO update crafted in DB
 		for (MessageData messageData : craftedResult.getPositivList()) {
 			System.out.println(messageData.getNetwork());
 			System.out.println(messageData.getGeoLocation() + " " + messageData.getMessage());

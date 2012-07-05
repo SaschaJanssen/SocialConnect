@@ -51,9 +51,9 @@ public class DerbyTest {
 		Messages n = new Messages();
 		n.setMessage("blaaaaaaaaaaa");
 		n.setLanguage("de");
-		n.setNetwork("DB");
+		n.setNetworkId("TWITTER");
 		n.setCustomerId(new Long(1));
-		n.setCraftedStateId(new Long(0));
+		n.setCraftedStateId("NOT_CRAFTED");
 		session.save(n);
 	}
 
