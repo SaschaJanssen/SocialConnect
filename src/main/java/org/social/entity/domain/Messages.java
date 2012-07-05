@@ -30,6 +30,11 @@ public class Messages {
 	private Timestamp createdTs;
 	private Timestamp lastUpdatedTs;
 
+	public Messages() {
+		this.createdTs = UtilDateTime.nowTimestamp();
+		this.craftedStateId = CraftedState.NOT_CRAFTED.getName();
+	}
+
 	public Messages(String networkId) {
 		this.createdTs = UtilDateTime.nowTimestamp();
 		this.networkId = networkId;
