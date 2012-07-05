@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -21,10 +20,12 @@ import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.social.data.MessageData;
+import org.social.constants.Networks;
+import org.social.entity.domain.Messages;
 import org.social.query.TwitterQuery;
+import org.social.util.UtilDateTime;
 
-public class TwitterConnection implements SocialNetworkConnection<TwitterQuery>{
+public class TwitterConnection implements SocialNetworkConnection<TwitterQuery> {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -37,8 +38,6 @@ public class TwitterConnection implements SocialNetworkConnection<TwitterQuery>{
 	private String consumerSecret = "";
 	private String accessTokenPub = "";
 	private String accessTokenSecret = "";
-
-	private String plattformName = "Twitter";
 
 	private OAuthService service = null;
 	private Token accessToken;
@@ -61,14 +60,14 @@ public class TwitterConnection implements SocialNetworkConnection<TwitterQuery>{
 		accessToken = new Token(accessTokenPub, accessTokenSecret);
 	}
 
-	public List<MessageData> fetchMessages(TwitterQuery query) {
+	public List<Messages> fetchMessages(TwitterQuery query) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Fetch tweets from Twitter.");
 		}
 
 		String constructedQuery = query.constructQuery();
 
-		List<MessageData> resultList = new ArrayList<MessageData>();
+		List<Messages> resultList = new ArrayList<Messages>();
 
 		while (true) {
 			if (logger.isDebugEnabled()) {
@@ -97,26 +96,34 @@ public class TwitterConnection implements SocialNetworkConnection<TwitterQuery>{
 		}
 
 		if (logger.isDebugEnabled()) {
-			logger.debug("Got "+ resultList.size() + " tweets from Twitter.");
+			logger.debug("Got " + resultList.size() + " tweets from Twitter.");
 		}
 		return resultList;
 	}
 
-	private List<MessageData> extractMessageData(JSONObject json) {
-		List<MessageData> resultList = new ArrayList<MessageData>();
+	private List<Messages> extractMessageData(JSONObject json) {
+		List<Messages> resultList = new ArrayList<Messages>();
 		JSONArray resultArray = json.getJSONArray("results");
 
 		for (Object object : resultArray) {
-			MessageData messageData = new MessageData(this.plattformName);
+			Messages messageData = new Messages(Networks.TWITTER.toString());
+
+			messageData.setCustomerId(1L);
 
 			JSONObject jsonObj = (JSONObject) object;
-			messageData.setId(jsonObj.getString("id"));
-			messageData.setFromUser(jsonObj.getString("from_user"));
+
+			messageData.setNetworkUser(jsonObj.getString("from_user"));
 			messageData.setLanguage(jsonObj.getString("iso_language_code"));
-			messageData.setGeoLocation(jsonObj.getString("geo"));
+
+			JSONObject geo = jsonObj.getJSONObject("geo");
+			if (!geo.isNullObject() && geo.has("coordinates")) {
+				messageData.setGeoLocation(geo.getString("coordinates"));
+			}
 			messageData.setMessage(jsonObj.getString("text"));
-			messageData.setNetworkMessageDate(jsonObj.getString("created_at"));
-			messageData.setMessageReceivedDate(new Date().toString());
+
+			String createdAt = jsonObj.getString("created_at");
+			messageData.setNetworkMessageDate(UtilDateTime.toTimestamp(createdAt));
+			messageData.setMessageReceivedDate(UtilDateTime.nowTimestamp());
 			resultList.add(messageData);
 		}
 

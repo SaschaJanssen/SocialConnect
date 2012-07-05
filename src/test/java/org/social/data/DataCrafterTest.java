@@ -10,6 +10,8 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.social.constants.Networks;
+import org.social.entity.domain.Messages;
 
 public class DataCrafterTest {
 
@@ -17,7 +19,7 @@ public class DataCrafterTest {
 
 	@Before
 	public void setUp() throws Exception {
-		List<MessageData> rawData = setUpDemoData();
+		List<Messages> rawData = setUpDemoData();
 		crafter = new DataCrafter(rawData);
 	}
 
@@ -35,22 +37,22 @@ public class DataCrafterTest {
 		assertEquals(2, result.countNegativeMessages());
 	}
 
-	private List<MessageData> setUpDemoData() {
-		MessageData demoData = new MessageData("Twitter");
+	private List<Messages> setUpDemoData() {
+		Messages demoData = new Messages(Networks.TWITTER.toString());
 
-		List<MessageData> rawData = new ArrayList<MessageData>();
+		List<Messages> rawData = new ArrayList<Messages>();
 		demoData.setMessage("Had wolfgangs for brunch. Today is already great.");
 		rawData.add(demoData);
 
-		demoData = new MessageData("Twitter");
+		demoData = new Messages(Networks.TWITTER.toString());
 		demoData.setMessage("Wolfgangs Vault  Weekly Be genuine. Be full of plenty. Feel popular. http://t.co/FGtbpFfj");
 		rawData.add(demoData);
 
-		demoData = new MessageData("Twitter");
+		demoData = new Messages(Networks.TWITTER.toString());
 		demoData.setMessage("Somebody should go to Real Food or Wolfgangs with me to celebrate the new pad not everybody at once lol");
 		rawData.add(demoData);
 
-		demoData = new MessageData("Twitter");
+		demoData = new Messages(Networks.TWITTER.toString());
 		demoData.setMessage("Killin some chest and biceps in the dungeon aka Wolfgangs gym w/ @Bobbypuryear");
 		rawData.add(demoData);
 		return rawData;

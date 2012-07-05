@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.social.data.MessageData;
+import org.social.entity.domain.Messages;
 import org.social.query.TwitterQuery;
 
 public class TwitterConnectionTest {
@@ -37,14 +37,14 @@ public class TwitterConnectionTest {
 		query.setSince("2012-06-01");
 
 		TwitterConnection con = new TwitterConnection();
-		List<MessageData> result = con.fetchMessages(query);
+		List<Messages> result = con.fetchMessages(query);
 
 		assertNotNull(result);
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("Foud: " + result.size() + " results.");
-			for (MessageData messageData : result) {
-				logger.debug(messageData.toJson().toString());
+			for (Messages messageData : result) {
+				logger.debug(messageData.toString());
 			}
 		}
 	}

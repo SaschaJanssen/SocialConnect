@@ -5,14 +5,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.social.data.MessageData;
+import org.social.constants.Networks;
+import org.social.entity.domain.Messages;
 import org.social.query.FacebookQuery;
+import org.social.util.UtilDateTime;
 
 import com.restfb.Connection;
 import com.restfb.DefaultFacebookClient;
@@ -27,16 +28,14 @@ public class FacebookConnection implements SocialNetworkConnection<FacebookQuery
 	private FacebookClient fbClient = null;
 	private String MY_ACCESS_TOKEN = null;
 
-	private String plattformName = "Facebook";
-
 	public FacebookConnection() {
 		loadProperties();
 		fbClient = new DefaultFacebookClient(MY_ACCESS_TOKEN);
 	}
 
 	@Override
-	public List<MessageData> fetchMessages(FacebookQuery query) {
-		List<MessageData> results = new ArrayList<MessageData>();
+	public List<Messages> fetchMessages(FacebookQuery query) {
+		List<Messages> results = new ArrayList<Messages>();
 
 		Connection<JsonObject> searchResult = fbClient.fetchConnection(query.constructQuery(), JsonObject.class);
 		results.addAll(extractMessageData(searchResult));
@@ -55,7 +54,7 @@ public class FacebookConnection implements SocialNetworkConnection<FacebookQuery
 		return results;
 	}
 
-	public List<MessageData> fetchPlace(String query, String center, String distance, String limit, String until) {
+	public List<Messages> fetchPlace(String query, String center, String distance, String limit, String until) {
 		Connection<JsonObject> searchResult = fbClient.fetchConnection("search", JsonObject.class,
 				Parameter.with("q", query), Parameter.with("type", "place"), Parameter.with("center", center),
 				Parameter.with("distance", distance), Parameter.with("until", until), Parameter.with("limit", limit));
@@ -63,24 +62,28 @@ public class FacebookConnection implements SocialNetworkConnection<FacebookQuery
 		return extractMessageData(searchResult);
 	}
 
-	private List<MessageData> extractMessageData(Connection<JsonObject> searchResult) {
+	private List<Messages> extractMessageData(Connection<JsonObject> searchResult) {
 
-		List<MessageData> results = new ArrayList<MessageData>();
+		List<Messages> results = new ArrayList<Messages>();
 
 		for (JsonObject object : searchResult.getData()) {
 			if (!object.has("message")) {
 				// object could be ignored if no message attribute is set.
 				continue;
 			}
-			MessageData messageData = new MessageData(this.plattformName);
+			Messages messageData = new Messages(Networks.FACEBOOK.toString());
+
+			messageData.setCustomerId(1L);
 
 			JsonObject userData = object.getJsonObject("from");
-			messageData.setFromUser(userData.getString("name"));
-			messageData.setFromUserId(userData.getString("id"));
-			messageData.setId(object.getString("id"));
+			messageData.setNetworkUser(userData.getString("name"));
+
+
+			String fbMessageDate = object.getString("created_time");
+			messageData.setNetworkMessageDate(UtilDateTime.toTimestamp(fbMessageDate));
+
 			messageData.setMessage(object.getString("message"));
-			messageData.setNetworkMessageDate(object.getString("created_time"));
-			messageData.setMessageReceivedDate(new Date().toString());
+			messageData.setMessageReceivedDate(UtilDateTime.nowTimestamp());
 
 			results.add(messageData);
 		}

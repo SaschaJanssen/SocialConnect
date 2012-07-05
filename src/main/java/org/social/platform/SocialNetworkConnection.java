@@ -2,11 +2,11 @@ package org.social.platform;
 
 import java.util.List;
 
-import org.social.data.MessageData;
+import org.social.entity.domain.Messages;
 import org.social.query.Query;
 
 public interface SocialNetworkConnection<T extends Query> {
 
-	public List<MessageData> fetchMessages(T query);
+	public List<Messages> fetchMessages(T query);
 
 }

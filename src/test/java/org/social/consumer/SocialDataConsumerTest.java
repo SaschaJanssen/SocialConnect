@@ -1,13 +1,13 @@
 package org.social.consumer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.social.data.MessageData;
+import org.social.entity.domain.Messages;
 
 public class SocialDataConsumerTest {
 
@@ -27,7 +27,7 @@ public class SocialDataConsumerTest {
 	@Test
 	public void testCreateDataConsumer() {
 		SocialDataConsumer consumer = new SocialDataConsumer();
-		List<MessageData> messageDataList = consumer.consumeData();
+		List<Messages> messageDataList = consumer.consumeData();
 
 		assertNotNull(messageDataList);
 

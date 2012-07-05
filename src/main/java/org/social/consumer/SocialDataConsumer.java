@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.social.data.MessageData;
+import org.social.entity.domain.Messages;
 import org.social.platform.FacebookConnection;
 import org.social.platform.TwitterConnection;
 import org.social.query.FacebookQuery;
@@ -19,14 +19,14 @@ public class SocialDataConsumer {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private CopyOnWriteArrayList<MessageData> results;
+	private CopyOnWriteArrayList<Messages> results;
 	private ExecutorService executor = Executors.newCachedThreadPool();
 
 	public SocialDataConsumer() {
-		results = new CopyOnWriteArrayList<MessageData>();
+		results = new CopyOnWriteArrayList<Messages>();
 	}
 
-	public List<MessageData> consumeData() {
+	public List<Messages> consumeData() {
 		List<Thread> threadList = new ArrayList<Thread>();
 
 		FacebookQuery fbQuery = new FacebookQuery();

@@ -13,7 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.social.consumer.SocialDataConsumer;
 import org.social.data.DataCrafter;
 import org.social.data.FilteredMessageList;
-import org.social.data.MessageData;
+import org.social.entity.domain.Messages;
+import org.social.entity.helper.PersistMessages;
 
 public class SocialConnect {
 
@@ -27,21 +28,26 @@ public class SocialConnect {
 			System.exit(0);
 		}
 
+		// TODO get User data from DB
+		// TODO search for keywords from DB
+
 		SocialDataConsumer consumer = new SocialDataConsumer();
-		List<MessageData> messageDataList = consumer.consumeData();
+		List<Messages> messageDataList = consumer.consumeData();
 
-		// TODO Store to Database
+		PersistMessages persistMessages = new PersistMessages();
+		persistMessages.storeMessages(messageDataList);
 
-		// TODO Read uncrafted from DB
 		Set<String> mentionedSet = new HashSet<String>();
+		mentionedSet.add("#WOLFGANGSSTEAKH");
+		mentionedSet.add("@WOLFGANGSSTEAKH");
 		DataCrafter crafter = new DataCrafter(messageDataList);
 		FilteredMessageList craftedResult = crafter.craft(mentionedSet);
 
-		// TODO update crafted in DB
-		for (MessageData messageData : craftedResult.getPositivList()) {
-			System.out.println(messageData.getNetwork());
-			System.out.println(messageData.getGeoLocation() + " " + messageData.getMessage());
-			System.out.println("---");
+		persistMessages.updateMessages(craftedResult.getNegativeList());
+		persistMessages.updateMessages(craftedResult.getPositivList());
+
+		if (logger.isInfoEnabled()) {
+			logger.info("Shutdown social connect.");
 		}
 	}
 

@@ -1,16 +1,16 @@
 package org.social.entity.domain;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.social.constants.CraftedState;
+import org.social.util.UtilDateTime;
 
 @Entity
 @Table(name = "MESSAGES")
@@ -21,34 +21,19 @@ public class Messages {
 	private Long fromUserId;
 	private String language;
 	private String networkId;
+	private String networkUser;
+	private String geoLocation;
 	private Timestamp networkMessageDate;
 	private Timestamp messageReceivedDate;
 	private Long customerId;
 	private String craftedStateId;
 	private Timestamp createdTs;
-	@Version
 	private Timestamp lastUpdatedTs;
 
-	public Messages() {
-		createdTs = new Timestamp(new Date().getTime());
-	}
-
-	@Column(name = "CREATED_TS")
-	public Timestamp getCreatedTs() {
-		return createdTs;
-	}
-
-	public void setCreatedTs(Timestamp createdTs) {
-		this.createdTs = createdTs;
-	}
-
-	@Column(name = "LAST_UPDATED_TS")
-	public Timestamp getLastUpdatedTs() {
-		return lastUpdatedTs;
-	}
-
-	public void setLastUpdatedTs(Timestamp lastUpdatedTs) {
-		this.lastUpdatedTs = lastUpdatedTs;
+	public Messages(String networkId) {
+		this.createdTs = UtilDateTime.nowTimestamp();
+		this.networkId = networkId;
+		this.craftedStateId = CraftedState.NOT_CRAFTED.getName();
 	}
 
 	@Id
@@ -70,6 +55,33 @@ public class Messages {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	@Column(name = "GEO_LOCATION")
+	public String getGeoLocation() {
+		return geoLocation;
+	}
+
+	public void setGeoLocation(String geoLocation) {
+		this.geoLocation = geoLocation;
+	}
+
+	@Column(name = "CREATED_TS")
+	public Timestamp getCreatedTs() {
+		return createdTs;
+	}
+
+	public void setCreatedTs(Timestamp createdTs) {
+		this.createdTs = createdTs;
+	}
+
+	@Column(name = "LAST_UPDATED_TS")
+	public Timestamp getLastUpdatedTs() {
+		return lastUpdatedTs;
+	}
+
+	public void setLastUpdatedTs(Timestamp lastUpdatedTs) {
+		this.lastUpdatedTs = lastUpdatedTs;
 	}
 
 	@Column(name = "FROM_USER_ID")
@@ -97,6 +109,15 @@ public class Messages {
 
 	public void setNetworkId(String networkId) {
 		this.networkId = networkId;
+	}
+
+	@Column(name = "NETWORK_USER")
+	public String getNetworkUser() {
+		return networkUser;
+	}
+
+	public void setNetworkUser(String networkUser) {
+		this.networkUser = networkUser;
 	}
 
 	@Column(name = "NETWORK_MESSAGE_DATE")
@@ -140,21 +161,21 @@ public class Messages {
 		StringBuilder builder = new StringBuilder("[");
 		builder.append("messageId=");
 		builder.append(messageId);
-		builder.append(",message=");
+		builder.append(", message=");
 		builder.append(message);
-		builder.append("fromUserId=");
+		builder.append(", fromUserId=");
 		builder.append(fromUserId);
-		builder.append(",language=");
+		builder.append(", language=");
 		builder.append(language);
-		builder.append("network=");
+		builder.append(", networkId=");
 		builder.append(networkId);
-		builder.append(",networkMessageDate=");
+		builder.append(", networkMessageDate=");
 		builder.append(networkMessageDate);
-		builder.append("messageReceivedDate=");
+		builder.append(", messageReceivedDate=");
 		builder.append(messageReceivedDate);
-		builder.append(",customerId=");
+		builder.append(", customerId=");
 		builder.append(customerId);
-		builder.append(",craftedState=");
+		builder.append(", craftedState=");
 		builder.append(craftedStateId);
 		builder.append("]");
 

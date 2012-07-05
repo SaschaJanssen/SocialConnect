@@ -1,6 +1,9 @@
 package org.social.entity;
 
+import static org.junit.Assert.assertTrue;
+
 import java.net.URL;
+import java.util.List;
 import java.util.Properties;
 
 import org.hibernate.Session;
@@ -14,15 +17,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.social.constants.Networks;
 import org.social.entity.domain.Messages;
 
 public class DerbyTest {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private SessionFactory sessionFactory;
 
 	@Before
 	public void setUp() throws Exception {
 		System.setProperty("derby.system.home", "target/runtime/derby/");
+
+		sessionFactory = initHibernate();
 	}
 
 	@After
@@ -31,13 +38,12 @@ public class DerbyTest {
 	}
 
 	@Test
-	public void testDB() throws Exception {
-		Session session = initHibernate();
+	public void testDBWrite() throws Exception {
+		Session session = sessionFactory.getCurrentSession();
 		try {
 			Transaction tx = session.beginTransaction();
 			create(session);
 			tx.commit();
-
 		} catch (Exception e) {
 			logger.error("", e);
 		} finally {
@@ -47,17 +53,33 @@ public class DerbyTest {
 		}
 	}
 
+	@Test
+	public void testDB_Read() throws Exception {
+		Session session = sessionFactory.openSession();
+
+		List result = session.createQuery("from Messages").list();
+		assertTrue(!result.isEmpty());
+
+		if (logger.isInfoEnabled()) {
+			for (Messages messag : (List<Messages>) result) {
+				logger.info(messag.toString());
+			}
+		}
+
+		if (session != null && session.isOpen()) {
+			session.close();
+		}
+	}
+
 	private void create(Session session) {
-		Messages n = new Messages();
+		Messages n = new Messages(Networks.TWITTER.toString());
 		n.setMessage("blaaaaaaaaaaa");
 		n.setLanguage("de");
-		n.setNetworkId("TWITTER");
 		n.setCustomerId(new Long(1));
-		n.setCraftedStateId("NOT_CRAFTED");
 		session.save(n);
 	}
 
-	public Session initHibernate() throws Exception {
+	public SessionFactory initHibernate() throws Exception {
 		URL hibernateConfigurationFile = ClassLoader.getSystemResource("hibernate-derby.cfg.xml");
 		Configuration configuration = new Configuration().configure(hibernateConfigurationFile);
 
@@ -70,7 +92,7 @@ public class DerbyTest {
 		ServiceRegistry serviceRegistry = serviceRegistryBuilder.buildServiceRegistry();
 		SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 
-		return sessionFactory.getCurrentSession();
+		return sessionFactory;
 	}
 
 }

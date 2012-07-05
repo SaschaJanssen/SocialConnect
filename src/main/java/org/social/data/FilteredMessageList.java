@@ -3,28 +3,33 @@ package org.social.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.social.constants.CraftedState;
+import org.social.entity.domain.Messages;
+
 public class FilteredMessageList {
-	private List<MessageData> negativeList = null;
-	private List<MessageData> positiveList = null;
+	private List<Messages> negativeList = null;
+	private List<Messages> positiveList = null;
 
 	public FilteredMessageList() {
-		this.negativeList = new ArrayList<MessageData>();
-		this.positiveList = new ArrayList<MessageData>();
+		this.negativeList = new ArrayList<Messages>();
+		this.positiveList = new ArrayList<Messages>();
 	}
 
-	public void addToNegativeList(MessageData negativeData) {
+	public void addToNegativeList(Messages negativeData) {
+		negativeData.setCraftedStateId(CraftedState.BAD.getName());
 		negativeList.add(negativeData);
 	}
 
-	public void addToPositivList(MessageData positivData) {
+	public void addToPositivList(Messages positivData) {
+		positivData.setCraftedStateId(CraftedState.GOOD.getName());
 		positiveList.add(positivData);
 	}
 
-	public List<MessageData> getNegativeList() {
+	public List<Messages> getNegativeList() {
 		return this.negativeList;
 	}
 
-	public List<MessageData> getPositivList() {
+	public List<Messages> getPositivList() {
 		return this.positiveList;
 	}
 
@@ -36,12 +41,12 @@ public class FilteredMessageList {
 		return this.positiveList.size();
 	}
 
-	public void moveItemFromNegativeToPositiveList(MessageData negativeItem) {
+	public void moveItemFromNegativeToPositiveList(Messages negativeItem) {
 		if (this.negativeList.contains(negativeItem)) {
 			this.negativeList.remove(negativeItem);
 		}
 
-		this.positiveList.add(negativeItem);
+		this.addToPositivList(negativeItem);
 	}
 
 }

@@ -24,10 +24,12 @@
 		<property name="hibernate.format_sql">false</property>
 
 		<!-- Mapping Data -->
-		<mapping class="org.social.entity.domain.Messages"/>
-		<!--
-		<mapping resource="entity/mapping/Customers.hbm.xml" />
-		<mapping resource="entity/mapping/Keywords.hbm.xml" />
-		-->
+		<mapping class="org.social.entity.domain.Messages" />
+		<!-- <mapping resource="entity/mapping/Customers.hbm.xml" /> <mapping resource="entity/mapping/Keywords.hbm.xml" /> -->
+
+		<!-- Event which is called on save or update -->
+		<event type="save-update">
+			<listener class="SaveOrUpdateDateListener" />
+		</event>
 	</session-factory>
 </hibernate-configuration>
