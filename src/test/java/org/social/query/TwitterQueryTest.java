@@ -1,26 +1,14 @@
 package org.social.query;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class TwitterQueryTest {
 
-	TwitterQuery query;
-
-	@Before
-	public void setUp() throws Exception {
-		query = new TwitterQuery(1L);
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
 	@Test
 	public void testConstructQuery() {
+		TwitterQuery query = new TwitterQuery(1L);
 		query.setQuery("Test");
 		query.setHash("#Test");
 		query.setLanguage("de");
@@ -28,7 +16,9 @@ public class TwitterQueryTest {
 		query.setMinus("-Tree");
 		query.setSince("2012-06-01");
 
-		assertEquals(query.getSearchUrl() + "?q=Test+OR+%23Test+OR+%40Test+--Tree&lang=de&since=2012-06-01&rpp=100", query.constructQuery());
+		assertEquals(new Long(1), query.getCustomerId());
+		assertEquals(query.getSearchUrl() + "?q=Test+OR+%23Test+OR+%40Test+--Tree&lang=de&since=2012-06-01&rpp=100",
+				query.constructQuery());
 	}
 
 }
