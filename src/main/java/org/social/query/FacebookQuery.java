@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.util.UtilValidate;
 
-public class FacebookQuery implements Query {
+public class FacebookQuery extends Query {
 
 	// private final String searchUrl = "https://graph.facebook.com/search";
 	private final String searchUrl = "search";
@@ -19,7 +19,11 @@ public class FacebookQuery implements Query {
 	private String type;
 	private String limit = "1500";
 
-	public void setDirect(String direct) {
+	public FacebookQuery(Long customerId) {
+		super(customerId);
+	}
+
+	public void setQuery(String direct) {
 		this.direct = direct;
 	}
 

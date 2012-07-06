@@ -31,8 +31,8 @@ public class TwitterConnectionTest {
 
 	@Test
 	public void testTwitterSearch() throws Exception {
-		TwitterQuery query = new TwitterQuery();
-		query.setDirect("Vapiano");
+		TwitterQuery query = new TwitterQuery(1L);
+		query.setQuery("Vapiano");
 		query.setLanguage("de");
 		query.setSince("2012-06-01");
 

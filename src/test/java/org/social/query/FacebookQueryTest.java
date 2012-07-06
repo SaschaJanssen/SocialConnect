@@ -12,7 +12,7 @@ public class FacebookQueryTest {
 
 	@Before
 	public void setUp() throws Exception {
-		query = new FacebookQuery();
+		query = new FacebookQuery(1L);
 	}
 
 
@@ -22,7 +22,7 @@ public class FacebookQueryTest {
 
 	@Test
 	public void testConstructQuery() {
-		query.setDirect("Test");
+		query.setQuery("Test");
 		query.setSince("yesterday");
 		query.setType("post");
 

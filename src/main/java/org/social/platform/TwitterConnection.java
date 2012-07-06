@@ -39,6 +39,8 @@ public class TwitterConnection implements SocialNetworkConnection<TwitterQuery> 
 	private String accessTokenPub = "";
 	private String accessTokenSecret = "";
 
+	private Long customerId;
+
 	private OAuthService service = null;
 	private Token accessToken;
 
@@ -61,8 +63,9 @@ public class TwitterConnection implements SocialNetworkConnection<TwitterQuery> 
 	}
 
 	public List<Messages> fetchMessages(TwitterQuery query) {
+		this.customerId = query.getCustomerId();
 		if (logger.isDebugEnabled()) {
-			logger.debug("Fetch tweets from Twitter.");
+			logger.debug("Fetch tweets from Twitter for customer: " + this.customerId);
 		}
 
 		String constructedQuery = query.constructQuery();
@@ -108,11 +111,12 @@ public class TwitterConnection implements SocialNetworkConnection<TwitterQuery> 
 		for (Object object : resultArray) {
 			Messages messageData = new Messages(Networks.TWITTER.toString());
 
-			messageData.setCustomerId(1L);
+			messageData.setCustomerId(customerId);
 
 			JSONObject jsonObj = (JSONObject) object;
 
 			messageData.setNetworkUser(jsonObj.getString("from_user"));
+			messageData.setNetworkUserId(jsonObj.getString("from_user_id"));
 			messageData.setLanguage(jsonObj.getString("iso_language_code"));
 
 			JSONObject geo = jsonObj.getJSONObject("geo");

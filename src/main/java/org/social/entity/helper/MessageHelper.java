@@ -7,7 +7,7 @@ import org.social.entity.HibernateUtil;
 import org.social.entity.domain.Messages;
 import org.social.util.UtilDateTime;
 
-public class PersistMessages {
+public class MessageHelper {
 
 	public void storeMessages(List<Messages> messageDataList) {
 		Session session = HibernateUtil.getSessionFactory().openSession();

@@ -24,8 +24,9 @@
 		<property name="hibernate.format_sql">false</property>
 
 		<!-- Mapping Data -->
-		<mapping class="org.social.entity.domain.Messages" />
-		<!-- <mapping resource="entity/mapping/Customers.hbm.xml" /> <mapping resource="entity/mapping/Keywords.hbm.xml" /> -->
+		<mapping class="org.social.entity.domain.Messages"/>
+		<mapping class="org.social.entity.domain.Customers" />
+		<mapping class="org.social.entity.domain.Keywords" />
 
 		<!-- Event which is called on save or update -->
 		<event type="save-update">

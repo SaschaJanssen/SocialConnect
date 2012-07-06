@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.util.UtilValidate;
 
-public class TwitterQuery implements Query {
+public class TwitterQuery extends Query {
 
 	private final String searchUrl = "https://search.twitter.com/search.json";
 
@@ -22,7 +22,11 @@ public class TwitterQuery implements Query {
 
 	private String recordsPerPage = "100";
 
-	public void setDirect(String direct) {
+	public TwitterQuery(Long customerId) {
+		super(customerId);
+	}
+
+	public void setQuery(String direct) {
 		this.direct = direct;
 	}
 

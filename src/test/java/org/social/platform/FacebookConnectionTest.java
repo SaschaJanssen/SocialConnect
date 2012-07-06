@@ -32,8 +32,8 @@ public class FacebookConnectionTest {
 
 	@Test
 	public void testFacebookSearch() {
-		FacebookQuery query = new FacebookQuery();
-		query.setDirect("Vapiano");
+		FacebookQuery query = new FacebookQuery(1L);
+		query.setQuery("Vapiano");
 		query.setSince("yesterday");
 		query.setType("post");
 

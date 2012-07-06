@@ -16,4 +16,13 @@ public class NetworksTest {
 		assertEquals("TWITTER", Networks.TWITTER.toString());
 	}
 
+	@Test
+	public void test_isNetwork() throws Exception {
+		assertFalse(Networks.FACEBOOK.isNetwork("TWITTER"));
+		assertTrue(Networks.FACEBOOK.isNetwork("FACEBOOK"));
+
+		assertTrue(Networks.TWITTER.isNetwork("TWITTER"));
+		assertFalse(Networks.TWITTER.isNetwork("FACEBOOK"));
+	}
+
 }

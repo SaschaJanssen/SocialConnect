@@ -1,14 +1,13 @@
 package org.social.constants;
 
 public enum Networks {
-	FACEBOOK("FACEBOOK"), TWITTER("TWITTER");
-
-	private String name;
-	private Networks(String name) {
-		this.name = name;
-	}
+	FACEBOOK, TWITTER;
 
 	public String toString(){
-		return this.name;
+		return this.name();
+	}
+
+	public boolean isNetwork(String networkName) {
+		return this.name().equals(networkName);
 	}
 }

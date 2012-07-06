@@ -18,7 +18,7 @@ public class Messages {
 
 	private Long messageId;
 	private String message;
-	private Long fromUserId;
+	private String networkUserId;
 	private String language;
 	private String networkId;
 	private String networkUser;
@@ -89,13 +89,13 @@ public class Messages {
 		this.lastUpdatedTs = lastUpdatedTs;
 	}
 
-	@Column(name = "FROM_USER_ID")
-	public Long getFromUserId() {
-		return fromUserId;
+	@Column(name = "NETWORK_USER_ID")
+	public String getNetworkUserId() {
+		return networkUserId;
 	}
 
-	public void setFromUserId(Long fromUserId) {
-		this.fromUserId = fromUserId;
+	public void setNetworkUserId(String fromUserId) {
+		this.networkUserId = fromUserId;
 	}
 
 	@Column(name = "LANGUAGE")
@@ -169,7 +169,7 @@ public class Messages {
 		builder.append(", message=");
 		builder.append(message);
 		builder.append(", fromUserId=");
-		builder.append(fromUserId);
+		builder.append(networkUserId);
 		builder.append(", language=");
 		builder.append(language);
 		builder.append(", networkId=");

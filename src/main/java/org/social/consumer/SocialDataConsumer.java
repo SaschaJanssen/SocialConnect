@@ -2,6 +2,7 @@ package org.social.consumer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -9,6 +10,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.social.constants.KeywordType;
+import org.social.constants.Networks;
+import org.social.entity.domain.Customers;
+import org.social.entity.domain.Keywords;
 import org.social.entity.domain.Messages;
 import org.social.platform.FacebookConnection;
 import org.social.platform.TwitterConnection;
@@ -19,36 +24,70 @@ public class SocialDataConsumer {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private CopyOnWriteArrayList<Messages> results;
-	private ExecutorService executor = Executors.newCachedThreadPool();
+	private final CopyOnWriteArrayList<Messages> results;
+	private final List<Customers> customersAndKeywords;
+	private final ExecutorService executor = Executors.newCachedThreadPool();
 
-	public SocialDataConsumer() {
-		results = new CopyOnWriteArrayList<Messages>();
+	public SocialDataConsumer(List<Customers> customersAndKeywords) {
+		this.results = new CopyOnWriteArrayList<Messages>();
+		this.customersAndKeywords = customersAndKeywords;
 	}
 
 	public List<Messages> consumeData() {
 		List<Thread> threadList = new ArrayList<Thread>();
 
-		FacebookQuery fbQuery = new FacebookQuery();
-		fbQuery.setDirect("Wolfgangs");
-		fbQuery.setSince("yesterday");
+		for (Customers customer : customersAndKeywords) {
+			Long customerId = customer.getCustomerId();
+			Set<Keywords> custKeywords = customer.getKeywords();
 
-		Thread fbThread = new Thread(new FacebookThread(fbQuery));
-		threadList.add(fbThread);
-		executor.execute(fbThread);
+			FacebookQuery fbQuery = new FacebookQuery(customerId);
+			fbQuery.setSince("yesterday");
 
-		TwitterQuery twitterQuery = new TwitterQuery();
-		twitterQuery.setDirect("Wolfgangs");
-		twitterQuery.setHash("#WOLFGANGSSTEAKH");
-		twitterQuery.setMentioned("@WOLFGANGSSTEAKH");
-		twitterQuery.setLanguage("en");
-		twitterQuery.setSince("");
-		twitterQuery.setMinus("");
+			TwitterQuery twitterQuery = new TwitterQuery(customerId);
+			twitterQuery.setLanguage("en");
+			twitterQuery.setSince("");
+			twitterQuery.setMinus("");
 
-		Thread twitterThread = new Thread(new TwitterThread(twitterQuery));
-		threadList.add(twitterThread);
-		executor.execute(twitterThread);
+			for (Keywords keyword : custKeywords) {
+				String networkId = keyword.getNetworkId();
 
+				if (Networks.FACEBOOK.isNetwork(networkId)) {
+
+					String keywordType = keyword.getKeywordTypeId();
+					if (KeywordType.QUERY.isKeywordType(keywordType)) {
+						fbQuery.setQuery(keyword.getKeyword());
+					} else if (KeywordType.HASH.isKeywordType(keywordType)) {
+						// ignored
+					} else if (KeywordType.MENTIONED.isKeywordType(keywordType)) {
+						// ignored
+					}
+
+					keyword.getKeyword();
+
+				} else if (Networks.TWITTER.isNetwork(networkId)) {
+
+					String keywordType = keyword.getKeywordTypeId();
+					if (KeywordType.QUERY.isKeywordType(keywordType)) {
+						twitterQuery.setQuery(keyword.getKeyword());
+					} else if (KeywordType.HASH.isKeywordType(keywordType)) {
+						twitterQuery.setHash(keyword.getKeyword());
+					} else if (KeywordType.MENTIONED.isKeywordType(keywordType)) {
+						twitterQuery.setMentioned(keyword.getKeyword());
+					}
+
+				}
+
+			}
+
+			Thread fbThread = new Thread(new FacebookThread(fbQuery));
+			threadList.add(fbThread);
+			executor.execute(fbThread);
+
+			Thread twitterThread = new Thread(new TwitterThread(twitterQuery));
+			threadList.add(twitterThread);
+			executor.execute(twitterThread);
+
+		}
 		waitForThreadsToFinish();
 
 		if (logger.isDebugEnabled()) {

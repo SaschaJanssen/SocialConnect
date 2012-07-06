@@ -28,6 +28,8 @@ public class FacebookConnection implements SocialNetworkConnection<FacebookQuery
 	private FacebookClient fbClient = null;
 	private String MY_ACCESS_TOKEN = null;
 
+	private Long customerId;
+
 	public FacebookConnection() {
 		loadProperties();
 		fbClient = new DefaultFacebookClient(MY_ACCESS_TOKEN);
@@ -35,6 +37,11 @@ public class FacebookConnection implements SocialNetworkConnection<FacebookQuery
 
 	@Override
 	public List<Messages> fetchMessages(FacebookQuery query) {
+		this.customerId = query.getCustomerId();
+		if (logger.isDebugEnabled()) {
+			logger.debug("Fetch posts from Facebook for customer: " + this.customerId);
+		}
+
 		List<Messages> results = new ArrayList<Messages>();
 
 		Connection<JsonObject> searchResult = fbClient.fetchConnection(query.constructQuery(), JsonObject.class);
@@ -73,11 +80,11 @@ public class FacebookConnection implements SocialNetworkConnection<FacebookQuery
 			}
 			Messages messageData = new Messages(Networks.FACEBOOK.toString());
 
-			messageData.setCustomerId(1L);
+			messageData.setCustomerId(customerId);
 
 			JsonObject userData = object.getJsonObject("from");
 			messageData.setNetworkUser(userData.getString("name"));
-
+			messageData.setNetworkUserId(userData.getString("id"));
 
 			String fbMessageDate = object.getString("created_time");
 			messageData.setNetworkMessageDate(UtilDateTime.toTimestamp(fbMessageDate));

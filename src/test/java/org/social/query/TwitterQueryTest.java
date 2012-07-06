@@ -12,7 +12,7 @@ public class TwitterQueryTest {
 
 	@Before
 	public void setUp() throws Exception {
-		query = new TwitterQuery();
+		query = new TwitterQuery(1L);
 	}
 
 	@After
@@ -21,7 +21,7 @@ public class TwitterQueryTest {
 
 	@Test
 	public void testConstructQuery() {
-		query.setDirect("Test");
+		query.setQuery("Test");
 		query.setHash("#Test");
 		query.setLanguage("de");
 		query.setMentioned("@Test");
