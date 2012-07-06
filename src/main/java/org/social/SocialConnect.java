@@ -8,18 +8,15 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.consumer.SocialDataConsumer;
 import org.social.data.DataCrafter;
 import org.social.data.FilteredMessageList;
-import org.social.entity.HibernateUtil;
 import org.social.entity.domain.Customers;
 import org.social.entity.domain.Messages;
 import org.social.entity.helper.CustomerHelper;
 import org.social.entity.helper.MessageHelper;
-import org.social.util.UtilCollection;
 
 public class SocialConnect {
 
