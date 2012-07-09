@@ -1,10 +1,12 @@
 package org.social.data;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.social.constants.Networks;
 import org.social.entity.domain.Messages;
-import org.social.filter.MentionedFilter;
+import org.social.filter.TwitterMentionedFilter;
 import org.social.filter.wordlists.FoodEng;
 
 public class DataCrafter {
@@ -16,11 +18,11 @@ public class DataCrafter {
 		this.rawData = rawList;
 	}
 
-	public FilteredMessageList craft(Set<String> mentionedSet) {
+	public FilteredMessageList craft(CustomerNetworkKeywords customerKeywords) {
 		this.filteredMessages = new FilteredMessageList();
 
 		wordlistFilter();
-		mentionedFilter(mentionedSet);
+		mentionedFilter(customerKeywords);
 
 		return this.filteredMessages;
 	}
@@ -35,9 +37,13 @@ public class DataCrafter {
 		}
 	}
 
-	private void mentionedFilter(Set<String> mentionedSet) {
+	private void mentionedFilter(CustomerNetworkKeywords customerKeywords) {
 
-		MentionedFilter mentionFilter = new MentionedFilter(mentionedSet);
+		Set<String> mentionedSet = new HashSet<String>();
+		mentionedSet.add(customerKeywords.getHashForNetwork(Networks.TWITTER));
+		mentionedSet.add(customerKeywords.getMentionedForNetwork(Networks.TWITTER));
+
+		TwitterMentionedFilter mentionFilter = new TwitterMentionedFilter(mentionedSet);
 		List<Messages> negativeList = this.filteredMessages.getNegativeList();
 
 		for (Messages negativeData : negativeList) {

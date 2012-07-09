@@ -58,7 +58,7 @@ public class Customers {
 		this.lastUpdatedTs = lastUpdatedTs;
 	}
 
-	@OneToMany(targetEntity = Keywords.class, mappedBy = "customerId", fetch = FetchType.EAGER)
+	@OneToMany(targetEntity = Keywords.class, mappedBy = "customerId", fetch = FetchType.LAZY)
 	public Set<Keywords> getKeywords() {
 		return keywords;
 	}

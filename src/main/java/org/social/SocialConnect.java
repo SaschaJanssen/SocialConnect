@@ -3,14 +3,13 @@ package org.social;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.consumer.SocialDataConsumer;
+import org.social.data.CustomerNetworkKeywords;
 import org.social.data.DataCrafter;
 import org.social.data.FilteredMessageList;
 import org.social.entity.domain.Customers;
@@ -32,20 +31,25 @@ public class SocialConnect {
 
 		List<Customers> customers = new CustomerHelper().getAllCustomersAndKeywords();
 
-		SocialDataConsumer consumer = new SocialDataConsumer(customers);
-		List<Messages> messageDataList = consumer.consumeData();
+		SocialDataConsumer consumer = new SocialDataConsumer();
 
-		MessageHelper persistMessages = new MessageHelper();
-		persistMessages.storeMessages(messageDataList);
+		for (Customers customer : customers) {
+			Long customerId = customer.getCustomerId();
 
-		Set<String> mentionedSet = new HashSet<String>();
-		mentionedSet.add("#WOLFGANGSSTEAKH");
-		mentionedSet.add("@WOLFGANGSSTEAKH");
-		DataCrafter crafter = new DataCrafter(messageDataList);
-		FilteredMessageList craftedResult = crafter.craft(mentionedSet);
+			CustomerNetworkKeywords customerKeywords = new CustomerNetworkKeywords(customerId);
 
-		persistMessages.updateMessages(craftedResult.getNegativeList());
-		persistMessages.updateMessages(craftedResult.getPositivList());
+			List<Messages> messageDataList = consumer.consumeData(customerId, customerKeywords);
+
+			MessageHelper persistMessages = new MessageHelper();
+			persistMessages.storeMessages(messageDataList);
+
+			DataCrafter crafter = new DataCrafter(messageDataList);
+			FilteredMessageList craftedResult = crafter.craft(customerKeywords);
+
+			persistMessages.updateMessages(craftedResult.getNegativeList());
+			persistMessages.updateMessages(craftedResult.getPositivList());
+		}
+
 
 		if (logger.isInfoEnabled()) {
 			logger.info("Shutdown social connect.");

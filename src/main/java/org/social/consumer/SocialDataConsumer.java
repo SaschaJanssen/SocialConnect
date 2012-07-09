@@ -2,7 +2,6 @@ package org.social.consumer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,10 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.social.constants.KeywordType;
 import org.social.constants.Networks;
-import org.social.entity.domain.Customers;
-import org.social.entity.domain.Keywords;
+import org.social.data.CustomerNetworkKeywords;
 import org.social.entity.domain.Messages;
 import org.social.platform.FacebookConnection;
 import org.social.platform.TwitterConnection;
@@ -25,69 +22,37 @@ public class SocialDataConsumer {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private final CopyOnWriteArrayList<Messages> results;
-	private final List<Customers> customersAndKeywords;
 	private final ExecutorService executor = Executors.newCachedThreadPool();
 
-	public SocialDataConsumer(List<Customers> customersAndKeywords) {
+	public SocialDataConsumer() {
 		this.results = new CopyOnWriteArrayList<Messages>();
-		this.customersAndKeywords = customersAndKeywords;
 	}
 
-	public List<Messages> consumeData() {
+	public List<Messages> consumeData(Long customerId, CustomerNetworkKeywords custKeywords) {
 		List<Thread> threadList = new ArrayList<Thread>();
 
-		for (Customers customer : customersAndKeywords) {
-			Long customerId = customer.getCustomerId();
-			Set<Keywords> custKeywords = customer.getKeywords();
+		// consume Facebook data
+		FacebookQuery fbQuery = new FacebookQuery(customerId);
+		fbQuery.setSince("yesterday");
+		fbQuery.setQuery(custKeywords.getQueryForNetwork(Networks.FACEBOOK));
 
-			FacebookQuery fbQuery = new FacebookQuery(customerId);
-			fbQuery.setSince("yesterday");
+		Thread fbThread = new Thread(new FacebookThread(fbQuery));
+		threadList.add(fbThread);
+		executor.execute(fbThread);
 
-			TwitterQuery twitterQuery = new TwitterQuery(customerId);
-			twitterQuery.setLanguage("en");
-			twitterQuery.setSince("");
-			twitterQuery.setMinus("");
+		// consume Twitter Data
+		TwitterQuery twitterQuery = new TwitterQuery(customerId);
+		twitterQuery.setLanguage("en");
+		twitterQuery.setSince("");
+		twitterQuery.setMinus("");
+		twitterQuery.setHash(custKeywords.getHashForNetwork(Networks.TWITTER));
+		twitterQuery.setQuery(custKeywords.getQueryForNetwork(Networks.TWITTER));
+		twitterQuery.setMentioned(custKeywords.getMentionedForNetwork(Networks.TWITTER));
 
-			for (Keywords keyword : custKeywords) {
-				String networkId = keyword.getNetworkId();
+		Thread twitterThread = new Thread(new TwitterThread(twitterQuery));
+		threadList.add(twitterThread);
+		executor.execute(twitterThread);
 
-				if (Networks.FACEBOOK.isNetwork(networkId)) {
-
-					String keywordType = keyword.getKeywordTypeId();
-					if (KeywordType.QUERY.isKeywordType(keywordType)) {
-						fbQuery.setQuery(keyword.getKeyword());
-					} else if (KeywordType.HASH.isKeywordType(keywordType)) {
-						// ignored
-					} else if (KeywordType.MENTIONED.isKeywordType(keywordType)) {
-						// ignored
-					}
-
-					keyword.getKeyword();
-
-				} else if (Networks.TWITTER.isNetwork(networkId)) {
-
-					String keywordType = keyword.getKeywordTypeId();
-					if (KeywordType.QUERY.isKeywordType(keywordType)) {
-						twitterQuery.setQuery(keyword.getKeyword());
-					} else if (KeywordType.HASH.isKeywordType(keywordType)) {
-						twitterQuery.setHash(keyword.getKeyword());
-					} else if (KeywordType.MENTIONED.isKeywordType(keywordType)) {
-						twitterQuery.setMentioned(keyword.getKeyword());
-					}
-
-				}
-
-			}
-
-			Thread fbThread = new Thread(new FacebookThread(fbQuery));
-			threadList.add(fbThread);
-			executor.execute(fbThread);
-
-			Thread twitterThread = new Thread(new TwitterThread(twitterQuery));
-			threadList.add(twitterThread);
-			executor.execute(twitterThread);
-
-		}
 		waitForThreadsToFinish();
 
 		if (logger.isDebugEnabled()) {

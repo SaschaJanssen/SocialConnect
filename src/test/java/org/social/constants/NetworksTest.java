@@ -8,12 +8,12 @@ public class NetworksTest {
 
 	@Test
 	public void testFacebook() {
-		assertEquals("FACEBOOK", Networks.FACEBOOK.toString());
+		assertEquals("FACEBOOK", Networks.FACEBOOK.getName());
 	}
 
 	@Test
 	public void testTwitter() throws Exception {
-		assertEquals("TWITTER", Networks.TWITTER.toString());
+		assertEquals("TWITTER", Networks.TWITTER.getName());
 	}
 
 	@Test

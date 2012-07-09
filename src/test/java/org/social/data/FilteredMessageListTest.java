@@ -4,12 +4,17 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.social.SocialTest;
 import org.social.constants.CraftedState;
 import org.social.entity.domain.Messages;
 
-public class FilteredMessageListTest {
+public class FilteredMessageListTest extends SocialTest {
 
-	FilteredMessageList msgList;
+	private FilteredMessageList msgList;
+
+	public FilteredMessageListTest() {
+		super();
+	}
 
 	@Before
 	public void setUp() {

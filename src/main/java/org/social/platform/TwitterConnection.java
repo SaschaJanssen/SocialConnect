@@ -109,7 +109,7 @@ public class TwitterConnection implements SocialNetworkConnection<TwitterQuery> 
 		JSONArray resultArray = json.getJSONArray("results");
 
 		for (Object object : resultArray) {
-			Messages messageData = new Messages(Networks.TWITTER.toString());
+			Messages messageData = new Messages(Networks.TWITTER.getName());
 
 			messageData.setCustomerId(customerId);
 

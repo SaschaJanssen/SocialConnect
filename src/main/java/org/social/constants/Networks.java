@@ -3,7 +3,7 @@ package org.social.constants;
 public enum Networks {
 	FACEBOOK, TWITTER;
 
-	public String toString(){
+	public String getName(){
 		return this.name();
 	}
 

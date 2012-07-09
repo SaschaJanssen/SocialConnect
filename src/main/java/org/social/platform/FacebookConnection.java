@@ -78,7 +78,7 @@ public class FacebookConnection implements SocialNetworkConnection<FacebookQuery
 				// object could be ignored if no message attribute is set.
 				continue;
 			}
-			Messages messageData = new Messages(Networks.FACEBOOK.toString());
+			Messages messageData = new Messages(Networks.FACEBOOK.getName());
 
 			messageData.setCustomerId(customerId);
 

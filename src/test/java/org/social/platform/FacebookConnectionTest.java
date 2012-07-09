@@ -10,20 +10,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.social.SocialTest;
 import org.social.entity.domain.Messages;
 import org.social.query.FacebookQuery;
 
-public class FacebookConnectionTest {
+public class FacebookConnectionTest extends SocialTest {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	public FacebookConnectionTest() {
+		super();
+	}
+
 	@Before
 	public void setUp() throws Exception {
-		System.setProperty("https.proxyHost", "cache.gsa.westlb.net");
-		System.setProperty("https.proxyPort", "4430");
-
-		System.setProperty("http.proxyHost", "cache.gsa.westlb.net");
-		System.setProperty("http.proxyPort", "8080");
 	}
 
 	@After

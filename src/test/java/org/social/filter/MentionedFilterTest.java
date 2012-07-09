@@ -12,7 +12,7 @@ import org.junit.Test;
 
 public class MentionedFilterTest {
 
-	MentionedFilter mentionedFilter;
+	TwitterMentionedFilter mentionedFilter;
 
 	@Before
 	public void setUp() throws Exception {
@@ -21,7 +21,7 @@ public class MentionedFilterTest {
 		mentionedSet.add("#Vapiano");
 		mentionedSet.add("#Pizza");
 
-		mentionedFilter = new MentionedFilter(mentionedSet);
+		mentionedFilter = new TwitterMentionedFilter(mentionedSet);
 	}
 
 	@After

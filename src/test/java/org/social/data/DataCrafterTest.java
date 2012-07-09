@@ -3,19 +3,22 @@ package org.social.data;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.social.SocialTest;
 import org.social.constants.Networks;
 import org.social.entity.domain.Messages;
 
-public class DataCrafterTest {
+public class DataCrafterTest extends SocialTest {
 
-	DataCrafter crafter;
+	private DataCrafter crafter;
+
+	public DataCrafterTest() {
+		super();
+	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -29,30 +32,30 @@ public class DataCrafterTest {
 
 	@Test
 	public void testCrafter() {
-		Set<String> mentionedSet = new HashSet<String>();
+		CustomerNetworkKeywords cnk = new CustomerNetworkKeywords(2L);
 
-		FilteredMessageList result = crafter.craft(mentionedSet);
+		FilteredMessageList result = crafter.craft(cnk);
 
 		assertEquals(2, result.countPositivMessages());
 		assertEquals(2, result.countNegativeMessages());
 	}
 
 	private List<Messages> setUpDemoData() {
-		Messages demoData = new Messages(Networks.TWITTER.toString());
+		Messages demoData = new Messages(Networks.TWITTER.getName());
 
 		List<Messages> rawData = new ArrayList<Messages>();
 		demoData.setMessage("Had wolfgangs for brunch. Today is already great.");
 		rawData.add(demoData);
 
-		demoData = new Messages(Networks.TWITTER.toString());
+		demoData = new Messages(Networks.TWITTER.getName());
 		demoData.setMessage("Wolfgangs Vault  Weekly Be genuine. Be full of plenty. Feel popular. http://t.co/FGtbpFfj");
 		rawData.add(demoData);
 
-		demoData = new Messages(Networks.TWITTER.toString());
+		demoData = new Messages(Networks.TWITTER.getName());
 		demoData.setMessage("Somebody should go to Real Food or Wolfgangs with me to celebrate the new pad not everybody at once lol");
 		rawData.add(demoData);
 
-		demoData = new Messages(Networks.TWITTER.toString());
+		demoData = new Messages(Networks.TWITTER.getName());
 		demoData.setMessage("Killin some chest and biceps in the dungeon aka Wolfgangs gym w/ @Bobbypuryear");
 		rawData.add(demoData);
 		return rawData;
