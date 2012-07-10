@@ -5,6 +5,12 @@
 	<artifactId>SocialConnectCore</artifactId>
 	<version>0.1</version>
 
+	<parent>
+		<groupId>org.social</groupId>
+		<artifactId>SocialConnect</artifactId>
+		<version>0.1</version>
+	</parent>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.restfb</groupId>
@@ -82,9 +88,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<parent>
-		<groupId>org.social</groupId>
-		<artifactId>SocialConnect</artifactId>
-		<version>0.1</version>
-	</parent>
 </project>
