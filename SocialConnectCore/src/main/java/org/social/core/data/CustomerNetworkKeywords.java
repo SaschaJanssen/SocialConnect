@@ -40,7 +40,7 @@ public class CustomerNetworkKeywords {
 	}
 
 	public String getHashForNetwork(Networks network) {
-		String hash = null;
+		String hash = "";
 
 		Map<String, String> networkKeywordMap = chooseNetworkMap(network);
 		if (networkKeywordMap.containsKey(KeywordType.HASH.getName())) {
@@ -62,7 +62,7 @@ public class CustomerNetworkKeywords {
 	}
 
 	public String getQueryForNetwork(Networks network) {
-		String query = null;
+		String query = "";
 
 		Map<String, String> networkKeywordMap = chooseNetworkMap(network);
 		if (networkKeywordMap.containsKey(KeywordType.QUERY.getName())) {

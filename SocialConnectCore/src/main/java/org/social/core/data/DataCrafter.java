@@ -2,17 +2,16 @@ package org.social.core.data;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.social.core.SocialConnect;
 import org.social.core.constants.Networks;
 import org.social.core.entity.domain.Messages;
 import org.social.core.filter.TwitterMentionedFilter;
 import org.social.core.filter.wordlists.FoodEng;
+import org.social.core.util.UtilValidate;
 
 public class DataCrafter {
 
@@ -46,9 +45,19 @@ public class DataCrafter {
 
 	private void mentionedFilter(CustomerNetworkKeywords customerKeywords) {
 
+		if (logger.isDebugEnabled()) {
+			logger.debug("Create mentioned filter.");
+		}
+
 		Set<String> mentionedSet = new HashSet<String>();
-		mentionedSet.add(customerKeywords.getHashForNetwork(Networks.TWITTER));
-		mentionedSet.add(customerKeywords.getMentionedForNetwork(Networks.TWITTER));
+		String tag = customerKeywords.getHashForNetwork(Networks.TWITTER);
+		if (UtilValidate.isNotEmpty(tag)) {
+			mentionedSet.add(tag);
+		}
+		tag = customerKeywords.getMentionedForNetwork(Networks.TWITTER);
+		if (UtilValidate.isNotEmpty(tag)) {
+			mentionedSet.add(tag);
+		}
 
 		TwitterMentionedFilter mentionFilter = new TwitterMentionedFilter(mentionedSet);
 		List<Messages> negativeList = this.filteredMessages.getNegativeList();

@@ -54,7 +54,6 @@ public class FilteredMessageList {
 			if (this.negativeList.contains(message)) {
 				this.negativeList.remove(message);
 			}
-
 			this.addToPositivList(message);
 		}
 	}

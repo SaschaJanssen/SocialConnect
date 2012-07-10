@@ -1,6 +1,5 @@
 package org.social.data;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import java.sql.Timestamp;
@@ -22,6 +21,7 @@ import org.social.core.entity.domain.Messages;
 public class DataCrafterITCase extends SocialITCase {
 
 	private DataCrafter crafter;
+	private Customers customer;
 
 	public DataCrafterITCase() {
 		super();
@@ -29,8 +29,15 @@ public class DataCrafterITCase extends SocialITCase {
 
 	@Before
 	public void setUp() throws Exception {
-		List<Messages> rawData = setUpDemoData();
-		crafter = new DataCrafter(rawData);
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.set(2012, 07 - 1, 10, 12, 54, 06);
+		calendar.set(Calendar.MILLISECOND, new Integer(966));
+
+		Timestamp timestamp = new Timestamp(calendar.getTimeInMillis());
+
+		customer = new Customers();
+		customer.setLastNetworkdAccess(timestamp);
 	}
 
 	@After
@@ -39,15 +46,9 @@ public class DataCrafterITCase extends SocialITCase {
 
 	@Test
 	public void testCrafter() {
-		Calendar calendar = Calendar.getInstance();
+		List<Messages> rawData = setUpDemoData_One();
+		crafter = new DataCrafter(rawData);
 
-		calendar.set(2012, 07 - 1, 10, 12, 54, 06);
-		calendar.set(Calendar.MILLISECOND, new Integer(966));
-
-		Timestamp timestamp = new Timestamp(calendar.getTimeInMillis());
-
-		Customers customer = new Customers();
-		customer.setLastNetworkdAccess(timestamp);
 		customer.setCustomerId(2L);
 
 		CustomerNetworkKeywords cnk = new CustomerNetworkKeywords(customer);
@@ -58,7 +59,43 @@ public class DataCrafterITCase extends SocialITCase {
 		assertEquals(2, result.countNegativeMessages());
 	}
 
-	private List<Messages> setUpDemoData() {
+	@Test
+	public void testCrafter_2() {
+		List<Messages> rawData = setUpDemoData_Two();
+		crafter = new DataCrafter(rawData);
+
+		customer.setCustomerId(1L);
+
+		CustomerNetworkKeywords cnk = new CustomerNetworkKeywords(customer);
+
+		FilteredMessageList result = crafter.craft(cnk);
+
+		assertEquals(1, result.countPositivMessages());
+		assertEquals(3, result.countNegativeMessages());
+	}
+
+	private List<Messages> setUpDemoData_Two() {
+		Messages demoData = new Messages(Networks.TWITTER.getName());
+
+		List<Messages> rawData = new ArrayList<Messages>();
+		demoData.setMessage("RT @girodicoppi: Thank our sponsors, or yours! Tweet thx to a Giro or @VirginiaCycling team sponsor, tag it #girodicoppi. You could win @Vapiano_USA gift!");
+		rawData.add(demoData);
+
+		demoData = new Messages(Networks.TWITTER.getName());
+		demoData.setMessage("I just ousted Sebi L. as the mayor of Vapiano on @foursquare! http://t.co/H068E93A");
+		rawData.add(demoData);
+
+		demoData = new Messages(Networks.TWITTER.getName());
+		demoData.setMessage("Vapiano Surfers Paradise - great food &amp; wine! http://t.co/PBcmtSo4");
+		rawData.add(demoData);
+
+		demoData = new Messages(Networks.TWITTER.getName());
+		demoData.setMessage("Thank our sponsors, or yours! Tweet thx to a @girodicoppi or @MABRA_org team sponsor, tag it #girodicoppi. You could win @Vapiano_USA gift!");
+		rawData.add(demoData);
+		return rawData;
+	}
+
+	private List<Messages> setUpDemoData_One() {
 		Messages demoData = new Messages(Networks.TWITTER.getName());
 
 		List<Messages> rawData = new ArrayList<Messages>();

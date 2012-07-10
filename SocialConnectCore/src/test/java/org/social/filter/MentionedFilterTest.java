@@ -42,6 +42,10 @@ public class MentionedFilterTest {
 		String phrase_3 = "Bewertung zu@Vapiano (Deutz, Köln,  von Golden_Ticket_Dunny): 4 von 5 Punkten";
 		matches = mentionedFilter.mentioned(phrase_3);
 		assertTrue(matches);
+
+		String phrase_4 = "Thank our sponsors, or yours! Tweet thx to a @girodicoppi or @MABRA_org team sponsor, tag it #girodicoppi. You could win @Vapiano_USA gift!";
+		matches = mentionedFilter.mentioned(phrase_4);
+		assertFalse(matches);
 	}
 
 	@Test
