@@ -12,17 +12,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.social.SocialTest;
+import org.social.SocialITCase;
 import org.social.core.constants.Networks;
 import org.social.core.entity.HibernateUtil;
 import org.social.core.entity.domain.Messages;
 
-public class DerbyTest extends SocialTest {
+public class DerbyITCase extends SocialITCase {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private SessionFactory sessionFactory;
 
-	public DerbyTest() {
+	public DerbyITCase() {
 		super();
 	}
 

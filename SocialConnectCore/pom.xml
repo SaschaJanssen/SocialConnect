@@ -3,7 +3,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.social.core</groupId>
 	<artifactId>SocialConnectCore</artifactId>
-	<version>0.1</version>
 
 	<parent>
 		<groupId>org.social</groupId>

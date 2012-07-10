@@ -1,18 +1,18 @@
 package org.social.data;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.social.SocialTest;
+import org.social.SocialITCase;
 import org.social.core.constants.Networks;
 import org.social.core.data.CustomerNetworkKeywords;
 
-public class UserNetworkKeywordsTest extends SocialTest {
+public class UserNetworkKeywordsITCase extends SocialITCase {
 
 	private CustomerNetworkKeywords unk = null;
 
-	public UserNetworkKeywordsTest() {
+	public UserNetworkKeywordsITCase() {
 		super();
 	}
 

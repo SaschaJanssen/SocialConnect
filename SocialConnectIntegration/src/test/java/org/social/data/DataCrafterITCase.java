@@ -8,15 +8,18 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.social.SocialTest;
-import org.social.constants.Networks;
-import org.social.entity.domain.Messages;
+import org.social.SocialITCase;
+import org.social.core.constants.Networks;
+import org.social.core.data.CustomerNetworkKeywords;
+import org.social.core.data.DataCrafter;
+import org.social.core.data.FilteredMessageList;
+import org.social.core.entity.domain.Messages;
 
-public class DataCrafterTest extends SocialTest {
+public class DataCrafterITCase extends SocialITCase {
 
 	private DataCrafter crafter;
 
-	public DataCrafterTest() {
+	public DataCrafterITCase() {
 		super();
 	}
 

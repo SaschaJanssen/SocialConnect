@@ -1,6 +1,7 @@
 package org.social.platform;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -9,16 +10,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.social.SocialTest;
+import org.social.SocialITCase;
 import org.social.core.entity.domain.Messages;
-import org.social.core.platform.TwitterConnection;
-import org.social.core.query.TwitterQuery;
+import org.social.core.platform.FacebookConnection;
+import org.social.core.query.FacebookQuery;
 
-public class TwitterConnectionTest extends SocialTest {
+public class FacebookConnectionITCase extends SocialITCase {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public TwitterConnectionTest() {
+	public FacebookConnectionITCase() {
 		super();
 	}
 
@@ -31,16 +32,17 @@ public class TwitterConnectionTest extends SocialTest {
 	}
 
 	@Test
-	public void testTwitterSearch() throws Exception {
-		TwitterQuery query = new TwitterQuery(1L);
+	public void testFacebookSearch() {
+		FacebookQuery query = new FacebookQuery(1L);
 		query.setQuery("Vapiano");
-		query.setLanguage("de");
-		query.setSince("2012-06-01");
+		query.setSince("yesterday");
+		query.setType("post");
 
-		TwitterConnection con = new TwitterConnection();
+		FacebookConnection con = new FacebookConnection();
 		List<Messages> result = con.fetchMessages(query);
 
 		assertNotNull(result);
+		assertTrue(!result.isEmpty());
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("Foud: " + result.size() + " results.");

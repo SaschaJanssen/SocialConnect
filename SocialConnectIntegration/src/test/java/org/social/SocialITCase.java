@@ -5,8 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public abstract class SocialTest {
-	public SocialTest() {
+public abstract class SocialITCase {
+	public SocialITCase() {
 		try {
 			loadProperties();
 		} catch (IOException e) {

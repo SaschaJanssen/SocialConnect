@@ -7,14 +7,14 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.social.SocialTest;
+import org.social.SocialITCase;
 import org.social.core.consumer.SocialDataConsumer;
 import org.social.core.data.CustomerNetworkKeywords;
 import org.social.core.entity.domain.Messages;
 
-public class SocialDataConsumerTest extends SocialTest {
+public class SocialDataConsumerITCase extends SocialITCase {
 
-	public SocialDataConsumerTest() {
+	public SocialDataConsumerITCase() {
 		super();
 	}
 
