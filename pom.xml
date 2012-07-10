@@ -8,6 +8,7 @@
 
 	<modules>
 		<module>SocialConnectCore</module>
+		<module>SocialConnectUi</module>
 		<module>SocialConnectIntegration</module>
 	</modules>
 
