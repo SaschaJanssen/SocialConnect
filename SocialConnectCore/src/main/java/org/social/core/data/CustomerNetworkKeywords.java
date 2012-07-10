@@ -17,6 +17,8 @@ public class CustomerNetworkKeywords {
 	public CustomerNetworkKeywords(Long customerId) {
 		KeywordHelper helper = new KeywordHelper();
 
+		// TODO move DB access somewhere else
+
 		// Get all Facebook Keywords
 		List<Keywords> keywords = helper.getMappedKeywordByCustomerAndNetwork(customerId, Networks.FACEBOOK.getName());
 		facebookKeywords = mapKeywords(keywords);
