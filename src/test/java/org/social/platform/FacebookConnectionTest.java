@@ -11,8 +11,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.SocialTest;
-import org.social.entity.domain.Messages;
-import org.social.query.FacebookQuery;
+import org.social.core.entity.domain.Messages;
+import org.social.core.platform.FacebookConnection;
+import org.social.core.query.FacebookQuery;
 
 public class FacebookConnectionTest extends SocialTest {
 

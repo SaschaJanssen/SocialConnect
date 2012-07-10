@@ -5,7 +5,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.social.SocialTest;
-import org.social.constants.Networks;
+import org.social.core.constants.Networks;
+import org.social.core.data.CustomerNetworkKeywords;
 
 public class UserNetworkKeywordsTest extends SocialTest {
 

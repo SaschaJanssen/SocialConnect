@@ -5,8 +5,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.social.SocialTest;
-import org.social.constants.CraftedState;
-import org.social.entity.domain.Messages;
+import org.social.core.constants.CraftedState;
+import org.social.core.data.FilteredMessageList;
+import org.social.core.entity.domain.Messages;
 
 public class FilteredMessageListTest extends SocialTest {
 

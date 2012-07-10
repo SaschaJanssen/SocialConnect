@@ -1,8 +1,9 @@
 package org.social.constants;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.social.core.constants.CraftedState;
 
 public class CraftedStateTest {
 

@@ -10,8 +10,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.SocialTest;
-import org.social.entity.domain.Messages;
-import org.social.query.TwitterQuery;
+import org.social.core.entity.domain.Messages;
+import org.social.core.platform.TwitterConnection;
+import org.social.core.query.TwitterQuery;
 
 public class TwitterConnectionTest extends SocialTest {
 

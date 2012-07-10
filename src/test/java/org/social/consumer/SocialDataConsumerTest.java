@@ -8,8 +8,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.social.SocialTest;
-import org.social.data.CustomerNetworkKeywords;
-import org.social.entity.domain.Messages;
+import org.social.core.consumer.SocialDataConsumer;
+import org.social.core.data.CustomerNetworkKeywords;
+import org.social.core.entity.domain.Messages;
 
 public class SocialDataConsumerTest extends SocialTest {
 

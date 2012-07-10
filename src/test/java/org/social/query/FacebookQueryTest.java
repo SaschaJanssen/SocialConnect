@@ -3,6 +3,7 @@ package org.social.query;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.social.core.query.FacebookQuery;
 
 public class FacebookQueryTest {
 

@@ -13,8 +13,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.SocialTest;
-import org.social.constants.Networks;
-import org.social.entity.domain.Messages;
+import org.social.core.constants.Networks;
+import org.social.core.entity.HibernateUtil;
+import org.social.core.entity.domain.Messages;
 
 public class DerbyTest extends SocialTest {
 
