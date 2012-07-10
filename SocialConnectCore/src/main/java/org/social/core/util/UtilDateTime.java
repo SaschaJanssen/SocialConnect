@@ -29,7 +29,7 @@ public class UtilDateTime {
 
 	/**
 	 * Return a Timestamp for right now
-	 * 
+	 *
 	 * @return Timestamp for right now
 	 */
 	public static java.sql.Timestamp nowTimestamp() {
@@ -38,7 +38,7 @@ public class UtilDateTime {
 
 	/**
 	 * Convert a millisecond value to a Timestamp.
-	 * 
+	 *
 	 * @param time
 	 *            millsecond value
 	 * @return Timestamp
@@ -50,7 +50,7 @@ public class UtilDateTime {
 	/**
 	 * Converts a date string with the format 2011-05-10T18:35:38+0000 and Wed,
 	 * 19 Jan 2011 20:21:46 +0000 to a new timestamp.
-	 * 
+	 *
 	 * @param dateString
 	 * @return
 	 */
@@ -117,5 +117,21 @@ public class UtilDateTime {
 		calendar.set(year, month - 1, day, hour, minutes, seconds);
 		calendar.set(Calendar.MILLISECOND, new Integer(milisec));
 		return calendar;
+	}
+
+	public static String connvertTimestampToTwitterTime(Timestamp timestamp) {
+		if (timestamp == null) {
+			return "";
+		}
+		String[] splitedTs = timestamp.toString().split(" ");
+		return splitedTs[0];
+	}
+
+	public static String connvertTimestampToFacebookTime(Timestamp timestamp) {
+		if (timestamp == null) {
+			return "";
+		}
+		Long unixTimestamp = timestamp.getTime() / 1000L;
+		return unixTimestamp.toString();
 	}
 }

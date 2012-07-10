@@ -3,10 +3,14 @@ package org.social.core.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.social.core.constants.CraftedState;
 import org.social.core.entity.domain.Messages;
 
 public class FilteredMessageList {
+	private Logger logger = LoggerFactory.getLogger(getClass());
+
 	private List<Messages> negativeList = null;
 	private List<Messages> positiveList = null;
 
@@ -41,12 +45,18 @@ public class FilteredMessageList {
 		return this.positiveList.size();
 	}
 
-	public void moveItemFromNegativeToPositiveList(Messages negativeItem) {
-		if (this.negativeList.contains(negativeItem)) {
-			this.negativeList.remove(negativeItem);
+	public void moveItemFromNegativeToPositiveList(List<Messages> messagesToMove) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Move Item to positive list.");
 		}
 
-		this.addToPositivList(negativeItem);
+		for (Messages message : messagesToMove) {
+			if (this.negativeList.contains(message)) {
+				this.negativeList.remove(message);
+			}
+
+			this.addToPositivList(message);
+		}
 	}
 
 }

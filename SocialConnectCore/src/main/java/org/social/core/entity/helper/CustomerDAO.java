@@ -1,5 +1,6 @@
 package org.social.core.entity.helper;
 
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
 
@@ -7,7 +8,7 @@ import org.hibernate.Session;
 import org.social.core.entity.HibernateUtil;
 import org.social.core.entity.domain.Customers;
 
-public class CustomerHelper {
+public class CustomerDAO {
 
 	public List<Customers> getAllCustomersAndKeywords() {
 
@@ -19,6 +20,17 @@ public class CustomerHelper {
 		session.getTransaction().commit();
 
 		return customerList;
+	}
+
+	public void updateCustomerNetworkAccess(Customers customer, Timestamp newTimestamp) {
+		customer.setLastNetworkdAccess(newTimestamp);
+
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+
+		session.update(customer);
+
+		session.getTransaction().commit();
 	}
 
 	private List<Customers> getCustomers(Session session) {

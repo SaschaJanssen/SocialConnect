@@ -1,15 +1,22 @@
 package org.social.core.data;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.social.core.SocialConnect;
 import org.social.core.constants.Networks;
 import org.social.core.entity.domain.Messages;
 import org.social.core.filter.TwitterMentionedFilter;
 import org.social.core.filter.wordlists.FoodEng;
 
 public class DataCrafter {
+
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	List<Messages> rawData = null;
 	FilteredMessageList filteredMessages;
@@ -46,12 +53,14 @@ public class DataCrafter {
 		TwitterMentionedFilter mentionFilter = new TwitterMentionedFilter(mentionedSet);
 		List<Messages> negativeList = this.filteredMessages.getNegativeList();
 
-		for (Messages negativeData : negativeList) {
-
-			if (mentionFilter.mentioned(negativeData.getMessage())) {
-				this.filteredMessages.moveItemFromNegativeToPositiveList(negativeData);
+		List<Messages> messagesToMove = new ArrayList<Messages>();
+		for (Messages message : negativeList) {
+			if (mentionFilter.mentioned(message.getMessage())) {
+				messagesToMove.add(message);
 			}
 		}
+
+		this.filteredMessages.moveItemFromNegativeToPositiveList(messagesToMove);
 
 	}
 

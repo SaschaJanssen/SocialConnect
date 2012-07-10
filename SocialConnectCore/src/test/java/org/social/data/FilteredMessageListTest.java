@@ -2,6 +2,9 @@ package org.social.data;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.social.core.constants.CraftedState;
@@ -23,7 +26,6 @@ public class FilteredMessageListTest {
 		msgList.addToNegativeList(new Messages("FB"));
 		assertEquals(1, msgList.countNegativeMessages());
 
-
 		Messages element = msgList.getNegativeList().get(0);
 		assertEquals("FB", element.getNetworkId());
 		assertEquals(CraftedState.BAD.getName(), element.getCraftedStateId());
@@ -42,16 +44,25 @@ public class FilteredMessageListTest {
 	@Test
 	public void testMoveItemFromNegativeToPositivList() throws Exception {
 		msgList = new FilteredMessageList();
+		List<Messages> messagesToMove = new ArrayList<Messages>();
 
 		Messages negativeMessageData = new Messages("FB");
+		msgList.addToNegativeList(negativeMessageData);
+		messagesToMove.add(negativeMessageData);
+
+		negativeMessageData = new Messages("TW");
+		msgList.addToNegativeList(negativeMessageData);
+		messagesToMove.add(negativeMessageData);
+
+		negativeMessageData = new Messages("FB");
 		msgList.addToNegativeList(negativeMessageData);
 
 		assertEquals(0, msgList.countPositivMessages());
 
-		msgList.moveItemFromNegativeToPositiveList(negativeMessageData);
+		msgList.moveItemFromNegativeToPositiveList(messagesToMove);
 
-		assertEquals(0, msgList.countNegativeMessages());
-		assertEquals(1, msgList.countPositivMessages());
+		assertEquals(1, msgList.countNegativeMessages());
+		assertEquals(2, msgList.countPositivMessages());
 	}
 
 }

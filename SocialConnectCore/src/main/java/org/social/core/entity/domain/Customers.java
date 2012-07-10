@@ -20,8 +20,10 @@ import org.social.core.util.UtilDateTime;
 public class Customers {
 
 	private Long customerId;
+	private Timestamp lastNetworkdAccess;
 	private Timestamp createdTs;
 	private Timestamp lastUpdatedTs;
+
 	private Set<Keywords> keywords = new HashSet<Keywords>();
 
 	public Customers() {
@@ -38,6 +40,15 @@ public class Customers {
 
 	public void setCustomerId(Long customerId) {
 		this.customerId = customerId;
+	}
+
+	@Column(name = "LAST_NETWORK_ACCESS")
+	public Timestamp getLastNetworkdAccess() {
+		return lastNetworkdAccess;
+	}
+
+	public void setLastNetworkdAccess(Timestamp lastNetworkdAccess) {
+		this.lastNetworkdAccess = lastNetworkdAccess;
 	}
 
 	@Column(name = "CREATED_TS")

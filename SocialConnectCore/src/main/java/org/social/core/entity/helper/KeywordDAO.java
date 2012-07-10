@@ -8,7 +8,7 @@ import org.hibernate.Session;
 import org.social.core.entity.HibernateUtil;
 import org.social.core.entity.domain.Keywords;
 
-public class KeywordHelper {
+public class KeywordDAO {
 
 	/**
 	 * Returns a list with keywords for a specific customer.

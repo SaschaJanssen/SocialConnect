@@ -14,8 +14,9 @@ import org.social.core.data.DataCrafter;
 import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
-import org.social.core.entity.helper.CustomerHelper;
-import org.social.core.entity.helper.MessageHelper;
+import org.social.core.entity.helper.CustomerDAO;
+import org.social.core.entity.helper.MessageDAO;
+import org.social.core.util.UtilDateTime;
 
 public class SocialConnect {
 
@@ -29,18 +30,21 @@ public class SocialConnect {
 			System.exit(0);
 		}
 
-		List<Customers> customers = new CustomerHelper().getAllCustomersAndKeywords();
+		CustomerDAO customerDao = new CustomerDAO();
+		MessageDAO persistMessages = new MessageDAO();
 
-		SocialDataConsumer consumer = new SocialDataConsumer();
+		List<Customers> customers = customerDao.getAllCustomersAndKeywords();
+
 
 		for (Customers customer : customers) {
 			Long customerId = customer.getCustomerId();
 
-			CustomerNetworkKeywords customerKeywords = new CustomerNetworkKeywords(customerId);
+			CustomerNetworkKeywords customerKeywords = new CustomerNetworkKeywords(customer);
 
+			SocialDataConsumer consumer = new SocialDataConsumer();
 			List<Messages> messageDataList = consumer.consumeData(customerId, customerKeywords);
+			consumer = null;
 
-			MessageHelper persistMessages = new MessageHelper();
 			persistMessages.storeMessages(messageDataList);
 
 			DataCrafter crafter = new DataCrafter(messageDataList);
@@ -48,6 +52,8 @@ public class SocialConnect {
 
 			persistMessages.updateMessages(craftedResult.getNegativeList());
 			persistMessages.updateMessages(craftedResult.getPositivList());
+
+			customerDao.updateCustomerNetworkAccess(customer, UtilDateTime.nowTimestamp());
 		}
 
 

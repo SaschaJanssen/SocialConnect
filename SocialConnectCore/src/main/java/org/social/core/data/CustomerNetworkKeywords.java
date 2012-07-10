@@ -1,22 +1,28 @@
 package org.social.core.data;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.social.core.constants.KeywordType;
 import org.social.core.constants.Networks;
+import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Keywords;
-import org.social.core.entity.helper.KeywordHelper;
+import org.social.core.entity.helper.KeywordDAO;
 
 public class CustomerNetworkKeywords {
 
 	private final Map<String, String> facebookKeywords;
 	private final Map<String, String> twitterKeywords;
 
-	public CustomerNetworkKeywords(Long customerId) {
-		KeywordHelper helper = new KeywordHelper();
+	private final Timestamp lastNetworkAccess;
 
+	public CustomerNetworkKeywords(Customers customer) {
+		Long customerId = customer.getCustomerId();
+		lastNetworkAccess = customer.getLastNetworkdAccess();
+
+		KeywordDAO helper = new KeywordDAO();
 		// TODO move DB access somewhere else
 
 		// Get all Facebook Keywords
@@ -27,6 +33,10 @@ public class CustomerNetworkKeywords {
 		keywords = helper.getMappedKeywordByCustomerAndNetwork(customerId, Networks.TWITTER.getName());
 		twitterKeywords = mapKeywords(keywords);
 
+	}
+
+	public String getLastAccessForNetwork(Networks network) {
+		return network.convertTimestampToNetworkTime(lastNetworkAccess);
 	}
 
 	public String getHashForNetwork(Networks network) {

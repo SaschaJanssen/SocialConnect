@@ -33,7 +33,7 @@ public class SocialDataConsumer {
 
 		// consume Facebook data
 		FacebookQuery fbQuery = new FacebookQuery(customerId);
-		fbQuery.setSince("yesterday");
+		fbQuery.setSince(custKeywords.getLastAccessForNetwork(Networks.FACEBOOK));
 		fbQuery.setQuery(custKeywords.getQueryForNetwork(Networks.FACEBOOK));
 
 		Thread fbThread = new Thread(new FacebookThread(fbQuery));
@@ -43,7 +43,7 @@ public class SocialDataConsumer {
 		// consume Twitter Data
 		TwitterQuery twitterQuery = new TwitterQuery(customerId);
 		twitterQuery.setLanguage("en");
-		twitterQuery.setSince("");
+		twitterQuery.setSince(custKeywords.getLastAccessForNetwork(Networks.TWITTER));
 		twitterQuery.setMinus("");
 		twitterQuery.setHash(custKeywords.getHashForNetwork(Networks.TWITTER));
 		twitterQuery.setQuery(custKeywords.getQueryForNetwork(Networks.TWITTER));

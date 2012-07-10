@@ -1,8 +1,11 @@
 package org.social.data;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.junit.After;
@@ -13,6 +16,7 @@ import org.social.core.constants.Networks;
 import org.social.core.data.CustomerNetworkKeywords;
 import org.social.core.data.DataCrafter;
 import org.social.core.data.FilteredMessageList;
+import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 
 public class DataCrafterITCase extends SocialITCase {
@@ -35,7 +39,18 @@ public class DataCrafterITCase extends SocialITCase {
 
 	@Test
 	public void testCrafter() {
-		CustomerNetworkKeywords cnk = new CustomerNetworkKeywords(2L);
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.set(2012, 07 - 1, 10, 12, 54, 06);
+		calendar.set(Calendar.MILLISECOND, new Integer(966));
+
+		Timestamp timestamp = new Timestamp(calendar.getTimeInMillis());
+
+		Customers customer = new Customers();
+		customer.setLastNetworkdAccess(timestamp);
+		customer.setCustomerId(2L);
+
+		CustomerNetworkKeywords cnk = new CustomerNetworkKeywords(customer);
 
 		FilteredMessageList result = crafter.craft(cnk);
 
