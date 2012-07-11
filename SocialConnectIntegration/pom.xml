@@ -3,7 +3,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.social.integration</groupId>
 	<artifactId>SocialConnectIntegration</artifactId>
-
 	<description>Integration Tests for social connect</description>
 	<parent>
 		<artifactId>SocialConnect</artifactId>
@@ -84,6 +83,37 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<executions>
+					<execution>
+						<id>create-test-db</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<inherited>false</inherited>
+						<configuration>
+							<executable>${basedir}\conf\InitDerbyTestDb.bat</executable>
+						</configuration>
+					</execution>
+					<execution>
+						<id>remove-test-db</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<inherited>false</inherited>
+						<configuration>
+							<executable>${basedir}\conf\DeleteDerbyTestDb.bat</executable>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 
 	</build>
