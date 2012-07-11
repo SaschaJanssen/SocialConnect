@@ -1,16 +1,14 @@
 package org.social.core.query;
 
+import org.social.core.data.CustomerNetworkKeywords;
+
 public abstract class Query {
 
-	private Long customerId;
+	private final CustomerNetworkKeywords networkKeywords;
 
-	public Query(Long customerId) {
-		this.customerId = customerId;
+	public Query(CustomerNetworkKeywords networkKeywords) {
+		this.networkKeywords = networkKeywords;
 	}
 
 	abstract public String constructQuery();
-
-	public Long getCustomerId() {
-		return this.customerId;
-	}
 }

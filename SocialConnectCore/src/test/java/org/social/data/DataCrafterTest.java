@@ -2,42 +2,24 @@ package org.social.data;
 
 import static org.junit.Assert.assertEquals;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.social.SocialITCase;
+import org.social.core.constants.KeywordType;
 import org.social.core.constants.Networks;
 import org.social.core.data.CustomerNetworkKeywords;
 import org.social.core.data.DataCrafter;
 import org.social.core.data.FilteredMessageList;
-import org.social.core.entity.domain.Customers;
+import org.social.core.entity.domain.Keywords;
 import org.social.core.entity.domain.Messages;
 
-public class DataCrafterITCase extends SocialITCase {
-
-	private DataCrafter crafter;
-	private Customers customer;
-
-	public DataCrafterITCase() {
-		super();
-	}
+public class DataCrafterTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Calendar calendar = Calendar.getInstance();
-
-		calendar.set(2012, 07 - 1, 10, 12, 54, 06);
-		calendar.set(Calendar.MILLISECOND, new Integer(966));
-
-		Timestamp timestamp = new Timestamp(calendar.getTimeInMillis());
-
-		customer = new Customers();
-		customer.setLastNetworkdAccess(timestamp);
 	}
 
 	@After
@@ -46,12 +28,28 @@ public class DataCrafterITCase extends SocialITCase {
 
 	@Test
 	public void testCrafter() {
-		List<Messages> rawData = setUpDemoData_One();
-		crafter = new DataCrafter(rawData);
+		DataCrafter crafter = new DataCrafter(setUpDemoData_One());
 
-		customer.setCustomerId(2L);
+		List<Keywords> keywordListForNetwork = new ArrayList<Keywords>();
+		Keywords keywords = new Keywords();
+		keywords.setCustomerId(1L);
+		keywords.setKeywordTypeId(KeywordType.HASH.getName());
+		keywords.setKeyword("#WOLFGANGSSTEAKH");
+		keywordListForNetwork.add(keywords);
 
-		CustomerNetworkKeywords cnk = new CustomerNetworkKeywords(customer);
+		keywords = new Keywords();
+		keywords.setCustomerId(1L);
+		keywords.setKeywordTypeId(KeywordType.QUERY.getName());
+		keywords.setKeyword("Wolfgangs");
+		keywordListForNetwork.add(keywords);
+
+		keywords = new Keywords();
+		keywords.setCustomerId(1L);
+		keywords.setKeywordTypeId(KeywordType.MENTIONED.getName());
+		keywords.setKeyword("@WOLFGANGSSTEAKH");
+		keywordListForNetwork.add(keywords);
+
+		CustomerNetworkKeywords cnk = new CustomerNetworkKeywords(keywordListForNetwork);
 
 		FilteredMessageList result = crafter.craft(cnk);
 
@@ -61,12 +59,22 @@ public class DataCrafterITCase extends SocialITCase {
 
 	@Test
 	public void testCrafter_2() {
-		List<Messages> rawData = setUpDemoData_Two();
-		crafter = new DataCrafter(rawData);
+		DataCrafter crafter = new DataCrafter(setUpDemoData_Two());
 
-		customer.setCustomerId(1L);
+		List<Keywords> keywordListForNetwork = new ArrayList<Keywords>();
+		Keywords keywords = new Keywords();
+		keywords.setCustomerId(2L);
+		keywords.setKeywordTypeId(KeywordType.HASH.getName());
+		keywords.setKeyword("#Vapiano");
+		keywordListForNetwork.add(keywords);
 
-		CustomerNetworkKeywords cnk = new CustomerNetworkKeywords(customer);
+		keywords = new Keywords();
+		keywords.setCustomerId(1L);
+		keywords.setKeywordTypeId(KeywordType.QUERY.getName());
+		keywords.setKeyword("Vapiano");
+		keywordListForNetwork.add(keywords);
+
+		CustomerNetworkKeywords cnk = new CustomerNetworkKeywords(keywordListForNetwork);
 
 		FilteredMessageList result = crafter.craft(cnk);
 

@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.social.core.data.CustomerNetworkKeywords;
 import org.social.core.util.UtilValidate;
 
 public class TwitterQuery extends Query {
@@ -22,19 +23,23 @@ public class TwitterQuery extends Query {
 
 	private String recordsPerPage = "100";
 
-	public TwitterQuery(Long customerId) {
-		super(customerId);
+	public TwitterQuery(CustomerNetworkKeywords cnk) {
+		super(cnk);
+
+		setQuery(cnk.getQueryForNetwork());
+		setHash(cnk.getHashForNetwork());
+		setMentioned(cnk.getMentionedForNetwork());
 	}
 
-	public void setQuery(String direct) {
+	private void setQuery(String direct) {
 		this.direct = direct;
 	}
 
-	public void setMentioned(String mentioned) {
+	private void setMentioned(String mentioned) {
 		this.mentioned = mentioned;
 	}
 
-	public void setHash(String hash) {
+	private void setHash(String hash) {
 		this.hash = hash;
 	}
 

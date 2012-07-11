@@ -11,7 +11,11 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.constants.Networks;
+import org.social.core.data.CustomerNetworkKeywords;
+import org.social.core.entity.domain.Customers;
+import org.social.core.entity.domain.Keywords;
 import org.social.core.entity.domain.Messages;
+import org.social.core.entity.helper.KeywordDAO;
 import org.social.core.query.FacebookQuery;
 import org.social.core.util.UtilDateTime;
 
@@ -21,29 +25,43 @@ import com.restfb.FacebookClient;
 import com.restfb.Parameter;
 import com.restfb.json.JsonObject;
 
-public class FacebookConnection implements SocialNetworkConnection<FacebookQuery> {
+public class FacebookConnection implements SocialNetworkConnection {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private FacebookClient fbClient = null;
 	private String MY_ACCESS_TOKEN = null;
 
-	private Long customerId;
+	private Customers customer;
+	private CustomerNetworkKeywords customerNetworkKeywords;
 
-	public FacebookConnection() {
+	public FacebookConnection(Customers customer) {
 		loadProperties();
 		fbClient = new DefaultFacebookClient(MY_ACCESS_TOKEN);
+		this.customer = customer;
+
+		getCustomersKeywords();
+	}
+
+	private void getCustomersKeywords() {
+		KeywordDAO helper = new KeywordDAO();
+
+		Long customerId = this.customer.getCustomerId();
+
+		// Get all Facebook Keywords for user x
+		List<Keywords> keywords = helper.getMappedKeywordByCustomerAndNetwork(customerId, Networks.FACEBOOK.getName());
+		customerNetworkKeywords = new CustomerNetworkKeywords(keywords);
 	}
 
 	@Override
-	public List<Messages> fetchMessages(FacebookQuery query) {
-		this.customerId = query.getCustomerId();
+	public List<Messages> fetchMessages() {
 		if (logger.isDebugEnabled()) {
-			logger.debug("Fetch posts from Facebook for customer: " + this.customerId);
+			logger.debug("Fetch posts from Facebook for customer: " + this.customer.getCustomerId());
 		}
 
-		List<Messages> results = new ArrayList<Messages>();
+		FacebookQuery query = buildQueryFromKeywords();
 
+		List<Messages> results = new ArrayList<Messages>();
 		Connection<JsonObject> searchResult = fbClient.fetchConnection(query.constructQuery(), JsonObject.class);
 		results.addAll(extractMessageData(searchResult));
 		String nextPageUrl = searchResult.getNextPageUrl();
@@ -59,6 +77,16 @@ public class FacebookConnection implements SocialNetworkConnection<FacebookQuery
 		}
 
 		return results;
+	}
+
+	private FacebookQuery buildQueryFromKeywords() {
+		FacebookQuery fbQuery = new FacebookQuery(customerNetworkKeywords);
+
+		String since = UtilDateTime.connvertTimestampToFacebookTime(this.customer.getLastNetworkdAccess());
+		fbQuery.setSince(since);
+		fbQuery.setType("post");
+
+		return fbQuery;
 	}
 
 	public List<Messages> fetchPlace(String query, String center, String distance, String limit, String until) {
@@ -80,7 +108,7 @@ public class FacebookConnection implements SocialNetworkConnection<FacebookQuery
 			}
 			Messages messageData = new Messages(Networks.FACEBOOK.getName());
 
-			messageData.setCustomerId(customerId);
+			messageData.setCustomerId(customer.getCustomerId());
 
 			JsonObject userData = object.getJsonObject("from");
 			messageData.setNetworkUser(userData.getString("name"));
@@ -96,6 +124,11 @@ public class FacebookConnection implements SocialNetworkConnection<FacebookQuery
 		}
 
 		return results;
+	}
+
+	@Override
+	public CustomerNetworkKeywords getCustomerNetworkKeywords() {
+		return customerNetworkKeywords;
 	}
 
 	private void loadProperties() {

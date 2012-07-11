@@ -1,6 +1,7 @@
 package org.social.network;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
@@ -10,9 +11,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.SocialITCase;
+import org.social.core.data.CustomerNetworkKeywords;
+import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 import org.social.core.network.TwitterConnection;
-import org.social.core.query.TwitterQuery;
 
 public class TwitterConnectionITCase extends SocialITCase {
 
@@ -32,13 +34,11 @@ public class TwitterConnectionITCase extends SocialITCase {
 
 	@Test
 	public void testTwitterSearch() throws Exception {
-		TwitterQuery query = new TwitterQuery(1L);
-		query.setQuery("Vapiano");
-		query.setLanguage("de");
-		query.setSince("2012-06-01");
+		Customers customer = new Customers();
+		customer.setCustomerId(1L);
 
-		TwitterConnection con = new TwitterConnection();
-		List<Messages> result = con.fetchMessages(query);
+		TwitterConnection con = new TwitterConnection(customer);
+		List<Messages> result = con.fetchMessages();
 
 		assertNotNull(result);
 
@@ -48,6 +48,18 @@ public class TwitterConnectionITCase extends SocialITCase {
 				logger.debug(messageData.toString());
 			}
 		}
+	}
+
+	@Test
+	public void testGetCustNetworkKeys() throws Exception {
+		Customers customer = new Customers();
+		customer.setCustomerId(1L);
+
+		TwitterConnection con = new TwitterConnection(customer);
+		CustomerNetworkKeywords cnk = con.getCustomerNetworkKeywords();
+
+		assertNotNull(cnk);
+		assertEquals("Vapiano", cnk.getQueryForNetwork());
 	}
 
 }

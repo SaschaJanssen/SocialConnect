@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.social.core.constants.Networks;
 import org.social.core.entity.domain.Messages;
 import org.social.core.filter.TwitterMentionedFilter;
 import org.social.core.filter.wordlists.FoodEng;
@@ -50,11 +49,11 @@ public class DataCrafter {
 		}
 
 		Set<String> mentionedSet = new HashSet<String>();
-		String tag = customerKeywords.getHashForNetwork(Networks.TWITTER);
+		String tag = customerKeywords.getHashForNetwork();
 		if (UtilValidate.isNotEmpty(tag)) {
 			mentionedSet.add(tag);
 		}
-		tag = customerKeywords.getMentionedForNetwork(Networks.TWITTER);
+		tag = customerKeywords.getMentionedForNetwork();
 		if (UtilValidate.isNotEmpty(tag)) {
 			mentionedSet.add(tag);
 		}

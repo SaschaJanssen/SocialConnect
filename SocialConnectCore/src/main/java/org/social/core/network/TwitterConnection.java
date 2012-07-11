@@ -21,11 +21,15 @@ import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.constants.Networks;
+import org.social.core.data.CustomerNetworkKeywords;
+import org.social.core.entity.domain.Customers;
+import org.social.core.entity.domain.Keywords;
 import org.social.core.entity.domain.Messages;
+import org.social.core.entity.helper.KeywordDAO;
 import org.social.core.query.TwitterQuery;
 import org.social.core.util.UtilDateTime;
 
-public class TwitterConnection implements SocialNetworkConnection<TwitterQuery> {
+public class TwitterConnection implements SocialNetworkConnection {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -39,12 +43,14 @@ public class TwitterConnection implements SocialNetworkConnection<TwitterQuery> 
 	private String accessTokenPub = "";
 	private String accessTokenSecret = "";
 
-	private Long customerId;
+	private Customers customer;
 
 	private OAuthService service = null;
 	private Token accessToken;
 
-	public TwitterConnection() {
+	private CustomerNetworkKeywords customerNetworkKeywords;
+
+	public TwitterConnection(Customers customer) {
 		try {
 			loadProperties();
 		} catch (IOException e) {
@@ -60,14 +66,30 @@ public class TwitterConnection implements SocialNetworkConnection<TwitterQuery> 
 		service = builder.build();
 
 		accessToken = new Token(accessTokenPub, accessTokenSecret);
+
+		this.customer = customer;
+
+		getCustomersKeywords();
 	}
 
-	public List<Messages> fetchMessages(TwitterQuery query) {
-		this.customerId = query.getCustomerId();
+	private void getCustomersKeywords() {
+		KeywordDAO helper = new KeywordDAO();
+
+		Long customerId = this.customer.getCustomerId();
+
+		// Get all Facebook Keywords for user x
+		List<Keywords> keywords = helper.getMappedKeywordByCustomerAndNetwork(customerId, Networks.TWITTER.getName());
+		customerNetworkKeywords = new CustomerNetworkKeywords(keywords);
+
+	}
+
+	@Override
+	public List<Messages> fetchMessages() {
 		if (logger.isDebugEnabled()) {
-			logger.debug("Fetch tweets from Twitter for customer: " + this.customerId);
+			logger.debug("Fetch tweets from Twitter for customer: " + this.customer.getCustomerId());
 		}
 
+		TwitterQuery query = buildQueryFromKeywords();
 		String constructedQuery = query.constructQuery();
 
 		List<Messages> resultList = new ArrayList<Messages>();
@@ -104,6 +126,16 @@ public class TwitterConnection implements SocialNetworkConnection<TwitterQuery> 
 		return resultList;
 	}
 
+	private TwitterQuery buildQueryFromKeywords() {
+		TwitterQuery twitterQuery = new TwitterQuery(customerNetworkKeywords);
+
+		String since = UtilDateTime.connvertTimestampToTwitterTime(this.customer.getLastNetworkdAccess());
+		twitterQuery.setSince(since);
+		twitterQuery.setLanguage("de");
+
+		return twitterQuery;
+	}
+
 	private List<Messages> extractMessageData(JSONObject json) {
 		List<Messages> resultList = new ArrayList<Messages>();
 		JSONArray resultArray = json.getJSONArray("results");
@@ -111,7 +143,7 @@ public class TwitterConnection implements SocialNetworkConnection<TwitterQuery> 
 		for (Object object : resultArray) {
 			Messages messageData = new Messages(Networks.TWITTER.getName());
 
-			messageData.setCustomerId(customerId);
+			messageData.setCustomerId(customer.getCustomerId());
 
 			JSONObject jsonObj = (JSONObject) object;
 
@@ -142,5 +174,10 @@ public class TwitterConnection implements SocialNetworkConnection<TwitterQuery> 
 		this.consumerSecret = properties.getProperty(CONSUMER_SECRET);
 		this.accessTokenPub = properties.getProperty(ACCESS_TOKEN);
 		this.accessTokenSecret = properties.getProperty(ACESS_TOEN_SECRET);
+	}
+
+	@Override
+	public CustomerNetworkKeywords getCustomerNetworkKeywords() {
+		return this.customerNetworkKeywords;
 	}
 }

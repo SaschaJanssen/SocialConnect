@@ -1,5 +1,6 @@
 package org.social.network;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -11,9 +12,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.SocialITCase;
+import org.social.core.data.CustomerNetworkKeywords;
+import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 import org.social.core.network.FacebookConnection;
-import org.social.core.query.FacebookQuery;
 
 public class FacebookConnectionITCase extends SocialITCase {
 
@@ -33,13 +35,11 @@ public class FacebookConnectionITCase extends SocialITCase {
 
 	@Test
 	public void testFacebookSearch() {
-		FacebookQuery query = new FacebookQuery(1L);
-		query.setQuery("Vapiano");
-		query.setSince("yesterday");
-		query.setType("post");
+		Customers customer = new Customers();
+		customer.setCustomerId(1L);
 
-		FacebookConnection con = new FacebookConnection();
-		List<Messages> result = con.fetchMessages(query);
+		FacebookConnection con = new FacebookConnection(customer);
+		List<Messages> result = con.fetchMessages();
 
 		assertNotNull(result);
 		assertTrue(!result.isEmpty());
@@ -50,6 +50,18 @@ public class FacebookConnectionITCase extends SocialITCase {
 				logger.debug(messageData.toString());
 			}
 		}
+	}
+
+	@Test
+	public void testFB_Connect() throws Exception {
+		Customers customer = new Customers();
+		customer.setCustomerId(1L);
+
+		FacebookConnection con = new FacebookConnection(customer);
+		CustomerNetworkKeywords cnk = con.getCustomerNetworkKeywords();
+
+		assertNotNull(cnk);
+		assertEquals("Vapiano", cnk.getQueryForNetwork());
 	}
 
 }

@@ -2,54 +2,39 @@ package org.social.core.consumer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.social.core.constants.Networks;
-import org.social.core.data.CustomerNetworkKeywords;
+import org.social.core.data.DataCrafter;
+import org.social.core.data.FilteredMessageList;
+import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 import org.social.core.network.FacebookConnection;
 import org.social.core.network.TwitterConnection;
-import org.social.core.query.FacebookQuery;
-import org.social.core.query.TwitterQuery;
 
 public class SocialDataConsumer {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private final CopyOnWriteArrayList<Messages> results;
-	private final ExecutorService executor = Executors.newCachedThreadPool();
+	private final ExecutorService executor;
+	private final FilteredMessageList results;
 
 	public SocialDataConsumer() {
-		this.results = new CopyOnWriteArrayList<Messages>();
+		executor = Executors.newCachedThreadPool();
+		results = new FilteredMessageList();
 	}
 
-	public List<Messages> consumeData(Long customerId, CustomerNetworkKeywords custKeywords) {
+	public FilteredMessageList consumeData(Customers customer) {
 		List<Thread> threadList = new ArrayList<Thread>();
 
-		// consume Facebook data
-		FacebookQuery fbQuery = new FacebookQuery(customerId);
-		fbQuery.setSince(custKeywords.getLastAccessForNetwork(Networks.FACEBOOK));
-		fbQuery.setQuery(custKeywords.getQueryForNetwork(Networks.FACEBOOK));
-
-		Thread fbThread = new Thread(new FacebookThread(fbQuery));
+		Thread fbThread = new Thread(new FacebookThread(customer));
 		threadList.add(fbThread);
 		executor.execute(fbThread);
 
-		// consume Twitter Data
-		TwitterQuery twitterQuery = new TwitterQuery(customerId);
-		twitterQuery.setLanguage("en");
-		twitterQuery.setSince(custKeywords.getLastAccessForNetwork(Networks.TWITTER));
-		twitterQuery.setMinus("");
-		twitterQuery.setHash(custKeywords.getHashForNetwork(Networks.TWITTER));
-		twitterQuery.setQuery(custKeywords.getQueryForNetwork(Networks.TWITTER));
-		twitterQuery.setMentioned(custKeywords.getMentionedForNetwork(Networks.TWITTER));
-
-		Thread twitterThread = new Thread(new TwitterThread(twitterQuery));
+		Thread twitterThread = new Thread(new TwitterThread(customer));
 		threadList.add(twitterThread);
 		executor.execute(twitterThread);
 
@@ -74,10 +59,10 @@ public class SocialDataConsumer {
 	}
 
 	private class FacebookThread implements Runnable {
-		private FacebookQuery query;
+		private Customers customer;
 
-		public FacebookThread(FacebookQuery query) {
-			this.query = query;
+		public FacebookThread(Customers customer) {
+			this.customer = customer;
 		}
 
 		@Override
@@ -86,16 +71,20 @@ public class SocialDataConsumer {
 				logger.debug("Start Facebook thread.");
 			}
 
-			FacebookConnection fbConnection = new FacebookConnection();
-			results.addAll(fbConnection.fetchMessages(query));
+			FacebookConnection fbConnection = new FacebookConnection(customer);
+			List<Messages> receivedMsgList = fbConnection.fetchMessages();
+
+			DataCrafter crafter = new DataCrafter(receivedMsgList);
+			FilteredMessageList filteredMessages = crafter.craft(fbConnection.getCustomerNetworkKeywords());
+			results.addAll(filteredMessages);
 		}
 	}
 
 	private class TwitterThread implements Runnable {
-		private TwitterQuery query;
+		private Customers customer;
 
-		public TwitterThread(TwitterQuery query) {
-			this.query = query;
+		public TwitterThread(Customers customer) {
+			this.customer = customer;
 		}
 
 		@Override
@@ -104,8 +93,12 @@ public class SocialDataConsumer {
 				logger.debug("Start Twitter thread.");
 			}
 
-			TwitterConnection twitterConnection = new TwitterConnection();
-			results.addAll(twitterConnection.fetchMessages(query));
+			TwitterConnection twitterConnection = new TwitterConnection(customer);
+			List<Messages> receivedMsgList = twitterConnection.fetchMessages();
+
+			DataCrafter crafter = new DataCrafter(receivedMsgList);
+			FilteredMessageList filteredMessages = crafter.craft(twitterConnection.getCustomerNetworkKeywords());
+			results.addAll(filteredMessages);
 		}
 	}
 

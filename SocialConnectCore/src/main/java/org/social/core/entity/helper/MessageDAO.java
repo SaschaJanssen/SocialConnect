@@ -1,37 +1,25 @@
 package org.social.core.entity.helper;
 
-import java.util.List;
-
 import org.hibernate.Session;
+import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.HibernateUtil;
 import org.social.core.entity.domain.Messages;
-import org.social.core.util.UtilDateTime;
 
 public class MessageDAO {
 
-	public void storeMessages(List<Messages> messageDataList) {
+	public void storeMessages(FilteredMessageList filteredMessageDataList) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 
 		session.beginTransaction();
 
-		for (Messages messageData : messageDataList) {
+		for (Messages messageData : filteredMessageDataList.getPositivList()) {
+			session.save(messageData);
+		}
+
+		for (Messages messageData : filteredMessageDataList.getNegativeList()) {
 			session.save(messageData);
 		}
 
 		session.getTransaction().commit();
-	}
-
-	public void updateMessages(List<Messages> messageDataList) {
-		Session session = HibernateUtil.getSessionFactory().openSession();
-
-		session.beginTransaction();
-
-		for (Messages messageData : messageDataList) {
-			messageData.setLastUpdatedTs(UtilDateTime.nowTimestamp());
-			session.update(messageData);
-		}
-
-		session.getTransaction().commit();
-
 	}
 }

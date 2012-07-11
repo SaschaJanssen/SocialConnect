@@ -1,7 +1,7 @@
 package org.social.core.data;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,12 +11,21 @@ import org.social.core.entity.domain.Messages;
 public class FilteredMessageList {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
-	private List<Messages> negativeList = null;
-	private List<Messages> positiveList = null;
+	private CopyOnWriteArrayList<Messages> negativeList = null;
+	private CopyOnWriteArrayList<Messages> positiveList = null;
 
 	public FilteredMessageList() {
-		this.negativeList = new ArrayList<Messages>();
-		this.positiveList = new ArrayList<Messages>();
+		this.negativeList = new CopyOnWriteArrayList<Messages>();
+		this.positiveList = new CopyOnWriteArrayList<Messages>();
+	}
+
+	public void addAll(FilteredMessageList filteredMessageList) {
+		negativeList.addAll(filteredMessageList.getNegativeList());
+		positiveList.addAll(filteredMessageList.getPositivList());
+	}
+
+	public int size() {
+		return countNegativeMessages() + countPositivMessages();
 	}
 
 	public void addToNegativeList(Messages negativeData) {

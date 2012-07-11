@@ -9,11 +9,8 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.consumer.SocialDataConsumer;
-import org.social.core.data.CustomerNetworkKeywords;
-import org.social.core.data.DataCrafter;
 import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
-import org.social.core.entity.domain.Messages;
 import org.social.core.entity.helper.CustomerDAO;
 import org.social.core.entity.helper.MessageDAO;
 import org.social.core.util.UtilDateTime;
@@ -31,27 +28,15 @@ public class SocialConnect {
 		}
 
 		CustomerDAO customerDao = new CustomerDAO();
-		MessageDAO persistMessages = new MessageDAO();
+		MessageDAO messageDao = new MessageDAO();
 
 		List<Customers> customers = customerDao.getAllCustomersAndKeywords();
-
-
 		for (Customers customer : customers) {
-			Long customerId = customer.getCustomerId();
-
-			CustomerNetworkKeywords customerKeywords = new CustomerNetworkKeywords(customer);
-
 			SocialDataConsumer consumer = new SocialDataConsumer();
-			List<Messages> messageDataList = consumer.consumeData(customerId, customerKeywords);
+			FilteredMessageList filteredMessageDataList = consumer.consumeData(customer);
 			consumer = null;
 
-			persistMessages.storeMessages(messageDataList);
-
-			DataCrafter crafter = new DataCrafter(messageDataList);
-			FilteredMessageList craftedResult = crafter.craft(customerKeywords);
-
-			persistMessages.updateMessages(craftedResult.getNegativeList());
-			persistMessages.updateMessages(craftedResult.getPositivList());
+			messageDao.storeMessages(filteredMessageDataList);
 
 			customerDao.updateCustomerNetworkAccess(customer, UtilDateTime.nowTimestamp());
 		}
