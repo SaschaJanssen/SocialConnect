@@ -10,7 +10,8 @@ public enum Networks {
 		public String convertTimestampToNetworkTime(Timestamp timestamp) {
 			return UtilDateTime.connvertTimestampToFacebookTime(timestamp);
 		}
-	}, TWITTER {
+	},
+	TWITTER {
 		@Override
 		public String convertTimestampToNetworkTime(Timestamp timestamp) {
 			return UtilDateTime.connvertTimestampToTwitterTime(timestamp);

@@ -1,6 +1,5 @@
 package org.social.core.consumer;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,6 +12,7 @@ import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 import org.social.core.network.FacebookConnection;
+import org.social.core.network.SocialNetworkConnection;
 import org.social.core.network.TwitterConnection;
 
 public class SocialDataConsumer {
@@ -28,14 +28,10 @@ public class SocialDataConsumer {
 	}
 
 	public FilteredMessageList consumeData(Customers customer) {
-		List<Thread> threadList = new ArrayList<Thread>();
-
-		Thread fbThread = new Thread(new FacebookThread(customer));
-		threadList.add(fbThread);
+		Thread fbThread = new Thread(new NetworkConsumeThread(new FacebookConnection(customer)));
 		executor.execute(fbThread);
 
-		Thread twitterThread = new Thread(new TwitterThread(customer));
-		threadList.add(twitterThread);
+		Thread twitterThread = new Thread(new NetworkConsumeThread(new TwitterConnection(customer)));
 		executor.execute(twitterThread);
 
 		waitForThreadsToFinish();
@@ -58,46 +54,24 @@ public class SocialDataConsumer {
 		}
 	}
 
-	private class FacebookThread implements Runnable {
-		private Customers customer;
+	private class NetworkConsumeThread implements Runnable {
+		private final SocialNetworkConnection networkConnection;
 
-		public FacebookThread(Customers customer) {
-			this.customer = customer;
+		public NetworkConsumeThread(SocialNetworkConnection networkConnection) {
+			this.networkConnection = networkConnection;
 		}
 
 		@Override
 		public void run() {
 			if (logger.isDebugEnabled()) {
-				logger.debug("Start Facebook thread.");
+				logger.debug("Start new " + networkConnection.getClass().getName()
+						+ " data consumer and filtering thread.");
 			}
 
-			FacebookConnection fbConnection = new FacebookConnection(customer);
-			List<Messages> receivedMsgList = fbConnection.fetchMessages();
+			List<Messages> receivedMsgList = networkConnection.fetchMessages();
 
 			DataCrafter crafter = new DataCrafter(receivedMsgList);
-			FilteredMessageList filteredMessages = crafter.craft(fbConnection.getCustomerNetworkKeywords());
-			results.addAll(filteredMessages);
-		}
-	}
-
-	private class TwitterThread implements Runnable {
-		private Customers customer;
-
-		public TwitterThread(Customers customer) {
-			this.customer = customer;
-		}
-
-		@Override
-		public void run() {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Start Twitter thread.");
-			}
-
-			TwitterConnection twitterConnection = new TwitterConnection(customer);
-			List<Messages> receivedMsgList = twitterConnection.fetchMessages();
-
-			DataCrafter crafter = new DataCrafter(receivedMsgList);
-			FilteredMessageList filteredMessages = crafter.craft(twitterConnection.getCustomerNetworkKeywords());
+			FilteredMessageList filteredMessages = crafter.craft(networkConnection.getCustomerNetworkKeywords());
 			results.addAll(filteredMessages);
 		}
 	}
