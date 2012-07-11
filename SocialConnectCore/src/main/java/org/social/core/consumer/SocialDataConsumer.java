@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.social.core.constants.Networks;
 import org.social.core.data.CustomerNetworkKeywords;
 import org.social.core.entity.domain.Messages;
-import org.social.core.platform.FacebookConnection;
-import org.social.core.platform.TwitterConnection;
+import org.social.core.network.FacebookConnection;
+import org.social.core.network.TwitterConnection;
 import org.social.core.query.FacebookQuery;
 import org.social.core.query.TwitterQuery;
 

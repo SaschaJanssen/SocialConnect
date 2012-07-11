@@ -1,4 +1,4 @@
-package org.social.core.platform;
+package org.social.core.network;
 
 import java.io.File;
 import java.io.FileInputStream;
