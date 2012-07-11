@@ -2,7 +2,6 @@ package org.social.core.network;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +10,8 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.constants.Networks;
-import org.social.core.data.CustomerNetworkKeywords;
 import org.social.core.entity.domain.Customers;
-import org.social.core.entity.domain.Keywords;
 import org.social.core.entity.domain.Messages;
-import org.social.core.entity.helper.KeywordDAO;
 import org.social.core.query.FacebookQuery;
 import org.social.core.util.UtilDateTime;
 
@@ -25,38 +21,32 @@ import com.restfb.FacebookClient;
 import com.restfb.Parameter;
 import com.restfb.json.JsonObject;
 
-public class FacebookConnection implements SocialNetworkConnection {
+public class FacebookConnection extends SocialNetworkConnection {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private FacebookClient fbClient = null;
 	private String MY_ACCESS_TOKEN = null;
 
-	private Customers customer;
-	private CustomerNetworkKeywords customerNetworkKeywords;
-
 	public FacebookConnection(Customers customer) {
-		loadProperties();
+		super(customer);
+
+		try {
+			loadProperties();
+		} catch (IOException e) {
+			logger.error("Facebook connection will be ignored, properties couldn't read. ", e);
+			return;
+		}
+
 		fbClient = new DefaultFacebookClient(MY_ACCESS_TOKEN);
-		this.customer = customer;
 
-		getCustomersKeywords();
-	}
-
-	private void getCustomersKeywords() {
-		KeywordDAO helper = new KeywordDAO();
-
-		Long customerId = this.customer.getCustomerId();
-
-		// Get all Facebook Keywords for user x
-		List<Keywords> keywords = helper.getMappedKeywordByCustomerAndNetwork(customerId, Networks.FACEBOOK.getName());
-		customerNetworkKeywords = new CustomerNetworkKeywords(keywords);
+		getCustomersKeywords(Networks.FACEBOOK.getName());
 	}
 
 	@Override
 	public List<Messages> fetchMessages() {
 		if (logger.isDebugEnabled()) {
-			logger.debug("Fetch posts from Facebook for customer: " + this.customer.getCustomerId());
+			logger.debug("Fetch posts from Facebook for customer: " + super.customer.getCustomerId());
 		}
 
 		FacebookQuery query = buildQueryFromKeywords();
@@ -80,9 +70,9 @@ public class FacebookConnection implements SocialNetworkConnection {
 	}
 
 	private FacebookQuery buildQueryFromKeywords() {
-		FacebookQuery fbQuery = new FacebookQuery(customerNetworkKeywords);
+		FacebookQuery fbQuery = new FacebookQuery(super.customerNetworkKeywords);
 
-		String since = UtilDateTime.connvertTimestampToFacebookTime(this.customer.getLastNetworkdAccess());
+		String since = UtilDateTime.connvertTimestampToFacebookTime(super.customer.getLastNetworkdAccess());
 		fbQuery.setSince(since);
 		fbQuery.setType("post");
 
@@ -108,7 +98,7 @@ public class FacebookConnection implements SocialNetworkConnection {
 			}
 			Messages messageData = new Messages(Networks.FACEBOOK.getName());
 
-			messageData.setCustomerId(customer.getCustomerId());
+			messageData.setCustomerId(super.customer.getCustomerId());
 
 			JsonObject userData = object.getJsonObject("from");
 			messageData.setNetworkUser(userData.getString("name"));
@@ -126,22 +116,9 @@ public class FacebookConnection implements SocialNetworkConnection {
 		return results;
 	}
 
-	@Override
-	public CustomerNetworkKeywords getCustomerNetworkKeywords() {
-		return customerNetworkKeywords;
-	}
-
-	private void loadProperties() {
+	private void loadProperties() throws IOException {
 		Properties properties = new Properties();
-		try {
-			properties.load(new FileInputStream(new File("conf/fb.properties")));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
+		properties.load(new FileInputStream(new File("conf/fb.properties")));
 
 		MY_ACCESS_TOKEN = properties.getProperty("token");
 	}

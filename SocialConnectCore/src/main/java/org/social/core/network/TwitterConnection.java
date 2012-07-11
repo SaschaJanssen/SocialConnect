@@ -21,15 +21,12 @@ import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.constants.Networks;
-import org.social.core.data.CustomerNetworkKeywords;
 import org.social.core.entity.domain.Customers;
-import org.social.core.entity.domain.Keywords;
 import org.social.core.entity.domain.Messages;
-import org.social.core.entity.helper.KeywordDAO;
 import org.social.core.query.TwitterQuery;
 import org.social.core.util.UtilDateTime;
 
-public class TwitterConnection implements SocialNetworkConnection {
+public class TwitterConnection extends SocialNetworkConnection {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -43,14 +40,11 @@ public class TwitterConnection implements SocialNetworkConnection {
 	private String accessTokenPub = "";
 	private String accessTokenSecret = "";
 
-	private Customers customer;
-
 	private OAuthService service = null;
 	private Token accessToken;
 
-	private CustomerNetworkKeywords customerNetworkKeywords;
-
 	public TwitterConnection(Customers customer) {
+		super(customer);
 		try {
 			loadProperties();
 		} catch (IOException e) {
@@ -69,18 +63,7 @@ public class TwitterConnection implements SocialNetworkConnection {
 
 		this.customer = customer;
 
-		getCustomersKeywords();
-	}
-
-	private void getCustomersKeywords() {
-		KeywordDAO helper = new KeywordDAO();
-
-		Long customerId = this.customer.getCustomerId();
-
-		// Get all Facebook Keywords for user x
-		List<Keywords> keywords = helper.getMappedKeywordByCustomerAndNetwork(customerId, Networks.TWITTER.getName());
-		customerNetworkKeywords = new CustomerNetworkKeywords(keywords);
-
+		getCustomersKeywords(Networks.TWITTER.getName());
 	}
 
 	@Override
@@ -127,7 +110,7 @@ public class TwitterConnection implements SocialNetworkConnection {
 	}
 
 	private TwitterQuery buildQueryFromKeywords() {
-		TwitterQuery twitterQuery = new TwitterQuery(customerNetworkKeywords);
+		TwitterQuery twitterQuery = new TwitterQuery(super.customerNetworkKeywords);
 
 		String since = UtilDateTime.connvertTimestampToTwitterTime(this.customer.getLastNetworkdAccess());
 		twitterQuery.setSince(since);
@@ -174,10 +157,5 @@ public class TwitterConnection implements SocialNetworkConnection {
 		this.consumerSecret = properties.getProperty(CONSUMER_SECRET);
 		this.accessTokenPub = properties.getProperty(ACCESS_TOKEN);
 		this.accessTokenSecret = properties.getProperty(ACESS_TOEN_SECRET);
-	}
-
-	@Override
-	public CustomerNetworkKeywords getCustomerNetworkKeywords() {
-		return this.customerNetworkKeywords;
 	}
 }
