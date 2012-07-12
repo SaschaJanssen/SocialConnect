@@ -62,10 +62,6 @@ public class FacebookConnection extends SocialNetworkConnection {
 			nextPageUrl = searchResult.getNextPageUrl();
 		}
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Got " + results.size() + " messages from Facebook.");
-		}
-
 		return results;
 	}
 

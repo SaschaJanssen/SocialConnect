@@ -70,6 +70,10 @@ public class SocialDataConsumer {
 
 			List<Messages> receivedMsgList = networkConnection.fetchMessages();
 
+			if (logger.isDebugEnabled()) {
+				logger.debug("Found " + receivedMsgList.size() + " Messages from Network: " + networkConnection.getClass().getName());
+			}
+
 			DataCrafter crafter = new DataCrafter(receivedMsgList);
 			FilteredMessageList filteredMessages = crafter.craft(networkConnection.getCustomerNetworkKeywords());
 			results.addAll(filteredMessages);

@@ -5,12 +5,15 @@
 
 <hibernate-configuration>
 	<session-factory>
+
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+
 		<!-- database connection settings -->
-		<property name="hibernate.dialect">org.hibernate.dialect.DerbyDialect </property>
-		<property name="hibernate.connection.driver_class">org.apache.derby.jdbc.EmbeddedDriver </property>
-		<property name="hibernate.connection.url">jdbc:derby:SocialConnect;create=true </property>
-		<property name="hibernate.connection.username"></property>
-		<property name="hibernate.connection.password"></property>
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/SocialConnect</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password">root</property>
 
 		<!-- Enable Hibernate's automatic session context management -->
 		<property name="current_session_context_class">thread</property>
@@ -28,9 +31,5 @@
 		<mapping class="org.social.core.entity.domain.Customers" />
 		<mapping class="org.social.core.entity.domain.Keywords" />
 
-		<!-- Event which is called on save or update -->
-		<event type="save-update">
-			<listener class="SaveOrUpdateDateListener" />
-		</event>
 	</session-factory>
 </hibernate-configuration>

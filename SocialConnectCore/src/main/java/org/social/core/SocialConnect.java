@@ -42,8 +42,8 @@ public class SocialConnect {
 		}
 
 
-		if (logger.isInfoEnabled()) {
-			logger.info("Shutdown social connect.");
+		if (logger.isDebugEnabled()) {
+			logger.debug("Shutdown social connect.");
 		}
 	}
 

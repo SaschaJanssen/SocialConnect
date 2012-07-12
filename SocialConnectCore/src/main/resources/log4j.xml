@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<!--  standard file appender for the program's logging -->
+	<appender name="fileAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="runtime/logs/SocialConnect.log" />
+		<param name="DatePattern" value=".yyyy-MM-dd-a" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %c [%t] %-5p - %m%n" />
+		</layout>
+	</appender>
+
+	<!--  console appender; That can be helpful for development purposes but should
+	      disabled in  real life (see root logger config below). -->
+	<appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %c [%t] %-5p - %m%n" />
+		</layout>
+	</appender>
+
+	<!--  Root Logger -->
+	<root>
+		<priority value="debug" />
+		<appender-ref ref="fileAppender" />
+		<appender-ref ref="consoleAppender" />
+	</root>
+
+</log4j:configuration>

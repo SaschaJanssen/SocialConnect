@@ -65,8 +65,12 @@ public class TwitterQuery extends Query {
 		queryBuilder.append(encodedQuery);
 		queryBuilder.append("&lang=");
 		queryBuilder.append(this.language);
-		queryBuilder.append("&since=");
-		queryBuilder.append(this.since);
+
+		if (UtilValidate.isNotEmpty(this.since)) {
+			queryBuilder.append("&since=");
+			queryBuilder.append(this.since);
+		}
+
 		queryBuilder.append("&rpp=");
 		queryBuilder.append(this.recordsPerPage);
 		String constructedQuery = queryBuilder.toString();

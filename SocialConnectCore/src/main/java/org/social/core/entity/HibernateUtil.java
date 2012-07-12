@@ -19,7 +19,7 @@ public class HibernateUtil {
 	private static SessionFactory buildSessionFactory() {
 		try {
 			// Create the SessionFactory from hibernate.cfg.xml
-			URL hibernateConfigurationFile = ClassLoader.getSystemResource("hibernate-derby.cfg.xml");
+			URL hibernateConfigurationFile = ClassLoader.getSystemResource("hibernate-mysql.cfg.xml");
 			Configuration configuration = new Configuration().configure(hibernateConfigurationFile);
 
 			Properties configurationProperties = configuration.getProperties();

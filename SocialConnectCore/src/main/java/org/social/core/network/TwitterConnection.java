@@ -114,7 +114,7 @@ public class TwitterConnection extends SocialNetworkConnection {
 
 		String since = UtilDateTime.connvertTimestampToTwitterTime(this.customer.getLastNetworkdAccess());
 		twitterQuery.setSince(since);
-		twitterQuery.setLanguage("de");
+		twitterQuery.setLanguage("en");
 
 		return twitterQuery;
 	}

@@ -58,8 +58,12 @@ public class FacebookQuery extends Query {
 		queryBuilder.append(encodedQuery);
 		queryBuilder.append("&type=");
 		queryBuilder.append(UtilValidate.isNotEmpty(this.type) ? this.type : "post");
-		queryBuilder.append("&since=");
-		queryBuilder.append(since);
+
+		if (UtilValidate.isNotEmpty(since)) {
+			queryBuilder.append("&since=");
+			queryBuilder.append(since);
+		}
+
 		queryBuilder.append("&limit=");
 		queryBuilder.append(this.limit);
 

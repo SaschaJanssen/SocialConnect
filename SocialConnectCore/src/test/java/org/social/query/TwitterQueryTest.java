@@ -49,6 +49,12 @@ public class TwitterQueryTest {
 
 		assertEquals(query.getSearchUrl() + "?q=Test+OR+%23Test+OR+%40Test+--Tree&lang=de&since=2012-06-01&rpp=100",
 				query.constructQuery());
+
+		query = new TwitterQuery(cnk);
+		query.setLanguage("de");
+
+		assertEquals(query.getSearchUrl() + "?q=Test+OR+%23Test+OR+%40Test&lang=de&rpp=100",
+				query.constructQuery());
 	}
 
 }

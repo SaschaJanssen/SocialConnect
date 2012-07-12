@@ -35,6 +35,10 @@ public class FacebookQueryTest {
 		query.setType("post");
 
 		assertEquals(query.getSearchUrl() + "?q=Test&type=post&since=yesterday&limit=1500", query.constructQuery());
+
+		query = new FacebookQuery(cnk);
+		query.setType("post");
+		assertEquals(query.getSearchUrl() + "?q=Test&type=post&limit=1500", query.constructQuery());
 	}
 
 }

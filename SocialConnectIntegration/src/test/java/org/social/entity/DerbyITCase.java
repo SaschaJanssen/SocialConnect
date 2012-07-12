@@ -59,9 +59,9 @@ public class DerbyITCase extends SocialITCase {
 		List<Messages> result = session.createQuery("from Messages").list();
 		assertTrue(!result.isEmpty());
 
-		if (logger.isInfoEnabled()) {
+		if (logger.isDebugEnabled()) {
 			for (Messages messag : (List<Messages>) result) {
-				logger.info(messag.toString());
+				logger.debug(messag.toString());
 			}
 		}
 
