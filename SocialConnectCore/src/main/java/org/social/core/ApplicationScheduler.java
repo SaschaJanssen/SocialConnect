@@ -30,8 +30,8 @@ public class ApplicationScheduler {
 
 			@Override
 			public void run() {
-				if (logger.isInfoEnabled()) {
-					logger.info("Schedule Social Connect Run");
+				if (logger.isDebugEnabled()) {
+					logger.debug("Schedule Social Connect Run");
 				}
 				socialConnect.start();
 			}
@@ -49,7 +49,10 @@ public class ApplicationScheduler {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				ApplicationScheduler.this.shutdownHook .set(false);
+				if (logger.isDebugEnabled()) {
+					logger.debug("Shutdown Hook called.");
+				}
+				ApplicationScheduler.this.shutdownHook.set(false);
 			}
 		});
 	}
