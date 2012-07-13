@@ -1,10 +1,6 @@
 package org.social.core;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,18 +10,14 @@ import org.social.core.entity.domain.Customers;
 import org.social.core.entity.helper.CustomerDAO;
 import org.social.core.entity.helper.MessageDAO;
 import org.social.core.util.UtilDateTime;
+import org.social.core.util.UtilProperties;
 
 public class SocialConnect {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	public SocialConnect() {
-		try {
-			loadProperties();
-		} catch (IOException e) {
-			logger.error("Shutting down.", e);
-			System.exit(0);
-		}
+		loadProperties();
 	}
 
 	public void start() {
@@ -49,17 +41,20 @@ public class SocialConnect {
 
 	}
 
-	private void loadProperties() throws IOException {
-		Properties properties = new Properties();
-		properties.load(new FileInputStream(new File("conf/social.properties")));
+	private void loadProperties() {
 
-		System.setProperty("https.proxyHost", properties.getProperty("https.proxyHost"));
-		System.setProperty("https.proxyPort", properties.getProperty("https.proxyPort"));
+		System.setProperty("https.proxyHost",
+				UtilProperties.getPropertyValue("conf/social.properties", "https.proxyHost"));
+		System.setProperty("https.proxyPort",
+				UtilProperties.getPropertyValue("conf/social.properties", "https.proxyPort"));
 
-		System.setProperty("http.proxyHost", properties.getProperty("http.proxyHost"));
-		System.setProperty("http.proxyPort", properties.getProperty("http.proxyPort"));
+		System.setProperty("http.proxyHost",
+				UtilProperties.getPropertyValue("conf/social.properties", "http.proxyHost"));
+		System.setProperty("http.proxyPort",
+				UtilProperties.getPropertyValue("conf/social.properties", "http.proxyPort"));
 
-		System.setProperty("derby.system.home", properties.getProperty("derby.system.home"));
+		System.setProperty("derby.system.home",
+				UtilProperties.getPropertyValue("conf/social.properties", "derby.system.home"));
 	}
 
 }

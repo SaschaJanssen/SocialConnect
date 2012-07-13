@@ -1,11 +1,7 @@
 package org.social.core.network;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -25,6 +21,7 @@ import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 import org.social.core.query.TwitterQuery;
 import org.social.core.util.UtilDateTime;
+import org.social.core.util.UtilProperties;
 
 public class TwitterConnection extends SocialNetworkConnection {
 
@@ -45,12 +42,7 @@ public class TwitterConnection extends SocialNetworkConnection {
 
 	public TwitterConnection(Customers customer) {
 		super(customer);
-		try {
-			loadProperties();
-		} catch (IOException e) {
-			logger.error("Twitter connection will be ignored, properties couldn't read. ", e);
-			return;
-		}
+		loadProperties();
 
 		ServiceBuilder builder = new ServiceBuilder();
 		builder.provider(TwitterApi.SSL.class);
@@ -149,13 +141,10 @@ public class TwitterConnection extends SocialNetworkConnection {
 		return resultList;
 	}
 
-	private void loadProperties() throws IOException {
-		Properties properties = new Properties();
-		properties.load(new FileInputStream(new File("conf/twitter.properties")));
-
-		this.consumerKey = properties.getProperty(CONSUMER_KEY);
-		this.consumerSecret = properties.getProperty(CONSUMER_SECRET);
-		this.accessTokenPub = properties.getProperty(ACCESS_TOKEN);
-		this.accessTokenSecret = properties.getProperty(ACESS_TOEN_SECRET);
+	private void loadProperties() {
+		this.consumerKey = UtilProperties.getPropertyValue("conf/twitter.properties", CONSUMER_KEY);
+		this.consumerSecret = UtilProperties.getPropertyValue("conf/twitter.properties", CONSUMER_SECRET);
+		this.accessTokenPub = UtilProperties.getPropertyValue("conf/twitter.properties", ACCESS_TOKEN);
+		this.accessTokenSecret = UtilProperties.getPropertyValue("conf/twitter.properties", ACESS_TOEN_SECRET);
 	}
 }

@@ -5,26 +5,26 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.social.core.util.UtilProperties;
+
 public abstract class SocialITCase {
 	public SocialITCase() {
-		try {
-			loadProperties();
-		} catch (IOException e) {
-			return;
-		}
+		loadProperties();
 
 		System.setProperty("derby.system.home", "target/runtime/derby/");
 	}
 
-	private static void loadProperties() throws IOException {
-		Properties properties = new Properties();
-		properties.load(new FileInputStream(new File("conf/social.properties")));
+	private static void loadProperties() {
 
-		System.setProperty("https.proxyHost", properties.getProperty("https.proxyHost"));
-		System.setProperty("https.proxyPort", properties.getProperty("https.proxyPort"));
+		System.setProperty("https.proxyHost",
+				UtilProperties.getPropertyValue("conf/social.properties", "https.proxyHost"));
+		System.setProperty("https.proxyPort",
+				UtilProperties.getPropertyValue("conf/social.properties", "https.proxyPort"));
 
-		System.setProperty("http.proxyHost", properties.getProperty("http.proxyHost"));
-		System.setProperty("http.proxyPort", properties.getProperty("http.proxyPort"));
+		System.setProperty("http.proxyHost",
+				UtilProperties.getPropertyValue("conf/social.properties", "http.proxyHost"));
+		System.setProperty("http.proxyPort",
+				UtilProperties.getPropertyValue("conf/social.properties", "http.proxyPort"));
 
 	}
 }
