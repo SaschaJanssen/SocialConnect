@@ -69,8 +69,8 @@ public class SocialDataConsumer {
 						+ " data consumer and filtering thread.");
 			}
 
-//			List<Messages> receivedMsgList = networkConnection.fetchMessages();
-			List<Messages> receivedMsgList = new ArrayList<Messages>();
+			List<Messages> receivedMsgList = networkConnection.fetchMessages();
+//			List<Messages> receivedMsgList = new ArrayList<Messages>();
 
 			if (logger.isDebugEnabled()) {
 				logger.debug("Found " + receivedMsgList.size() + " Messages from Network: " + networkConnection.getClass().getName());
