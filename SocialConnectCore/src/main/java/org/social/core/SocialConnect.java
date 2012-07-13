@@ -17,16 +17,18 @@ import org.social.core.util.UtilDateTime;
 
 public class SocialConnect {
 
-	private static Logger logger = LoggerFactory.getLogger(SocialConnect.class);
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
-	public static void main(String[] args) {
+	public SocialConnect() {
 		try {
 			loadProperties();
 		} catch (IOException e) {
 			logger.error("Shutting down.", e);
 			System.exit(0);
 		}
+	}
 
+	public void start() {
 		CustomerDAO customerDao = new CustomerDAO();
 		MessageDAO messageDao = new MessageDAO();
 
@@ -41,13 +43,13 @@ public class SocialConnect {
 			customerDao.updateCustomerNetworkAccess(customer, UtilDateTime.nowTimestamp());
 		}
 
-
 		if (logger.isDebugEnabled()) {
-			logger.debug("Shutdown social connect.");
+			logger.debug("Finished social connect run successfully.");
 		}
+
 	}
 
-	private static void loadProperties() throws IOException {
+	private void loadProperties() throws IOException {
 		Properties properties = new Properties();
 		properties.load(new FileInputStream(new File("conf/social.properties")));
 
