@@ -1,6 +1,5 @@
 package org.social.core.consumer;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -69,8 +68,7 @@ public class SocialDataConsumer {
 						+ " data consumer and filtering thread.");
 			}
 
-//			List<Messages> receivedMsgList = networkConnection.fetchMessages();
-			List<Messages> receivedMsgList = new ArrayList<Messages>();
+			List<Messages> receivedMsgList = networkConnection.fetchMessages();
 
 			if (logger.isDebugEnabled()) {
 				logger.debug("Found " + receivedMsgList.size() + " Messages from Network: " + networkConnection.getClass().getName());
