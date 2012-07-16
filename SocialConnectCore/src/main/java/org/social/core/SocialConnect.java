@@ -21,6 +21,9 @@ public class SocialConnect {
 	}
 
 	public void start() {
+		
+		
+		
 		CustomerDAO customerDao = new CustomerDAO();
 		MessageDAO messageDao = new MessageDAO();
 

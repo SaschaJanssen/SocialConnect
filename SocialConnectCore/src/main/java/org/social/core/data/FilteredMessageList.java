@@ -5,7 +5,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.social.core.constants.CraftedState;
+import org.social.core.constants.Classification;
 import org.social.core.entity.domain.Messages;
 
 public class FilteredMessageList {
@@ -29,12 +29,12 @@ public class FilteredMessageList {
 	}
 
 	public void addToNegativeList(Messages negativeData) {
-		negativeData.setCraftedStateId(CraftedState.BAD.getName());
+		negativeData.setClassificationId(Classification.NOT_RELIABLE.getName());
 		negativeList.add(negativeData);
 	}
 
 	public void addToPositivList(Messages positivData) {
-		positivData.setCraftedStateId(CraftedState.GOOD.getName());
+		positivData.setClassificationId(Classification.RELIABLE.getName());
 		positiveList.add(positivData);
 	}
 

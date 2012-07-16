@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.social.core.constants.CraftedState;
+import org.social.core.constants.Classification;
 import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Messages;
 
@@ -28,7 +28,7 @@ public class FilteredMessageListTest {
 
 		Messages element = msgList.getNegativeList().get(0);
 		assertEquals("FB", element.getNetworkId());
-		assertEquals(CraftedState.BAD.getName(), element.getCraftedStateId());
+		assertEquals(Classification.NOT_RELIABLE.getName(), element.getClassificationId());
 	}
 
 	@Test
@@ -38,7 +38,7 @@ public class FilteredMessageListTest {
 
 		Messages element = msgList.getPositivList().get(0);
 		assertEquals("TW", element.getNetworkId());
-		assertEquals(CraftedState.GOOD.getName(), element.getCraftedStateId());
+		assertEquals(Classification.RELIABLE.getName(), element.getClassificationId());
 	}
 
 	@Test

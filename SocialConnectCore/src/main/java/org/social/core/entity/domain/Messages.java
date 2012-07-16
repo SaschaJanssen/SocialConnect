@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.social.core.constants.CraftedState;
+import org.social.core.constants.Classification;
 import org.social.core.util.UtilDateTime;
 
 @Entity
@@ -26,19 +26,19 @@ public class Messages {
 	private Timestamp networkMessageDate;
 	private Timestamp messageReceivedDate;
 	private Long customerId;
-	private String craftedStateId;
+	private String classificationId;
 	private Timestamp createdTs;
 	private Timestamp lastUpdatedTs;
 
 	public Messages() {
 		this.createdTs = UtilDateTime.nowTimestamp();
-		this.craftedStateId = CraftedState.NOT_CRAFTED.getName();
+		this.classificationId = Classification.NOT_CLASSIFIED.getName();
 	}
 
 	public Messages(String networkId) {
 		this.createdTs = UtilDateTime.nowTimestamp();
 		this.networkId = networkId;
-		this.craftedStateId = CraftedState.NOT_CRAFTED.getName();
+		this.classificationId = Classification.NOT_CLASSIFIED.getName();
 	}
 
 	@Id
@@ -152,13 +152,13 @@ public class Messages {
 		this.customerId = customerId;
 	}
 
-	@Column(name = "CRAFTED_STATE_ID")
-	public String getCraftedStateId() {
-		return craftedStateId;
+	@Column(name = "CLASSIFICATION_ID")
+	public String getClassificationId() {
+		return classificationId;
 	}
 
-	public void setCraftedStateId(String craftedStateId) {
-		this.craftedStateId = craftedStateId;
+	public void setClassificationId(String craftedStateId) {
+		this.classificationId = craftedStateId;
 	}
 
 	@Override
@@ -180,8 +180,8 @@ public class Messages {
 		builder.append(messageReceivedDate);
 		builder.append(", customerId=");
 		builder.append(customerId);
-		builder.append(", craftedState=");
-		builder.append(craftedStateId);
+		builder.append(", classification=");
+		builder.append(classificationId);
 		builder.append("]");
 
 		return builder.toString();
