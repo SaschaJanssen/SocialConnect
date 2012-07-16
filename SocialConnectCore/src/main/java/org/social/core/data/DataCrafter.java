@@ -48,15 +48,7 @@ public class DataCrafter {
 			logger.debug("Create mentioned filter.");
 		}
 
-		Set<String> mentionedSet = new HashSet<String>();
-		String tag = customerKeywords.getHashForNetwork();
-		if (UtilValidate.isNotEmpty(tag)) {
-			mentionedSet.add(tag);
-		}
-		tag = customerKeywords.getMentionedForNetwork();
-		if (UtilValidate.isNotEmpty(tag)) {
-			mentionedSet.add(tag);
-		}
+		Set<String> mentionedSet = getMentionsetFromKeywords(customerKeywords);
 
 		TwitterMentionedFilter mentionFilter = new TwitterMentionedFilter(mentionedSet);
 		List<Messages> negativeList = this.filteredMessages.getNegativeList();
@@ -70,6 +62,19 @@ public class DataCrafter {
 
 		this.filteredMessages.moveItemFromNegativeToPositiveList(messagesToMove);
 
+	}
+
+	private Set<String> getMentionsetFromKeywords(CustomerNetworkKeywords customerKeywords) {
+		Set<String> mentionedSet = new HashSet<String>();
+		String tag = customerKeywords.getHashForNetwork();
+		if (UtilValidate.isNotEmpty(tag)) {
+			mentionedSet.add(tag);
+		}
+		tag = customerKeywords.getMentionedForNetwork();
+		if (UtilValidate.isNotEmpty(tag)) {
+			mentionedSet.add(tag);
+		}
+		return mentionedSet;
 	}
 
 }
