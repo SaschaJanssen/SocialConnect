@@ -30,6 +30,7 @@
 		<mapping class="org.social.core.entity.domain.Messages"/>
 		<mapping class="org.social.core.entity.domain.Customers" />
 		<mapping class="org.social.core.entity.domain.Keywords" />
+		<mapping class="org.social.core.entity.domain.LearningData" />
 
 	</session-factory>
 </hibernate-configuration>
