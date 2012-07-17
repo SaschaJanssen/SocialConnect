@@ -5,12 +5,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.social.core.util.UtilLucene;
 import org.social.core.util.UtilValidate;
 
 public class FoodEng {
@@ -55,45 +57,13 @@ public class FoodEng {
 	public static boolean matchesWordList(String phrase) {
 		boolean contains = false;
 
+		List<String> tokanizedPhrase = UtilLucene.tokenizeString(new StandardAnalyzer(Version.LUCENE_36), phrase);
 		for (String word : wordlist) {
-			StringBuilder regExBuilder = buildRegEx(word);
-
-			Pattern pattern = Pattern.compile(regExBuilder.toString(), Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(phrase);
-			if (matcher.find()) {
-				contains = true;
+			contains = tokanizedPhrase.contains(word);
+			if (contains) {
 				break;
 			}
 		}
-
 		return contains;
-	}
-
-	/**
-	 * Build ([ .!?,]WORD$)|(^WORD|[ ]WORD)[.?!, ]
-	 *
-	 * @param word
-	 * @return
-	 */
-	private static StringBuilder buildRegEx(String word) {
-		StringBuilder regExBuilder = new StringBuilder();
-		// last word in string with trailing space
-		// ([ .!?,]WORD$)
-		regExBuilder.append("([ .!?,]");
-		regExBuilder.append(word);
-		regExBuilder.append("$)");
-
-		// first word in string
-		// |(^WORD
-		regExBuilder.append("|(^");
-		regExBuilder.append(word);
-
-		// word somewhere in the string with trailing space followed by a
-		// .,!,? or a space
-		// |[ ]WORD)[.?!, ]
-		regExBuilder.append("|[ ]");
-		regExBuilder.append(word);
-		regExBuilder.append(")[.?!, ]");
-		return regExBuilder;
 	}
 }
