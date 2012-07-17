@@ -33,12 +33,15 @@ public class FacebookQueryTest {
 		FacebookQuery query = new FacebookQuery(cnk);
 		query.setSince("yesterday");
 		query.setType("post");
+		query.setLanguage("en_Us");
 
-		assertEquals(query.getSearchUrl() + "?q=Test&type=post&since=yesterday&limit=1500", query.constructQuery());
+		assertEquals(query.getSearchUrl() + "?q=Test&type=post&since=yesterday&limit=1500&locale=en_Us", query.constructQuery());
 
 		query = new FacebookQuery(cnk);
 		query.setType("post");
-		assertEquals(query.getSearchUrl() + "?q=Test&type=post&limit=1500", query.constructQuery());
+		query.setLanguage("en_Us");
+
+		assertEquals(query.getSearchUrl() + "?q=Test&type=post&limit=1500&locale=en_Us", query.constructQuery());
 	}
 
 }
