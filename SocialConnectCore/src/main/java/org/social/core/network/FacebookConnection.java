@@ -63,6 +63,7 @@ public class FacebookConnection extends SocialNetworkConnection {
 		String since = UtilDateTime.connvertTimestampToFacebookTime(super.customer.getLastNetworkdAccess());
 		fbQuery.setSince(since);
 		fbQuery.setType("post");
+		fbQuery.setLanguage("en_US");
 
 		return fbQuery;
 	}

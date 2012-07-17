@@ -18,6 +18,7 @@ public class FacebookQuery extends Query {
 	private String query;
 	private String since;
 	private String type;
+	private String language;
 	private String limit = "1500";
 
 	public FacebookQuery(CustomerNetworkKeywords networkKeywords) {
@@ -40,6 +41,14 @@ public class FacebookQuery extends Query {
 
 	public String getSearchUrl() {
 		return this.searchUrl;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
 	}
 
 	@Override
@@ -66,6 +75,8 @@ public class FacebookQuery extends Query {
 
 		queryBuilder.append("&limit=");
 		queryBuilder.append(this.limit);
+		queryBuilder.append("&locale=");
+		queryBuilder.append(this.language);
 
 		return queryBuilder.toString();
 	}
