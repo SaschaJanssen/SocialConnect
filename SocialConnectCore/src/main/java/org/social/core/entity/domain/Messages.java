@@ -36,9 +36,8 @@ public class Messages {
 	}
 
 	public Messages(String networkId) {
-		this.createdTs = UtilDateTime.nowTimestamp();
+		this();
 		this.networkId = networkId;
-		this.classificationId = Classification.NOT_CLASSIFIED.getName();
 	}
 
 	@Id
