@@ -2,6 +2,8 @@ package org.social.core.filter;
 
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 public class TwitterMentionedFilter {
 
 	private final Set<String> mentionedSet;
@@ -15,16 +17,16 @@ public class TwitterMentionedFilter {
 		for (String tag : mentionedSet) {
 
 			String pattern = " " + tag + " ";
-			if (phrase.contains(pattern)) {
+			if (StringUtils.containsIgnoreCase(phrase, pattern)) {
 				mentioned = true;
 				break;
-			} else if (phrase.contains(tag + " ")) {
+			} else if (StringUtils.containsIgnoreCase(phrase, tag + " ")) {
 				mentioned = true;
 				break;
-			} else if (phrase.startsWith(tag + " ")) {
+			} else if (StringUtils.startsWithIgnoreCase(phrase, tag + " ")) {
 				mentioned = true;
 				break;
-			} else if (phrase.endsWith(tag)) {
+			} else if (StringUtils.endsWithIgnoreCase(phrase, tag)) {
 				mentioned = true;
 				break;
 			}

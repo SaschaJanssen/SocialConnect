@@ -35,6 +35,7 @@ public class MentionedFilterTest {
 		boolean matches = mentionedFilter.mentioned(phrase_1);
 		assertTrue(matches);
 
+
 		String phrase_2 = "Bewertung zu @Vapiano (Deutz, Köln,  von Golden_Ticket_Dunny): 4 von 5 Punkten";
 		matches = mentionedFilter.mentioned(phrase_2);
 		assertTrue(matches);
@@ -46,6 +47,10 @@ public class MentionedFilterTest {
 		String phrase_4 = "Thank our sponsors, or yours! Tweet thx to a @girodicoppi or @MABRA_org team sponsor, tag it #girodicoppi. You could win @Vapiano_USA gift!";
 		matches = mentionedFilter.mentioned(phrase_4);
 		assertFalse(matches);
+
+		String phrase_5 = "Bewertung zu #vapiano (Deutz, Köln,  von Golden_Ticket_Dunny): 4 von 5 Punkten";
+		matches = mentionedFilter.mentioned(phrase_5);
+		assertTrue(matches);
 	}
 
 	@Test
@@ -59,6 +64,10 @@ public class MentionedFilterTest {
 	public void testStartsWithHash() throws Exception {
 		String phrase_4 = "#Pizza Bewertung zu Vapiano (Deutz, Köln,  von Golden_Ticket_Dunny): 4 von 5 Punkten";
 		boolean matches = mentionedFilter.mentioned(phrase_4);
+		assertTrue(matches);
+
+		String phrase_1 = "#pizza Bewertung zu Vapiano (Deutz, Köln,  von Golden_Ticket_Dunny): 4 von 5 Punkten";
+		matches = mentionedFilter.mentioned(phrase_1);
 		assertTrue(matches);
 	}
 
