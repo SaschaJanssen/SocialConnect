@@ -21,6 +21,12 @@ import java.util.TreeSet;
  */
 public class BayesClassifier<T, K> extends Classifier<T, K> {
 
+	private static BayesClassifier<String, String> bayesInstance = new BayesClassifier<String, String>();
+
+	public static BayesClassifier<String, String> getInstance() {
+		return bayesInstance;
+	}
+
 	/**
 	 * Calculates the product of all feature probabilities: PROD(P(featI|cat)
 	 *
