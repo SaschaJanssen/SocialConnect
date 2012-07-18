@@ -31,18 +31,18 @@ public class UtilSimilarity {
 		Arrays.fill(matched2, false);
 
 		int numCommon = 0;
-		label0: for (int i = 0; i < wordLeftLength; i++) {
+		for (int i = 0; i < wordLeftLength; i++) {
 			int start = Math.max(0, i - searchRange);
 			int end = Math.min(i + searchRange + 1, wordRightLength);
 			int j = start;
 			do {
 				if (j >= end)
-					continue label0;
+					break;
 				if (!matched2[j] && wordLeft.charAt(i) == wordRight.charAt(j)) {
 					matched1[i] = true;
 					matched2[j] = true;
 					numCommon++;
-					continue label0;
+					break;
 				}
 				j++;
 			} while (true);
