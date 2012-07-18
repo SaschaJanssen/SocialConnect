@@ -15,13 +15,22 @@ import org.slf4j.LoggerFactory;
 import org.social.core.util.UtilLucene;
 import org.social.core.util.UtilValidate;
 
-public class FoodEng {
+public class WordlistFilter {
 
-	private static Logger logger = LoggerFactory.getLogger(FoodEng.class);
+	private static Logger logger = LoggerFactory.getLogger(WordlistFilter.class);
 
 	private static Set<String> wordlist = loadInputData();
+	private static WordlistFilter filterInstance = new WordlistFilter();
+
+	public static WordlistFilter getInstance() {
+		return filterInstance;
+	}
 
 	private static Set<String> loadInputData() {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Initialize wordlist filter - loading data");
+		}
+
 		Set<String> foodwordlist = new HashSet<String>();
 
 		String engFoodList = "";
@@ -54,7 +63,8 @@ public class FoodEng {
 		return foodwordlist;
 	}
 
-	public static boolean matchesWordList(String phrase) {
+	public boolean matchesWordList(String phrase) {
+//		double similarityBound = 0.910;
 		boolean contains = false;
 
 		List<String> tokanizedPhrase = UtilLucene.tokenizeString(new StandardAnalyzer(Version.LUCENE_36), phrase);
@@ -63,6 +73,21 @@ public class FoodEng {
 			if (contains) {
 				break;
 			}
+/*
+			if (logger.isDebugEnabled()) {
+				logger.debug("Checking similarity");
+			}
+			for (String token : tokanizedPhrase) {
+				double similarity = UtilSimilarity.jaroWinklerSimilarity(word, token);
+				if (similarity >= similarityBound) {
+					if (logger.isDebugEnabled()) {
+						logger.debug("Found similarity: " + token + " - " + word + " : " + similarity);
+					}
+					contains = true;
+					break;
+				}
+			}
+*/
 		}
 		return contains;
 	}
