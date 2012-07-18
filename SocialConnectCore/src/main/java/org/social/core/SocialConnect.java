@@ -2,14 +2,21 @@ package org.social.core;
 
 import java.util.List;
 
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.consumer.SocialDataConsumer;
 import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
+import org.social.core.entity.domain.LearningData;
 import org.social.core.entity.helper.CustomerDAO;
+import org.social.core.entity.helper.LearningDAO;
 import org.social.core.entity.helper.MessageDAO;
+import org.social.core.filter.classifier.bayes.BayesClassifier;
+import org.social.core.filter.classifier.bayes.Classifier;
 import org.social.core.util.UtilDateTime;
+import org.social.core.util.UtilLucene;
 import org.social.core.util.UtilProperties;
 
 public class SocialConnect {
@@ -21,9 +28,9 @@ public class SocialConnect {
 	}
 
 	public void start() {
-		
-		
-		
+
+		//learn();
+
 		CustomerDAO customerDao = new CustomerDAO();
 		MessageDAO messageDao = new MessageDAO();
 
@@ -42,6 +49,16 @@ public class SocialConnect {
 			logger.debug("Finished social connect run successfully.");
 		}
 
+	}
+
+	private void learn() {
+		LearningDAO learningDao = new LearningDAO();
+		List<LearningData> learningData = learningDao.getLearningData();
+		Classifier<String, String> classifier = BayesClassifier.getInstance();
+		for (LearningData data : learningData) {
+			List<String> t = UtilLucene.tokenizeString(new StandardAnalyzer(Version.LUCENE_36), data.getLearningData());
+			classifier.learn(data.getClassificationId(), t);
+		}
 	}
 
 	private void loadProperties() {
