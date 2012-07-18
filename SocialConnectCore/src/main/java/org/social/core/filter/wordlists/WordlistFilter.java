@@ -64,31 +64,32 @@ public class WordlistFilter {
 	}
 
 	public boolean matchesWordList(String phrase) {
-//		double similarityBound = 0.910;
 		boolean contains = false;
 
 		List<String> tokanizedPhrase = UtilLucene.tokenizeString(new StandardAnalyzer(Version.LUCENE_36), phrase);
-		for (String word : wordlist) {
-			contains = tokanizedPhrase.contains(word);
+		for (String token : tokanizedPhrase) {
+			contains = wordlist.contains(token);
 			if (contains) {
 				break;
 			}
-/*
+		}
+		/*
+		for (String word : wordlist) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Checking similarity");
 			}
 			for (String token : tokanizedPhrase) {
-				double similarity = UtilSimilarity.jaroWinklerSimilarity(word, token);
-				if (similarity >= similarityBound) {
+				if (UtilSimilarity.areStringsSimilar(word, token)) {
 					if (logger.isDebugEnabled()) {
-						logger.debug("Found similarity: " + token + " - " + word + " : " + similarity);
+						logger.debug("Found similarity: " + token + " - " + word);
 					}
 					contains = true;
-					break;
+					return contains;
 				}
 			}
-*/
+
 		}
+		*/
 		return contains;
 	}
 }

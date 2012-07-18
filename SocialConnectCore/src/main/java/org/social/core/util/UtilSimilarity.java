@@ -8,6 +8,14 @@ public class UtilSimilarity {
 	private static int numChars = 4;
 	private static double similarityBound = 0.91;
 
+	/**
+	 * Checks if two strings are similar. They expect to be similar when the
+	 * jaron winkler algorithm is greater/equal 0.91
+	 *
+	 * @param wordLeft
+	 * @param wordRight
+	 * @return
+	 */
 	public static boolean areStringsSimilar(String wordLeft, String wordRight) {
 		double similarity = jaroWinklerSimilarity(wordLeft, wordRight);
 		if (similarity >= similarityBound) {
