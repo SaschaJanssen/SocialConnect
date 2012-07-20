@@ -29,12 +29,12 @@ public class FilteredMessageList {
 	}
 
 	public void addToNegativeList(Messages negativeData) {
-		negativeData.setClassificationId(Classification.NOT_RELIABLE.getName());
+		negativeData.setReliabilityId(Classification.NOT_RELIABLE.getName());
 		negativeList.add(negativeData);
 	}
 
 	public void addToPositivList(Messages positivData) {
-		positivData.setClassificationId(Classification.RELIABLE.getName());
+		positivData.setReliabilityId(Classification.RELIABLE.getName());
 		positiveList.add(positivData);
 	}
 

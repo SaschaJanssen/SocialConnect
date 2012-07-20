@@ -28,7 +28,7 @@ public class FilteredMessageListTest {
 
 		Messages element = msgList.getNegativeList().get(0);
 		assertEquals("FB", element.getNetworkId());
-		assertEquals(Classification.NOT_RELIABLE.getName(), element.getClassificationId());
+		assertEquals(Classification.NOT_RELIABLE.getName(), element.getReliabilityId());
 	}
 
 	@Test
@@ -38,7 +38,7 @@ public class FilteredMessageListTest {
 
 		Messages element = msgList.getPositivList().get(0);
 		assertEquals("TW", element.getNetworkId());
-		assertEquals(Classification.RELIABLE.getName(), element.getClassificationId());
+		assertEquals(Classification.RELIABLE.getName(), element.getReliabilityId());
 	}
 
 	@Test

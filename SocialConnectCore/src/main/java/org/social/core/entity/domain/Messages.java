@@ -26,13 +26,15 @@ public class Messages {
 	private Timestamp networkMessageDate;
 	private Timestamp messageReceivedDate;
 	private Long customerId;
-	private String classificationId;
+	private String reliabilityId;
+	private String sentimentId;
 	private Timestamp createdTs;
 	private Timestamp lastUpdatedTs;
 
 	public Messages() {
 		this.createdTs = UtilDateTime.nowTimestamp();
-		this.classificationId = Classification.NOT_CLASSIFIED.getName();
+		this.reliabilityId = Classification.NOT_CLASSIFIED.getName();
+		this.sentimentId = Classification.NOT_CLASSIFIED.getName();
 	}
 
 	public Messages(String networkId) {
@@ -151,13 +153,22 @@ public class Messages {
 		this.customerId = customerId;
 	}
 
-	@Column(name = "CLASSIFICATION_ID")
-	public String getClassificationId() {
-		return classificationId;
+	@Column(name = "RELIABILITY_ID")
+	public String getReliabilityId() {
+		return reliabilityId;
 	}
 
-	public void setClassificationId(String craftedStateId) {
-		this.classificationId = craftedStateId;
+	public void setReliabilityId(String reliabilityId) {
+		this.reliabilityId = reliabilityId;
+	}
+
+	@Column(name = "SENTIMENT_ID")
+	public String getSentimentId() {
+		return sentimentId;
+	}
+
+	public void setSentimentId(String sentimentId) {
+		this.sentimentId = sentimentId;
 	}
 
 	@Override
@@ -180,7 +191,7 @@ public class Messages {
 		builder.append(", customerId=");
 		builder.append(customerId);
 		builder.append(", classification=");
-		builder.append(classificationId);
+		builder.append(sentimentId);
 		builder.append("]");
 
 		return builder.toString();
