@@ -15,7 +15,7 @@ import org.social.core.util.UtilDateTime;
 @Table(name = "LEARNING_DATA")
 public class LearningData {
 	private long learningId;
-	private String learningTypeId;
+	private String classificationTypeId;
 	private String learningData;
 	private String classificationId;
 	private Timestamp createdTs;
@@ -37,13 +37,13 @@ public class LearningData {
 		this.learningId = learningId;
 	}
 
-	@Column(name = "LEARNING_TYPE_ID")
-	public String getLearningTypeId() {
-		return learningTypeId;
+	@Column(name = "CLASSIFICATION_TYPE_ID")
+	public String getClassificationTypeId() {
+		return classificationTypeId;
 	}
 
-	public void setLearningTypeId(String learningTypeId) {
-		this.learningTypeId = learningTypeId;
+	public void setClassificationTypeId(String learningTypeId) {
+		this.classificationTypeId = learningTypeId;
 	}
 
 	@Column(name = "LEARNING_DATA")
@@ -88,7 +88,7 @@ public class LearningData {
 		builder.append("learningId=");
 		builder.append(learningId);
 		builder.append(", learningTypeId=");
-		builder.append(learningTypeId);
+		builder.append(classificationTypeId);
 		builder.append(", learningData=");
 		builder.append(learningData);
 		builder.append(", classificationId=");
