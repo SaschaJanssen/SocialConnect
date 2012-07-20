@@ -5,17 +5,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.social.core.constants.Classification;
 import org.social.core.entity.domain.Messages;
 import org.social.core.filter.TwitterMentionedFilter;
-import org.social.core.filter.classifier.bayes.BayesClassifier;
-import org.social.core.filter.classifier.bayes.Classifier;
+import org.social.core.filter.sentiment.SentimentAnalyser;
 import org.social.core.filter.wordlists.WordlistFilter;
-import org.social.core.util.UtilLucene;
 import org.social.core.util.UtilValidate;
 
 public class DataCrafter {
@@ -29,30 +24,20 @@ public class DataCrafter {
 		this.rawData = rawList;
 	}
 
-	public FilteredMessageList craft(CustomerNetworkKeywords customerKeywords) {
+	public FilteredMessageList reliablityClassification(CustomerNetworkKeywords customerKeywords) {
 		this.filteredMessages = new FilteredMessageList();
 
-		//bayesClassifier();
 		wordlistFilter();
 		mentionedFilter(customerKeywords);
 
 		return this.filteredMessages;
 	}
 
-	private void bayesClassifier() {
-		Classifier<String, String> classifier = BayesClassifier.getInstance();
+	public FilteredMessageList sentimentAnalyser(FilteredMessageList filteredMessageList) {
+		SentimentAnalyser sentimentAnalyser = SentimentAnalyser.getInstance();
+		FilteredMessageList filteredAndSentimentedMessageList = sentimentAnalyser.sentiment(filteredMessageList);
 
-		for (Messages msgData : this.rawData) {
-			List<String> unClassifiedText = UtilLucene.tokenizeString(new StandardAnalyzer(Version.LUCENE_36), msgData.getMessage());
-			String classification = classifier.classify(unClassifiedText).getCategory();
-
-			if (Classification.RELIABLE.getName().equals(classification)) {
-				this.filteredMessages.addToPositivList(msgData);
-			} else {
-				this.filteredMessages.addToNegativeList(msgData);
-			}
-		}
-
+		return filteredAndSentimentedMessageList;
 	}
 
 	private void wordlistFilter() {

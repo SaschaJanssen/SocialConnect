@@ -8,12 +8,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.util.UtilLucene;
 import org.social.core.util.UtilValidate;
+import org.tartarus.snowball.ext.EnglishStemmer;
 
 public class WordlistFilter {
 

@@ -15,7 +15,6 @@ import org.social.core.entity.helper.LearningDAO;
 import org.social.core.entity.helper.MessageDAO;
 import org.social.core.filter.classifier.bayes.BayesClassifier;
 import org.social.core.filter.classifier.bayes.Classifier;
-import org.social.core.util.UtilDateTime;
 import org.social.core.util.UtilLucene;
 import org.social.core.util.UtilProperties;
 
@@ -42,7 +41,7 @@ public class SocialConnect {
 
 			messageDao.storeMessages(filteredMessageDataList);
 
-			customerDao.updateCustomerNetworkAccess(customer, UtilDateTime.nowTimestamp());
+			//customerDao.updateCustomerNetworkAccess(customer, UtilDateTime.nowTimestamp());
 		}
 
 		if (logger.isDebugEnabled()) {
