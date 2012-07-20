@@ -10,8 +10,6 @@ import java.util.TreeSet;
  * classifier implements a naive Bayes approach to classifying a given set of
  * features: classify(feat1,...,featN) = argmax(P(cat)*PROD(P(featI|cat)
  *
- * @author Philipp Nolte
- *
  * @see http://en.wikipedia.org/wiki/Naive_Bayes_classifier
  *
  * @param <T>
@@ -38,8 +36,9 @@ public class BayesClassifier<T, K> extends Classifier<T, K> {
 	 */
 	private float featuresProbabilityProduct(Collection<T> features, K category) {
 		float product = 1.0f;
-		for (T feature : features)
+		for (T feature : features) {
 			product *= this.featureWeighedAverage(feature, category);
+		}
 		return product;
 	}
 
