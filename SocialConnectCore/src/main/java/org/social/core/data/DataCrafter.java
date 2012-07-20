@@ -32,7 +32,7 @@ public class DataCrafter {
 	public FilteredMessageList craft(CustomerNetworkKeywords customerKeywords) {
 		this.filteredMessages = new FilteredMessageList();
 
-		// bayesClassifier();
+		//bayesClassifier();
 		wordlistFilter();
 		mentionedFilter(customerKeywords);
 

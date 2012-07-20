@@ -74,11 +74,17 @@ public class DataCrafterTest {
 		keywords.setKeyword("Vapiano");
 		keywordListForNetwork.add(keywords);
 
+		keywords = new Keywords();
+		keywords.setCustomerId(1L);
+		keywords.setKeywordTypeId(KeywordType.MENTIONED.getName());
+		keywords.setKeyword("@Vapiano");
+		keywordListForNetwork.add(keywords);
+
 		CustomerNetworkKeywords cnk = new CustomerNetworkKeywords(keywordListForNetwork);
 
 		FilteredMessageList result = crafter.craft(cnk);
 
-		assertEquals(1, result.countPositivMessages());
+		assertEquals(3, result.countPositivMessages());
 		assertEquals(3, result.countNegativeMessages());
 	}
 
@@ -100,6 +106,15 @@ public class DataCrafterTest {
 		demoData = new Messages(Networks.TWITTER.getName());
 		demoData.setMessage("Thank our sponsors, or yours! Tweet thx to a @girodicoppi or @MABRA_org team sponsor, tag it #girodicoppi. You could win @Vapiano_USA gift!");
 		rawData.add(demoData);
+
+		demoData = new Messages(Networks.TWITTER.getName());
+		demoData.setMessage("@vapiano");
+		rawData.add(demoData);
+
+		demoData = new Messages(Networks.TWITTER.getName());
+		demoData.setMessage("Just saw a girl who looks like Lil Wayne. (@ Vapiano w/ @nitinalabur) http://t.co/nWeXfd45");
+		rawData.add(demoData);
+
 		return rawData;
 	}
 

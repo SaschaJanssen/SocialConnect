@@ -29,7 +29,7 @@ public class SocialConnect {
 
 	public void start() {
 
-		//learn();
+		learn();
 
 		CustomerDAO customerDao = new CustomerDAO();
 		MessageDAO messageDao = new MessageDAO();

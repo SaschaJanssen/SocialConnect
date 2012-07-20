@@ -32,16 +32,9 @@ public class WordlistfilterTest {
 		matches = wordlistFilter.matchesWordList(phrase);
 		assertTrue(matches);
 
-		/*
 		phrase = "@musicman128 uhhhh no. and I was about to text you. you wanna do drinks later or you want Vapiano.";
 		matches = wordlistFilter.matchesWordList(phrase);
 		assertTrue(matches);
-		*/
-
-		/*phrase = "I'm at Vapiano (Mexico City, DF) w/ 4 others http://t.co/v35ToPC3";
-		matches = wordlistFilter.matchesWordList(phrase);
-		assertTrue(matches);
-		*/
 	}
 
 	@Test

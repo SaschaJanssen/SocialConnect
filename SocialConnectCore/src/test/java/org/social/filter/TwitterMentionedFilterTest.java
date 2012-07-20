@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.social.core.filter.TwitterMentionedFilter;
 
-public class MentionedFilterTest {
+public class TwitterMentionedFilterTest {
 
 	TwitterMentionedFilter mentionedFilter;
 
@@ -50,6 +50,14 @@ public class MentionedFilterTest {
 
 		String phrase_5 = "Bewertung zu #vapiano (Deutz, Köln,  von Golden_Ticket_Dunny): 4 von 5 Punkten";
 		matches = mentionedFilter.mentioned(phrase_5);
+		assertTrue(matches);
+
+		String phrase = "I'm at Vapiano (Mexico City, DF) w/ 4 others http://t.co/v35ToPC3";
+		matches = mentionedFilter.mentioned(phrase);
+		assertTrue(matches);
+
+		phrase = "@ Vapiano on M St. has free Peroni 'refills' today if you seat in the Terrace. #MiWashingtonDC";
+		matches = mentionedFilter.mentioned(phrase);
 		assertTrue(matches);
 	}
 
