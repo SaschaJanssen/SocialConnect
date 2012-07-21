@@ -9,6 +9,7 @@ import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.social.core.util.UtilProperties;
 
 public class HibernateUtil {
 
@@ -17,9 +18,11 @@ public class HibernateUtil {
 	private static final SessionFactory sessionFactory = buildSessionFactory();
 
 	private static SessionFactory buildSessionFactory() {
+		String hibernateConfig = UtilProperties.getPropertyValue("conf/social.properties", "hibernate-config");
+
 		try {
 			// Create the SessionFactory from hibernate.cfg.xml
-			URL hibernateConfigurationFile = ClassLoader.getSystemResource("hibernate-mysql.cfg.xml");
+			URL hibernateConfigurationFile = ClassLoader.getSystemResource(hibernateConfig);
 			Configuration configuration = new Configuration().configure(hibernateConfigurationFile);
 
 			Properties configurationProperties = configuration.getProperties();
