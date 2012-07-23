@@ -1,6 +1,7 @@
 package org.social.filter.sentiment;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,7 +27,7 @@ public class SentimentAnalyserTest {
 	@Before
 	public void setUp() {
 		Classifier<String, String> classifier = BayesClassifier.getInstance();
-		File fi = new File("conf/learning");
+		File fi = new File("src/test/resources/sentimentLearningTestData");
 		BufferedReader bufferedFileReader = null;
 		try {
 			bufferedFileReader = new BufferedReader(new FileReader(fi));
@@ -43,7 +44,7 @@ public class SentimentAnalyserTest {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally{
+		} finally {
 			try {
 				bufferedFileReader.close();
 			} catch (IOException e) {
@@ -51,7 +52,6 @@ public class SentimentAnalyserTest {
 				e.printStackTrace();
 			}
 		}
-
 
 		analyser = SentimentAnalyser.getInstance();
 	}
@@ -73,8 +73,10 @@ public class SentimentAnalyserTest {
 	public void testSentimentMultibleMessages() throws Exception {
 		File fi = new File("src/test/resources/sentimentTestData");
 		List<String> lr = new ArrayList<String>();
+		BufferedReader bufferedFileReader = null;
+
 		try {
-			BufferedReader bufferedFileReader = new BufferedReader(new FileReader(fi));
+			bufferedFileReader = new BufferedReader(new FileReader(fi));
 			String lineInFile;
 			while ((lineInFile = bufferedFileReader.readLine()) != null) {
 				if (UtilValidate.isNotEmpty(lineInFile)) {
@@ -82,9 +84,8 @@ public class SentimentAnalyserTest {
 				}
 			}
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} finally {
+			bufferedFileReader.close();
 		}
 
 		List<Messages> fm = new ArrayList<Messages>();
@@ -99,7 +100,7 @@ public class SentimentAnalyserTest {
 		analyser.sentiment(fm);
 
 		for (Messages msg : fm) {
-			System.out.println(msg.getSentimentId() + "	" + msg.getMessage());
+			assertFalse(Classification.NOT_CLASSIFIED.isClassification(msg.getSentimentId()));
 		}
 
 	}
