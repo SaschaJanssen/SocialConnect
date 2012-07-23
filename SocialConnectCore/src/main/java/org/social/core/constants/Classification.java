@@ -6,4 +6,8 @@ public enum Classification {
 	public String getName() {
 		return this.name();
 	}
+
+	public boolean isClassification(String networkName) {
+		return this.name().equals(networkName);
+	}
 }

@@ -75,7 +75,7 @@ public class SocialDataConsumer {
 			}
 
 			DataCrafter crafter = new DataCrafter(receivedMsgList);
-			FilteredMessageList filteredMessages = crafter.reliablityClassification(networkConnection.getCustomerNetworkKeywords());
+			FilteredMessageList filteredMessages = crafter.craft(networkConnection.getCustomerNetworkKeywords());
 			results.addAll(filteredMessages);
 		}
 	}

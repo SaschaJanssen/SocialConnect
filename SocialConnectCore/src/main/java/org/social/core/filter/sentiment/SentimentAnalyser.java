@@ -2,32 +2,26 @@ package org.social.core.filter.sentiment;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.social.core.constants.Classification;
-import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Messages;
 import org.social.core.filter.classifier.bayes.BayesClassifier;
 import org.social.core.filter.classifier.bayes.Classifier;
 import org.social.core.util.UtilLucene;
 
 public class SentimentAnalyser {
+
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	private static SentimentAnalyser sentimentAnalyser = new SentimentAnalyser();
 
 	public static SentimentAnalyser getInstance() {
 		return sentimentAnalyser;
 	}
 
-	public FilteredMessageList sentiment(FilteredMessageList filteredMessageList) {
-/*
-		for (Messages message : filteredMessageList.getPositivList()) {
-			List<String> ngram = UtilLucene.ngramString(message.getMessage());
-			System.out.println(ngram);
-
-			message.setSentimentId(Classification.POSITIVE.getName());
-		}
-*/
-		bayesClassifier(filteredMessageList.getPositivList());
-
-		return filteredMessageList;
+	public List<Messages> sentiment(List<Messages> filteredMessageList) {
+		return bayesClassifier(filteredMessageList);
 	}
 
 	private List<Messages> bayesClassifier(List<Messages> reliableMessageList) {
@@ -38,9 +32,12 @@ public class SentimentAnalyser {
 
 			String classification = classifier.classify(unClassifiedText).getCategory();
 
-			if (Classification.POSITIVE.getName().equals(classification)) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Message: " + msgData.getMessage() + " classified as: " + classification);
+			}
+			if (Classification.POSITIVE.isClassification(classification)) {
 				msgData.setSentimentId(Classification.POSITIVE.getName());
-			} else if (Classification.NEGATIVE.getName().equals(classification)) {
+			} else if (Classification.NEGATIVE.isClassification(classification)) {
 				msgData.setSentimentId(Classification.NEGATIVE.getName());
 			} else {
 				msgData.setSentimentId(Classification.NEUTRAL.getName());

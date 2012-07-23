@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.social.core.constants.Classification;
 import org.social.core.entity.domain.Messages;
 import org.social.core.filter.TwitterMentionedFilter;
 import org.social.core.filter.sentiment.SentimentAnalyser;
@@ -17,38 +18,55 @@ public class DataCrafter {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
-	List<Messages> rawData = null;
-	FilteredMessageList filteredMessages;
+	private List<Messages> rawData = null;
+
+	private List<Messages> positiveList = null;
+	private List<Messages> negativeList = null;
 
 	public DataCrafter(List<Messages> rawList) {
 		this.rawData = rawList;
+
+		positiveList = new ArrayList<Messages>();
+		negativeList = new ArrayList<Messages>();
 	}
 
-	public FilteredMessageList reliablityClassification(CustomerNetworkKeywords customerKeywords) {
-		this.filteredMessages = new FilteredMessageList();
+	public FilteredMessageList craft(CustomerNetworkKeywords customerKeywords) {
 
 		wordlistFilter();
 		mentionedFilter(customerKeywords);
+		sentimentAnalyser();
 
-		return this.filteredMessages;
+		FilteredMessageList filteredMessages = new FilteredMessageList();
+		filteredMessages.setPositiveList(positiveList);
+		filteredMessages.setNegativeList(negativeList);
+		return filteredMessages;
 	}
 
-	public FilteredMessageList sentimentAnalyser(FilteredMessageList filteredMessageList) {
+	private void sentimentAnalyser() {
 		SentimentAnalyser sentimentAnalyser = SentimentAnalyser.getInstance();
-		FilteredMessageList filteredAndSentimentedMessageList = sentimentAnalyser.sentiment(filteredMessageList);
-
-		return filteredAndSentimentedMessageList;
+		this.positiveList = sentimentAnalyser.sentiment(this.positiveList);
 	}
 
 	private void wordlistFilter() {
 		WordlistFilter wordlistFilter = WordlistFilter.getInstance();
 		for (Messages msgData : this.rawData) {
 			if (wordlistFilter.matchesWordList(msgData.getMessage())) {
-				this.filteredMessages.addToPositivList(msgData);
+				addToPositiveList(msgData);
 			} else {
-				this.filteredMessages.addToNegativeList(msgData);
+				addToNegativeList(msgData);
 			}
 		}
+	}
+
+	private void addToNegativeList(Messages negativeMessage) {
+		negativeMessage.setReliabilityId(Classification.NOT_RELIABLE.getName());
+		this.negativeList.add(negativeMessage);
+	}
+
+	private void addToPositiveList(Messages positiveMessage) {
+		positiveMessage.setReliabilityId(Classification.RELIABLE.getName());
+		this.positiveList.add(positiveMessage);
+
 	}
 
 	private void mentionedFilter(CustomerNetworkKeywords customerKeywords) {
@@ -60,17 +78,29 @@ public class DataCrafter {
 		Set<String> mentionedSet = getMentionsetFromKeywords(customerKeywords);
 
 		TwitterMentionedFilter mentionFilter = new TwitterMentionedFilter(mentionedSet);
-		List<Messages> negativeList = this.filteredMessages.getNegativeList();
 
 		List<Messages> messagesToMove = new ArrayList<Messages>();
-		for (Messages message : negativeList) {
+		for (Messages message : this.negativeList) {
 			if (mentionFilter.mentioned(message.getMessage())) {
 				messagesToMove.add(message);
 			}
 		}
 
-		this.filteredMessages.moveItemFromNegativeToPositiveList(messagesToMove);
+		moveItemFromNegativeToPositiveList(messagesToMove);
 
+	}
+
+	public void moveItemFromNegativeToPositiveList(List<Messages> messagesToMove) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Move Item to positive list.");
+		}
+
+		for (Messages message : messagesToMove) {
+			if (this.negativeList.contains(message)) {
+				this.negativeList.remove(message);
+			}
+			addToPositiveList(message);
+		}
 	}
 
 	private Set<String> getMentionsetFromKeywords(CustomerNetworkKeywords customerKeywords) {

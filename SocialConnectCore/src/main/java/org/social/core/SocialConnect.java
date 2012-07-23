@@ -55,7 +55,7 @@ public class SocialConnect {
 		List<LearningData> learningData = learningDao.getLearningData();
 		Classifier<String, String> classifier = BayesClassifier.getInstance();
 		for (LearningData data : learningData) {
-			List<String> t = UtilLucene.tokenizeString(new StandardAnalyzer(Version.LUCENE_36), data.getLearningData());
+			List<String> t = UtilLucene.ngramString(data.getLearningData());
 			classifier.learn(data.getClassificationId(), t);
 		}
 	}

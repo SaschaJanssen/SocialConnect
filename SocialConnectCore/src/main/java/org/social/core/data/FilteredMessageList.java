@@ -3,13 +3,9 @@ package org.social.core.data;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.social.core.constants.Classification;
 import org.social.core.entity.domain.Messages;
 
 public class FilteredMessageList {
-	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	private CopyOnWriteArrayList<Messages> negativeList = null;
 	private CopyOnWriteArrayList<Messages> positiveList = null;
@@ -28,16 +24,6 @@ public class FilteredMessageList {
 		return countNegativeMessages() + countPositivMessages();
 	}
 
-	public void addToNegativeList(Messages negativeData) {
-		negativeData.setReliabilityId(Classification.NOT_RELIABLE.getName());
-		negativeList.add(negativeData);
-	}
-
-	public void addToPositivList(Messages positivData) {
-		positivData.setReliabilityId(Classification.RELIABLE.getName());
-		positiveList.add(positivData);
-	}
-
 	public List<Messages> getNegativeList() {
 		return this.negativeList;
 	}
@@ -54,17 +40,12 @@ public class FilteredMessageList {
 		return this.positiveList.size();
 	}
 
-	public void moveItemFromNegativeToPositiveList(List<Messages> messagesToMove) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Move Item to positive list.");
-		}
+	public void setPositiveList(List<Messages> messages) {
+		this.positiveList.addAll(messages);
+	}
 
-		for (Messages message : messagesToMove) {
-			if (this.negativeList.contains(message)) {
-				this.negativeList.remove(message);
-			}
-			this.addToPositivList(message);
-		}
+	public void setNegativeList(List<Messages> messages) {
+		this.negativeList.addAll(messages);
 	}
 
 }

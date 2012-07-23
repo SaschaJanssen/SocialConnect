@@ -54,8 +54,13 @@ public class BayesClassifier<T, K> extends Classifier<T, K> {
 	 *         category.
 	 */
 	private float categoryProbability(Collection<T> features, K category) {
-		return ((float) this.categoryCount(category) / (float) this.getCategoriesTotal())
-				* featuresProbabilityProduct(features, category);
+
+		float occurrencesOfCategory = (float) this.categoryCount(category);
+		float totalNumberOfCategories = (float) this.getCategoriesTotal();
+
+		float featuresProbability = featuresProbabilityProduct(features, category);
+
+		return (occurrencesOfCategory / totalNumberOfCategories) * featuresProbability;
 	}
 
 	/**
@@ -87,9 +92,11 @@ public class BayesClassifier<T, K> extends Classifier<T, K> {
 					}
 				});
 
-		for (K category : this.getCategories())
-			probabilities
-					.add(new Classification<T, K>(features, category, this.categoryProbability(features, category)));
+		for (K category : this.getCategories()) {
+			float categoryProbability = this.categoryProbability(features, category);
+			Classification<T, K> classification = new Classification<T, K>(features, category, categoryProbability);
+			probabilities.add(classification);
+		}
 		return probabilities;
 	}
 
