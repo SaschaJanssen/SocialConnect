@@ -12,6 +12,8 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.social.core.constants.Classification;
 import org.social.core.entity.domain.Messages;
 import org.social.core.filter.classifier.bayes.BayesClassifier;
@@ -21,6 +23,8 @@ import org.social.core.util.UtilLucene;
 import org.social.core.util.UtilValidate;
 
 public class SentimentAnalyserTest {
+
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	private SentimentAnalyser analyser;
 
@@ -42,14 +46,14 @@ public class SentimentAnalyserTest {
 			}
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("", e);
 		} finally {
 			try {
-				bufferedFileReader.close();
+				if (bufferedFileReader != null) {
+					bufferedFileReader.close();
+				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("", e);
 			}
 		}
 
@@ -85,7 +89,9 @@ public class SentimentAnalyserTest {
 			}
 
 		} finally {
-			bufferedFileReader.close();
+			if (bufferedFileReader != null) {
+				bufferedFileReader.close();
+			}
 		}
 
 		List<Messages> fm = new ArrayList<Messages>();

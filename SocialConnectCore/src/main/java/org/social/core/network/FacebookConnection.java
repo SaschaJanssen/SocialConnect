@@ -15,7 +15,6 @@ import org.social.core.util.UtilProperties;
 import com.restfb.Connection;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
-import com.restfb.Parameter;
 import com.restfb.json.JsonObject;
 
 public class FacebookConnection extends SocialNetworkConnection {
@@ -66,14 +65,6 @@ public class FacebookConnection extends SocialNetworkConnection {
 		fbQuery.setLanguage("en_US");
 
 		return fbQuery;
-	}
-
-	public List<Messages> fetchPlace(String query, String center, String distance, String limit, String until) {
-		Connection<JsonObject> searchResult = fbClient.fetchConnection("search", JsonObject.class,
-				Parameter.with("q", query), Parameter.with("type", "place"), Parameter.with("center", center),
-				Parameter.with("distance", distance), Parameter.with("until", until), Parameter.with("limit", limit));
-
-		return extractMessageData(searchResult);
 	}
 
 	private List<Messages> extractMessageData(Connection<JsonObject> searchResult) {

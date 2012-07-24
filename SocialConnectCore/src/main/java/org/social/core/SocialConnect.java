@@ -2,8 +2,6 @@ package org.social.core;
 
 import java.util.List;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.consumer.SocialDataConsumer;

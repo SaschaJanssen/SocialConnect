@@ -6,7 +6,7 @@ public abstract class Query {
 
 	private final CustomerNetworkKeywords networkKeywords;
 
-	public Query(CustomerNetworkKeywords networkKeywords) {
+	protected Query(CustomerNetworkKeywords networkKeywords) {
 		this.networkKeywords = networkKeywords;
 	}
 

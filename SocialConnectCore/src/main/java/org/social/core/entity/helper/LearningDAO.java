@@ -26,4 +26,16 @@ public class LearningDAO {
 				LearningData.class);
 		return learningDataList;
 	}
+
+	public void storeLearningData(List<LearningData> learningData) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+
+		session.beginTransaction();
+
+		for (LearningData data : learningData) {
+			session.save(data);
+		}
+
+		session.getTransaction().commit();
+	}
 }

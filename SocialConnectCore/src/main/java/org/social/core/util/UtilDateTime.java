@@ -43,7 +43,7 @@ public class UtilDateTime {
 	 *            millsecond value
 	 * @return Timestamp
 	 */
-	public static java.sql.Timestamp getTimestamp(long time) {
+	private static java.sql.Timestamp getTimestamp(long time) {
 		return new java.sql.Timestamp(time);
 	}
 

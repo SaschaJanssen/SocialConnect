@@ -13,9 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 import org.social.core.network.oauth.YelpV2Api;
-import org.social.core.query.TwitterQuery;
 import org.social.core.query.YelpQuery;
-import org.social.core.util.UtilDateTime;
 import org.social.core.util.UtilProperties;
 
 public class YelpConnection extends SocialNetworkConnection {
@@ -61,7 +59,7 @@ public class YelpConnection extends SocialNetworkConnection {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Fetch information from YELP for customer: " + this.customer.getCustomerId());
 		}
-		
+
 		YelpQuery query = buildQueryFromKeywords();
 		String constructedQuery = query.constructQuery();
 
