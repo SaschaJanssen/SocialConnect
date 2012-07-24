@@ -1,5 +1,6 @@
 package org.social.entity;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -15,14 +16,16 @@ import org.slf4j.LoggerFactory;
 import org.social.SocialITCase;
 import org.social.core.constants.Networks;
 import org.social.core.entity.HibernateUtil;
+import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
+import org.social.core.entity.helper.CustomerDAO;
 
-public class DerbyITCase extends SocialITCase {
+public class DaoITCase extends SocialITCase {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private SessionFactory sessionFactory;
 
-	public DerbyITCase() {
+	public DaoITCase() {
 		super();
 	}
 
@@ -76,6 +79,15 @@ public class DerbyITCase extends SocialITCase {
 		n.setLanguage("de");
 		n.setCustomerId(new Long(1));
 		session.save(n);
+	}
+
+	@Test
+	public void testCustomerDaoWrite() throws Exception {
+		CustomerDAO customerDao = new CustomerDAO();
+		List<Customers> custList = customerDao.getAllCustomersAndKeywords();
+
+		assertNotNull(custList);
+		assertTrue(custList.size() > 0);
 	}
 
 }

@@ -1,17 +1,22 @@
 package org.social;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
 
 import org.social.core.util.UtilProperties;
 
 public abstract class SocialITCase {
+
+	private String derbyHome = "target/runtime/derby/";
+
 	public SocialITCase() {
+		File dbHome = new File(derbyHome);
+		if (!dbHome.exists()) {
+			throw new RuntimeException("The test derby Database is not initialised. Please run the derby scripts.");
+		}
+
 		loadProperties();
 
-		System.setProperty("derby.system.home", "target/runtime/derby/");
+		System.setProperty("derby.system.home", derbyHome);
 	}
 
 	private static void loadProperties() {
