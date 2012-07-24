@@ -1,9 +1,11 @@
 package org.social.core.network.oauth;
 
+import org.scribe.builder.api.DefaultApi10a;
 import org.scribe.builder.api.DefaultApi20;
 import org.scribe.model.OAuthConfig;
+import org.scribe.model.Token;
 
-public class YelpV2Api extends DefaultApi20 {
+public class YelpV2Api extends DefaultApi10a {
 
 	@Override
 	public String getAccessTokenEndpoint() {
@@ -12,9 +14,16 @@ public class YelpV2Api extends DefaultApi20 {
 	}
 
 	@Override
-	public String getAuthorizationUrl(OAuthConfig arg0) {
+	public String getAuthorizationUrl(Token arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String getRequestTokenEndpoint() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

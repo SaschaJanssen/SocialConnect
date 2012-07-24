@@ -57,11 +57,12 @@ public class YelpConnection extends SocialNetworkConnection {
 	@Override
 	public List<Messages> fetchMessages() {
 		if (logger.isDebugEnabled()) {
-			logger.debug("Fetch information from YELP for customer: " + this.customer.getCustomerId());
+			logger.debug("Fetch information from YELP for customer: "
+					+ this.customer.getCustomerId());
 		}
 
-		YelpQuery query = buildQueryFromKeywords();
-		String constructedQuery = query.constructQuery();
+		// YelpQuery query = buildQueryFromKeywords(); //sString
+		// constructedQuery = query.constructQuery();
 
 		String endpoint = "https://api.yelp.com/v2/business/vapiano-new-york-2";
 		OAuthRequest request = new OAuthRequest(Verb.GET, endpoint);
@@ -80,7 +81,8 @@ public class YelpConnection extends SocialNetworkConnection {
 	private YelpQuery buildQueryFromKeywords() {
 		YelpQuery yelpQuery = new YelpQuery(super.customerNetworkKeywords);
 
-		// String since = UtilDateTime.connvertTimestampToTwitterTime(this.customer.getLastNetworkdAccess());
+		// String since =
+		// UtilDateTime.connvertTimestampToTwitterTime(this.customer.getLastNetworkdAccess());
 		// yelpQuery.setSince(since);
 		yelpQuery.setLanguage("en");
 
@@ -88,9 +90,13 @@ public class YelpConnection extends SocialNetworkConnection {
 	}
 
 	private void loadProperties() {
-		this.consumerKey = UtilProperties.getPropertyValue(PROPERTY, CONSUMER_KEY);
-		this.consumerSecret = UtilProperties.getPropertyValue(PROPERTY, CONSUMER_SECRET);
-		this.accessToken = UtilProperties.getPropertyValue(PROPERTY, ACCESS_TOKEN);
-		this.accessTokenSecret = UtilProperties.getPropertyValue(PROPERTY, ACESS_TOEN_SECRET);
+		this.consumerKey = UtilProperties.getPropertyValue(PROPERTY,
+				CONSUMER_KEY);
+		this.consumerSecret = UtilProperties.getPropertyValue(PROPERTY,
+				CONSUMER_SECRET);
+		this.accessToken = UtilProperties.getPropertyValue(PROPERTY,
+				ACCESS_TOKEN);
+		this.accessTokenSecret = UtilProperties.getPropertyValue(PROPERTY,
+				ACESS_TOEN_SECRET);
 	}
 }
