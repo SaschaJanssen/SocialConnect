@@ -15,6 +15,7 @@ public class CustomerNetworkKeywords {
 		networkKeywords = mapKeywords(keywordListForNetwork);
 
 	}
+
 	public String getHashForNetwork() {
 		String hash = "";
 
@@ -57,10 +58,22 @@ public class CustomerNetworkKeywords {
 				mappedKeywords.put(KeywordType.MENTIONED.getName(), keyword.getKeyword());
 			} else if (KeywordType.QUERY.isKeywordType(keywordType)) {
 				mappedKeywords.put(KeywordType.QUERY.getName(), keyword.getKeyword());
+			} else if (KeywordType.PAGE.isKeywordType(keywordType)) {
+				mappedKeywords.put(KeywordType.PAGE.getName(), keyword.getKeyword());
 			}
 		}
 
 		return mappedKeywords;
+	}
+
+	public String getPage() {
+		String page = "";
+
+		if (networkKeywords.containsKey(KeywordType.PAGE.getName())) {
+			page = networkKeywords.get(KeywordType.PAGE.getName());
+		}
+
+		return page;
 	}
 
 }

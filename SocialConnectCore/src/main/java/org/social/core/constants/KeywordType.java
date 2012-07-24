@@ -1,7 +1,7 @@
 package org.social.core.constants;
 
 public enum KeywordType {
-	QUERY, HASH, MENTIONED;
+	QUERY, HASH, MENTIONED, PAGE;
 
 	public String getName() {
 		return this.name();
