@@ -1,5 +1,7 @@
 package org.social.network;
 
+import static org.junit.Assert.*;
+
 import java.util.List;
 
 import org.junit.Before;
@@ -21,7 +23,7 @@ public class YelpConnectionITCase extends SocialITCase {
 	}
 
 	@Test
-	public void test() {
+	public void testYelpSearch() {
 
 		Customers customer = new Customers();
 		customer.setCustomerId(1L);
@@ -30,9 +32,7 @@ public class YelpConnectionITCase extends SocialITCase {
 
 		List<Messages> messages = yelp.fetchMessages();
 
-		for (Messages message : messages) {
-			System.out.println(message);
-		}
+		assertNotNull(messages);
 	}
 
 }

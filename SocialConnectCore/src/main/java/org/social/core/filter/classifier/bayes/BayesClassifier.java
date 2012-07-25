@@ -106,13 +106,14 @@ public class BayesClassifier<T, K> extends Classifier<T, K> {
 	 * @return The category the set of features is classified as.
 	 */
 	@Override
-	public Classification<T, K> classify(Collection<T> features) {
+	public Classification<T, K> classify(Collection<T> features) throws IllegalStateException {
 		SortedSet<Classification<T, K>> probabilites = this.categoryProbabilities(features);
 
 		if (probabilites.size() > 0) {
 			return probabilites.last();
 		}
-		return null;
+		throw new IllegalStateException(
+				"The feature couldn't be classified. Make sure that proper learning data are loaded.");
 	}
 
 	/**

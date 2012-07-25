@@ -30,7 +30,13 @@ public class SentimentAnalyser {
 		for (Messages msgData : reliableMessageList) {
 			List<String> unClassifiedText = UtilLucene.ngramString(msgData.getMessage());
 
-			String classification = classifier.classify(unClassifiedText).getCategory();
+			String classification = null;
+			try {
+				classification = classifier.classify(unClassifiedText).getCategory();
+			} catch (IllegalStateException e) {
+				logger.error("Classifier throw the following Exception. Classification will be skiped.", e);
+				break;
+			}
 
 			if (logger.isDebugEnabled()) {
 				logger.debug("Message: " + msgData.getMessage() + " classified as: " + classification);
@@ -45,5 +51,4 @@ public class SentimentAnalyser {
 		}
 		return reliableMessageList;
 	}
-
 }

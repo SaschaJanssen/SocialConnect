@@ -1,6 +1,10 @@
 package org.social.core.network;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
@@ -10,6 +14,7 @@ import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.social.core.constants.Networks;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 import org.social.core.network.oauth.YelpV2Api;
@@ -49,54 +54,54 @@ public class YelpConnection extends SocialNetworkConnection {
 
 		token = new Token(accessToken, accessTokenSecret);
 
-		// this.customer = customer;
+		this.customer = customer;
 
-		// getCustomersKeywords(Networks.YELP.getName());
+		getCustomersKeywords(Networks.YELP.getName());
 	}
 
 	@Override
 	public List<Messages> fetchMessages() {
 		if (logger.isDebugEnabled()) {
-			logger.debug("Fetch information from YELP for customer: "
-					+ this.customer.getCustomerId());
+			logger.debug("Fetch information from YELP for customer: " + this.customer.getCustomerId());
 		}
 
-		// YelpQuery query = buildQueryFromKeywords(); //sString
-		// constructedQuery = query.constructQuery();
+		YelpQuery query = buildQueryFromKeywords();
+		String constructedQuery = query.constructQuery();
 
-		String endpoint = "https://api.yelp.com/v2/business/vapiano-new-york-2";
-		OAuthRequest request = new OAuthRequest(Verb.GET, endpoint);
-		// request.addQuerystringParameter("id", "vapiano-new-york-2");
-		// request.addQuerystringParameter("field", consumerKey);
+		OAuthRequest request = new OAuthRequest(Verb.GET, constructedQuery);
 
 		service.signRequest(token, request);
 
 		Response response = request.send();
-		String jsonResult = response.getBody();
-		System.out.println(jsonResult);
 
-		return null;
+		JSONObject json = (JSONObject) JSONSerializer.toJSON(response.getBody());
+		List<Messages> resultList = extractMessageData(json);
+
+		return resultList;
+	}
+
+	private List<Messages> extractMessageData(JSONObject json) {
+		List<Messages> extractedData = new ArrayList<Messages>();
+
+		// TODO yelp doesn't offer more than 3 (random) reviews for a request
+
+		return extractedData;
 	}
 
 	private YelpQuery buildQueryFromKeywords() {
 		YelpQuery yelpQuery = new YelpQuery(super.customerNetworkKeywords);
 
-		// String since =
-		// UtilDateTime.connvertTimestampToTwitterTime(this.customer.getLastNetworkdAccess());
-		// yelpQuery.setSince(since);
+		String since = this.customer.getLastNetworkdAccess().toString();
+		yelpQuery.setSince(since);
 		yelpQuery.setLanguage("en");
 
 		return yelpQuery;
 	}
 
 	private void loadProperties() {
-		this.consumerKey = UtilProperties.getPropertyValue(PROPERTY,
-				CONSUMER_KEY);
-		this.consumerSecret = UtilProperties.getPropertyValue(PROPERTY,
-				CONSUMER_SECRET);
-		this.accessToken = UtilProperties.getPropertyValue(PROPERTY,
-				ACCESS_TOKEN);
-		this.accessTokenSecret = UtilProperties.getPropertyValue(PROPERTY,
-				ACESS_TOEN_SECRET);
+		this.consumerKey = UtilProperties.getPropertyValue(PROPERTY, CONSUMER_KEY);
+		this.consumerSecret = UtilProperties.getPropertyValue(PROPERTY, CONSUMER_SECRET);
+		this.accessToken = UtilProperties.getPropertyValue(PROPERTY, ACCESS_TOKEN);
+		this.accessTokenSecret = UtilProperties.getPropertyValue(PROPERTY, ACESS_TOEN_SECRET);
 	}
 }

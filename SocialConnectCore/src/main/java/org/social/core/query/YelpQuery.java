@@ -5,10 +5,11 @@ import org.social.core.util.UtilValidate;
 
 public class YelpQuery extends Query {
 
-	private final String searchUrl = "http://api.yelp.com/v2/business/";
+	private final String searchUrl = "https://api.yelp.com/v2/business/";
 
 	private String id;
 	private String language;
+	private String since;
 
 	public YelpQuery(CustomerNetworkKeywords customerNetworkKeywords) {
 		super(customerNetworkKeywords);
@@ -39,5 +40,15 @@ public class YelpQuery extends Query {
 	public void setLanguage(String language) {
 		this.language = language;
 	}
+
+	public String getSince() {
+		return since;
+	}
+
+	public void setSince(String since) {
+		this.since = since;
+	}
+
+
 
 }
