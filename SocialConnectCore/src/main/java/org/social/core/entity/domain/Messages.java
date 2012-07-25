@@ -28,6 +28,7 @@ public class Messages {
 	private Long customerId;
 	private String reliabilityId;
 	private String sentimentId;
+	private String networkUserRating;
 	private Timestamp createdTs;
 	private Timestamp lastUpdatedTs;
 
@@ -158,6 +159,15 @@ public class Messages {
 		return reliabilityId;
 	}
 
+	@Column(name = "NETWORK_USER_RATING")
+	private String getNetworkUserRating() {
+		return networkUserRating;
+	}
+
+	private void setNetworkUserRating(String networkUserRating) {
+		this.networkUserRating = networkUserRating;
+	}
+
 	public void setReliabilityId(String reliabilityId) {
 		this.reliabilityId = reliabilityId;
 	}
@@ -190,7 +200,11 @@ public class Messages {
 		builder.append(messageReceivedDate);
 		builder.append(", customerId=");
 		builder.append(customerId);
-		builder.append(", classification=");
+		builder.append(", networkUserRating=");
+		builder.append(networkUserRating);
+		builder.append(", reliabilityId=");
+		builder.append(reliabilityId);
+		builder.append(", sentimentId=");
 		builder.append(sentimentId);
 		builder.append("]");
 
