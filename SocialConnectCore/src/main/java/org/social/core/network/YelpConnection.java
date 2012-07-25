@@ -1,5 +1,6 @@
 package org.social.core.network;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,8 +92,12 @@ public class YelpConnection extends SocialNetworkConnection {
 	private YelpQuery buildQueryFromKeywords() {
 		YelpQuery yelpQuery = new YelpQuery(super.customerNetworkKeywords);
 
-		String since = this.customer.getLastNetworkdAccess().toString();
-		yelpQuery.setSince(since);
+		Timestamp sinceTs = this.customer.getLastNetworkdAccess();
+		if(sinceTs != null) {
+			String since = sinceTs.toString();
+			yelpQuery.setSince(since);
+		}
+
 		yelpQuery.setLanguage("en");
 
 		return yelpQuery;
