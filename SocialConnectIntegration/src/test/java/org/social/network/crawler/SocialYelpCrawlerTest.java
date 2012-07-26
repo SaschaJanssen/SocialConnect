@@ -27,7 +27,7 @@ public class SocialYelpCrawlerTest extends SocialITCase {
 
 	@Before
 	public void setUp() throws Exception {
-		jsoupCrawler = new YelpSocialCrawler("https://www.yelp.com", "/biz/vapiano-new-york-2");
+		jsoupCrawler = new YelpSocialCrawler("https://www.yelp.com", "/biz/vapiano-new-york-2?sort_by=date_desc");
 		doc = jsoupCrawler.getDocument();
 	}
 
