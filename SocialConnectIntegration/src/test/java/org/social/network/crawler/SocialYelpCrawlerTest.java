@@ -17,23 +17,23 @@ import org.junit.Test;
 import org.social.SocialITCase;
 import org.social.core.entity.domain.Messages;
 import org.social.core.network.crawler.SocialCrawler;
+import org.social.core.network.crawler.YelpSocialCrawler;
 import org.social.core.util.UtilDateTime;
 
-public class SocialCrawlerTest extends SocialITCase {
+public class SocialYelpCrawlerTest extends SocialITCase {
 
 	SocialCrawler jsoupCrawler;
 	private Document doc = null;
 
 	@Before
 	public void setUp() throws Exception {
-		jsoupCrawler = new SocialCrawler("https://www.yelp.com", "/biz/vapiano-new-york-2");
+		jsoupCrawler = new YelpSocialCrawler("https://www.yelp.com", "/biz/vapiano-new-york-2");
 		doc = jsoupCrawler.getDocument();
 	}
 
 	@Test
 	public void testIfMessageDateIsYounger() throws Exception {
 		Calendar calendar = Calendar.getInstance();
-
 
 		Timestamp messageNetworkTs = UtilDateTime.nowTimestamp();
 		Timestamp lastNetworkAccess = UtilDateTime.nowTimestamp();
@@ -87,9 +87,8 @@ public class SocialCrawlerTest extends SocialITCase {
 	@Test
 	public void testGetNextPageLinkFromPagination() throws Exception {
 		Element body = doc.body();
-		Element paginationElement = jsoupCrawler.getPaginationCurrentSelectedData(body);
 
-		String nextLink = jsoupCrawler.getNextPageFromPagination(paginationElement);
+		String nextLink = jsoupCrawler.getNextPageFromPagination(body);
 
 		assertNotNull(nextLink);
 		assertEquals("/biz/vapiano-new-york-2?sort_by=date_desc&start=40", nextLink);

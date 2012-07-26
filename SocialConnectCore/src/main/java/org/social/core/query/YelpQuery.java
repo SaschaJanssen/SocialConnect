@@ -17,16 +17,11 @@ public class YelpQuery extends Query {
 
 	@Override
 	public String constructQuery() {
-		// Not implemented
-		return null;
+		return this.endpoint + "?sort_by=date_desc";
 	}
 
 	private void setEndpoint(String id) {
 		this.endpoint = id;
-	}
-
-	public String getEndpoint() {
-		return this.endpoint;
 	}
 
 	public String getSearchUrl() {
@@ -39,6 +34,10 @@ public class YelpQuery extends Query {
 
 	public void setSince(String since) {
 		this.since = since;
+	}
+
+	public String getEndpoint() {
+		return endpoint;
 	}
 
 

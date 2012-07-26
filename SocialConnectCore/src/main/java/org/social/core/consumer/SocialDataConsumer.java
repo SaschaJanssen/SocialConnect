@@ -13,6 +13,7 @@ import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 import org.social.core.filter.sentiment.SentimentAnalyser;
 import org.social.core.network.FacebookConnection;
+import org.social.core.network.OpenTableConnection;
 import org.social.core.network.SocialNetworkConnection;
 import org.social.core.network.TwitterConnection;
 import org.social.core.network.YelpConnection;
@@ -30,6 +31,7 @@ public class SocialDataConsumer {
 	}
 
 	public FilteredMessageList consumeData(Customers customer) {
+
 		Thread fbThread = new Thread(new NetworkConsumeAndCraftThread(new FacebookConnection(customer)));
 		executor.execute(fbThread);
 
@@ -38,6 +40,9 @@ public class SocialDataConsumer {
 
 		Thread yelpThread = new Thread(new NetworkConsumeThread(new YelpConnection(customer)));
 		executor.execute(yelpThread);
+
+		Thread openTableThread = new Thread(new NetworkConsumeThread(new OpenTableConnection(customer)));
+		executor.execute(openTableThread);
 
 		waitForThreadsToFinish();
 

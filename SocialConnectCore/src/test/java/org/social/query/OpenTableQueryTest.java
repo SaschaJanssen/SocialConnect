@@ -33,7 +33,7 @@ public class OpenTableQueryTest {
 	public void testConstructQuery() throws Exception {
 		OpenTableQuery yq = new OpenTableQuery(cnk);
 
-		assertEquals("/biz/restaurant?tab=2", yq.constructQuery());
+		assertEquals("/biz/restaurant/reviews.htm", yq.constructQuery());
 		assertNotNull(yq.getSearchUrl());
 	}
 

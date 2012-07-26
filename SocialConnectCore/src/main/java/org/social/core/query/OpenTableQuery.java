@@ -4,9 +4,10 @@ import org.social.core.data.CustomerNetworkKeywords;
 
 public class OpenTableQuery extends Query {
 
-	private final String searchUrl = "http://www.opentable.com";
-	private final String postFix = "?tab=2";
+	private final String searchUrl = "http://reviews.opentable.com";
+	private final String postFix = "/reviews.htm";
 	private String endpoint;
+	private String since;
 
 	public OpenTableQuery(CustomerNetworkKeywords customerNetworkKeywords) {
 		super(customerNetworkKeywords);
@@ -18,12 +19,24 @@ public class OpenTableQuery extends Query {
 		return endpoint + postFix;
 	}
 
+	public String getEndpoint() {
+		return endpoint;
+	}
+
 	private void setEndpoint(String endpoint) {
 		this.endpoint = endpoint;
 	}
 
 	public String getSearchUrl() {
 		return searchUrl;
+	}
+
+	public String getSince() {
+		return since;
+	}
+
+	public void setSince(String since) {
+		this.since = since;
 	}
 
 }

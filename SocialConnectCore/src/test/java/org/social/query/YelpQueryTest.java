@@ -32,10 +32,8 @@ public class YelpQueryTest {
 	public void testConstructQuery() throws Exception {
 		YelpQuery yq = new YelpQuery(cnk);
 
-		assertEquals("/biz/restaurant", yq.getEndpoint());
+		assertEquals("/biz/restaurant?sort_by=date_desc", yq.constructQuery());
 		assertNotNull(yq.getSearchUrl());
-
-		assertNull(yq.constructQuery());
 	}
 
 }

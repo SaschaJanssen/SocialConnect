@@ -13,24 +13,13 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.constants.Classification;
-import org.social.core.constants.Networks;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 import org.social.core.util.UtilDateTime;
 
-public class SocialCrawler {
+public abstract class SocialCrawler {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	private final String ratingClassName = "div.rating";
-	private final String messageDateClassName = "em.smaller";
-	private final String userNameLinkClassName = "li.user-name a";
-	private final String reviewCommentCssClassName = "p.review_comment";
-	private final String reviewDataCssClassName = "div.media-story";
-	private final String userDataCssClassName = "div.user-passport";
-	private final String selectedPaginationCssClassName = "span.highlight2";
-	private final String paginationControlsCssCLassName = "div.pagination_controls";
-	private final String reviewContainerCssClassName = "div.media-block-no-margin";
 
 	private final String baseUrl;
 
@@ -39,7 +28,7 @@ public class SocialCrawler {
 
 	public SocialCrawler(String baseUrl, String endpoint) {
 		this.baseUrl = baseUrl;
-		this.endpoint = endpoint + "?sort_by=date_desc";
+		this.endpoint = endpoint;
 	}
 
 	public List<Messages> crawl(Customers customer) {
@@ -89,8 +78,7 @@ public class SocialCrawler {
 
 			extractedMessagesFilterByDate.addAll(extractedMessages);
 
-			Element currentPaginationSite = getPaginationCurrentSelectedData(body);
-			endpoint = getNextPageFromPagination(currentPaginationSite);
+			endpoint = getNextPageFromPagination(body);
 		}
 
 		return extractedMessagesFilterByDate;
@@ -108,35 +96,22 @@ public class SocialCrawler {
 	}
 
 	public Elements getReviewDataContainer(Element body) {
-		return body.select(reviewContainerCssClassName);
+		return body.select(getReviewContainerCssClassName());
 	}
 
+	protected abstract String getReviewContainerCssClassName();
+
 	public Element getPaginationCurrentSelectedData(Element body) {
-		Element pagination = body.select(paginationControlsCssCLassName).first();
-		Element currentPaginationSelection = pagination.select(selectedPaginationCssClassName).first();
+		Element pagination = body.select(getPaginationControlsCssClassName()).first();
+		Element currentPaginationSelection = pagination.select(getSelectedPaginationCssClassName()).first();
 		return currentPaginationSelection;
 	}
 
-	public String getNextPageFromPagination(Element currentPaginationElement) {
-		String nextLink = null;
+	protected abstract String getPaginationControlsCssClassName();
 
-		Elements siblings = currentPaginationElement.siblingElements();
-		int pageNo = convertElementTextToInt(currentPaginationElement);
-		for (Element sibling : siblings) {
-			int nextPageNo = convertElementTextToInt(sibling);
-			if (nextPageNo == (pageNo + 1)) {
-				nextLink = sibling.attr("href");
-				break;
-			}
-		}
+	protected abstract String getSelectedPaginationCssClassName();
 
-		return nextLink;
-
-	}
-
-	private int convertElementTextToInt(Element element) {
-		return Integer.parseInt(getUserNameFromUserInfo(element));
-	}
+	public abstract String getNextPageFromPagination(Element currentPaginationElement);
 
 	public List<Messages> extractReviewDataFromHtml(Elements reviewContainer, Element headerElements, Long customerId) {
 		List<Messages> resultList = new ArrayList<Messages>();
@@ -145,22 +120,25 @@ public class SocialCrawler {
 		Elements pageReviewData = getReviewData(reviewContainer);
 
 		for (int i = 0; i < pageReviewData.size(); i++) {
-			Messages returnMessage = new Messages(Networks.YELP.name());
+			Messages returnMessage = new Messages(getNetworkName());
 
 			Element reviewData = pageReviewData.get(i);
-			Element userData = pageUserData.get(i);
+			if (!pageUserData.isEmpty()) {
+				Element userData = pageUserData.get(i);
+				Element userInfo = userData.select(getUserNameLinkClassName()).first();
+				String networkUser = getUserNameFromUserInfo(userInfo);
+				returnMessage.setNetworkUser(networkUser);
+				String networkUserId = getUserIdFromUserInfo(userInfo);
+				returnMessage.setNetworkUserId(networkUserId);
+			} else {
+				returnMessage.setNetworkUser("n/a");
+				returnMessage.setNetworkUserId("n/a");
+			}
 
 			returnMessage.setCustomerId(customerId);
 
 			String message = getReviewTextFromComment(reviewData);
 			returnMessage.setMessage(message);
-
-			Element userInfo = userData.select(userNameLinkClassName).first();
-			String networkUser = getUserNameFromUserInfo(userInfo);
-			returnMessage.setNetworkUser(networkUser);
-
-			String networkUserId = getUserIdFromUserInfo(userInfo);
-			returnMessage.setNetworkUserId(networkUserId);
 
 			String language = getLanguageFromHeadMetaData(headerElements);
 			returnMessage.setLanguage(language);
@@ -182,32 +160,33 @@ public class SocialCrawler {
 		return resultList;
 	}
 
+	protected abstract String getNetworkName();
+
+	protected abstract String getUserNameLinkClassName();
+
 	private String getNetworkUserRating(Element reviewData) {
-		String platformUserRating = reviewData.select(ratingClassName).first().getElementsByTag("meta").first()
-				.attr("content");
+		Element ratingElement = reviewData.select(getRatingClassName()).first();
+
+		String platformUserRating = extractNetworkUserRatingData(ratingElement);
 		return platformUserRating;
 	}
 
+	protected abstract String extractNetworkUserRatingData(Element ratingElement);
+
+	protected abstract String getRatingClassName();
+
 	private String getNetworkMessageDate(Element reviewData) {
-		String networkMessageDate = reviewData.select(messageDateClassName).first().text();
+		String networkMessageDate = reviewData.select(getMessageDateClassName()).first().text();
 		return networkMessageDate;
 	}
+
+	protected abstract String getMessageDateClassName();
 
 	private String getUserNameFromUserInfo(Element userInfo) {
 		return userInfo.text();
 	}
 
-	private String getLanguageFromHeadMetaData(Element headerElements) {
-		Elements metaData = headerElements.getElementsByTag("meta");
-		String language = "";
-		for (Element meta : metaData) {
-			if (meta.hasAttr("http-equiv") && meta.attr("http-equiv").equals("Content-Language")) {
-				language = meta.attr("content");
-				break;
-			}
-		}
-		return language;
-	}
+	protected abstract String getLanguageFromHeadMetaData(Element headerElements);
 
 	private String getUserIdFromUserInfo(Element userInfo) {
 		String href = userInfo.attr("href");
@@ -217,15 +196,21 @@ public class SocialCrawler {
 	}
 
 	private String getReviewTextFromComment(Element reviewData) {
-		return reviewData.select(reviewCommentCssClassName).first().text();
+		return reviewData.select(getReviewCommentCssClassName()).first().text();
 	}
+
+	protected abstract String getReviewCommentCssClassName();
 
 	private Elements getReviewData(Elements reviewContainer) {
-		return reviewContainer.select(reviewDataCssClassName);
+		return reviewContainer.select(getReviewDataCssClassName());
 	}
 
+	protected abstract String getReviewDataCssClassName();
+
 	private Elements getUserData(Elements reviewContainer) {
-		return reviewContainer.select(userDataCssClassName);
+		return reviewContainer.select(getUserDataCssClassName());
 	}
+
+	protected abstract String getUserDataCssClassName();
 
 }
