@@ -23,6 +23,21 @@ public enum Networks {
 			// TODO Auto-generated method stub
 			return null;
 		}
+	},
+	QYPE {
+		@Override
+		public String convertTimestampToNetworkTime(Timestamp timestamp) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	},
+	OPENTABLE {
+		@Override
+		public String convertTimestampToNetworkTime(Timestamp timestamp) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
 	};
 
 	public String getName() {

@@ -1,44 +1,36 @@
 package org.social.core.query;
 
 import org.social.core.data.CustomerNetworkKeywords;
-import org.social.core.util.UtilValidate;
 
 public class YelpQuery extends Query {
 
-	private final String searchUrl = "https://api.yelp.com/v2/business/";
+	private final String searchUrl = "https://www.yelp.com";
 
-	private String id;
-	private String language;
+	private String endpoint;
 	private String since;
 
 	public YelpQuery(CustomerNetworkKeywords customerNetworkKeywords) {
 		super(customerNetworkKeywords);
 
-		setId(customerNetworkKeywords.getPage());
+		setEndpoint(customerNetworkKeywords.getPage());
 	}
 
 	@Override
 	public String constructQuery() {
-		StringBuilder queryBuilder = new StringBuilder(this.searchUrl);
-		queryBuilder.append(id);
-		if (UtilValidate.isNotEmpty(this.language)) {
-			queryBuilder.append("?");
-			queryBuilder.append("lang=");
-			queryBuilder.append(language);
-		}
-		return queryBuilder.toString();
+		// Not implemented
+		return null;
 	}
 
-	private void setId(String id) {
-		this.id = id;
+	private void setEndpoint(String id) {
+		this.endpoint = id;
+	}
+
+	public String getEndpoint() {
+		return this.endpoint;
 	}
 
 	public String getSearchUrl() {
 		return this.searchUrl;
-	}
-
-	public void setLanguage(String language) {
-		this.language = language;
 	}
 
 	public String getSince() {

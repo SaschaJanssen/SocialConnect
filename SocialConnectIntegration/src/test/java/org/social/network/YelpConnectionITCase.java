@@ -1,6 +1,7 @@
 package org.social.network;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class YelpConnectionITCase extends SocialITCase {
 		List<Messages> messages = yelp.fetchMessages();
 
 		assertNotNull(messages);
+		assertTrue(messages.size() > 200);
 	}
 
 }

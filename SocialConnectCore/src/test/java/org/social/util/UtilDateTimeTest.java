@@ -21,7 +21,7 @@ public class UtilDateTimeTest {
 	}
 
 	@Test
-	public void testConvertToTimestamp() throws Exception {
+	public void testConvertToTimestamp_TwitterTimeFormat() throws Exception {
 		// 2011-05-10T18:35:38+0000
 		String tsString = "2011-05-10T18:35:38+0000";
 		Timestamp ts = UtilDateTime.toTimestamp(tsString);
@@ -29,11 +29,22 @@ public class UtilDateTimeTest {
 	}
 
 	@Test
-	public void testConvertToTimestamp_2() throws Exception {
+	public void testConvertToTimestamp_FbTimeFormat() throws Exception {
 		// Wed, 19 Jan 2011 20:21:46 +0000
 		String tsString = "Wed, 19 Jan 2011 20:21:46 +0000";
 		Timestamp ts = UtilDateTime.toTimestamp(tsString);
 		assertEquals("2011-01-19 20:21:46.0", ts.toString());
+	}
+
+	@Test
+	public void testConvertToTimestamp_YelpTimeFormat() throws Exception {
+		String tsString = "7/8/2012";
+		Timestamp ts = UtilDateTime.toTimestamp(tsString);
+		assertEquals("2012-07-08 23:59:59.0", ts.toString());
+
+		tsString = "12/20/2012";
+		ts = UtilDateTime.toTimestamp(tsString);
+		assertEquals("2012-12-20 23:59:59.0", ts.toString());
 	}
 
 	@Test

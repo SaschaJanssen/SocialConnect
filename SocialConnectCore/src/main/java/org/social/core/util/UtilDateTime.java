@@ -61,6 +61,8 @@ public class UtilDateTime {
 			calendar = toCalendarFromFbTime(dateString);
 		} else if (dateString.matches("\\w{1,3}, \\d{1,2} \\w{1,3} .*")) {
 			calendar = toCalendarFromTwitterTime(dateString);
+		} else if (dateString.matches("\\d{1,2}/\\d{1,2}/\\d{4,4}")) {
+			calendar = toCalendarFromYelpTime(dateString);
 		} else {
 			return null;
 		}
@@ -68,6 +70,15 @@ public class UtilDateTime {
 		Timestamp timestamp = new Timestamp(calendar.getTimeInMillis());
 
 		return timestamp;
+	}
+
+	private static Calendar toCalendarFromYelpTime(String dateString) {
+		String[] dateTime = dateString.split("/");
+		int month = Integer.parseInt(dateTime[0]);
+		int day = Integer.parseInt(dateTime[1]);
+		int year = Integer.parseInt(dateTime[2]);
+
+		return toCalendar("0", year, month, day, 23, 59, 59);
 	}
 
 	// create Calendar from date time string Wed, 19 Jan 2011 20:21:46 +0000

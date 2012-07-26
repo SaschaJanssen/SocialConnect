@@ -11,9 +11,11 @@ import org.social.core.data.DataCrafter;
 import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
+import org.social.core.filter.sentiment.SentimentAnalyser;
 import org.social.core.network.FacebookConnection;
 import org.social.core.network.SocialNetworkConnection;
 import org.social.core.network.TwitterConnection;
+import org.social.core.network.YelpConnection;
 
 public class SocialDataConsumer {
 
@@ -28,11 +30,14 @@ public class SocialDataConsumer {
 	}
 
 	public FilteredMessageList consumeData(Customers customer) {
-		Thread fbThread = new Thread(new NetworkConsumeThread(new FacebookConnection(customer)));
+		Thread fbThread = new Thread(new NetworkConsumeAndCraftThread(new FacebookConnection(customer)));
 		executor.execute(fbThread);
 
-		Thread twitterThread = new Thread(new NetworkConsumeThread(new TwitterConnection(customer)));
+		Thread twitterThread = new Thread(new NetworkConsumeAndCraftThread(new TwitterConnection(customer)));
 		executor.execute(twitterThread);
+
+		Thread yelpThread = new Thread(new NetworkConsumeThread(new YelpConnection(customer)));
+		executor.execute(yelpThread);
 
 		waitForThreadsToFinish();
 
@@ -51,6 +56,32 @@ public class SocialDataConsumer {
 			executor.awaitTermination(1000, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			logger.error("", e);
+		}
+	}
+
+	private class NetworkConsumeAndCraftThread implements Runnable {
+		private final SocialNetworkConnection networkConnection;
+
+		public NetworkConsumeAndCraftThread(SocialNetworkConnection networkConnection) {
+			this.networkConnection = networkConnection;
+		}
+
+		@Override
+		public void run() {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Start new " + networkConnection.getClass().getName()
+						+ " data consumer and filtering thread.");
+			}
+
+			List<Messages> receivedMsgList = networkConnection.fetchMessages();
+
+			if (logger.isDebugEnabled()) {
+				logger.debug("Found " + receivedMsgList.size() + " Messages from Network: " + networkConnection.getClass().getName());
+			}
+
+			DataCrafter crafter = new DataCrafter(receivedMsgList);
+			FilteredMessageList filteredMessages = crafter.craft(networkConnection.getCustomerNetworkKeywords());
+			results.addAll(filteredMessages);
 		}
 	}
 
@@ -74,9 +105,9 @@ public class SocialDataConsumer {
 				logger.debug("Found " + receivedMsgList.size() + " Messages from Network: " + networkConnection.getClass().getName());
 			}
 
-			DataCrafter crafter = new DataCrafter(receivedMsgList);
-			FilteredMessageList filteredMessages = crafter.craft(networkConnection.getCustomerNetworkKeywords());
-			results.addAll(filteredMessages);
+			SentimentAnalyser sentimentAnalyser = SentimentAnalyser.getInstance();
+			List<Messages> filteredMessages = sentimentAnalyser.sentiment(receivedMsgList);
+			results.addAllToPositiveList(filteredMessages);
 		}
 	}
 

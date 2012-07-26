@@ -160,11 +160,11 @@ public class Messages {
 	}
 
 	@Column(name = "NETWORK_USER_RATING")
-	private String getNetworkUserRating() {
+	public String getNetworkUserRating() {
 		return networkUserRating;
 	}
 
-	private void setNetworkUserRating(String networkUserRating) {
+	public void setNetworkUserRating(String networkUserRating) {
 		this.networkUserRating = networkUserRating;
 	}
 

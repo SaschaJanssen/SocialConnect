@@ -17,7 +17,11 @@ public class FilteredMessageList {
 
 	public void addAll(FilteredMessageList filteredMessageList) {
 		negativeList.addAll(filteredMessageList.getNegativeList());
-		positiveList.addAll(filteredMessageList.getPositivList());
+		addAllToPositiveList(filteredMessageList.getPositivList());
+	}
+
+	public void addAllToPositiveList(List<Messages> messages) {
+		positiveList.addAll(messages);
 	}
 
 	public int size() {
