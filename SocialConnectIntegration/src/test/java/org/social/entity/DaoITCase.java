@@ -132,6 +132,10 @@ public class DaoITCase extends SocialITCase {
 
 		assertNotNull(kws);
 		assertTrue("The list shouldn't be empty.", kws.size() > 0);
+
+		keywordDao.getUserNetworks(1L);
+		assertNotNull(kws);
+		assertTrue("The list shouldn't be empty.", kws.size() > 0);
 	}
 
 	@Test
