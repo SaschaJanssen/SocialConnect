@@ -1,6 +1,7 @@
 package org.social.consumer;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,7 +35,7 @@ public class SocialDataConsumerITCase extends SocialITCase {
 		FilteredMessageList messageDataList = consumer.consumeData(customer);
 
 		assertNotNull(messageDataList);
-
+		assertTrue(messageDataList.size() > 1);
 	}
 
 }

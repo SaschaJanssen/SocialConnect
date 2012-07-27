@@ -26,6 +26,8 @@ public abstract class SocialCrawler {
 	private String endpoint;
 	private Document document = null;
 
+	private boolean anyMoreNewMessages;
+
 	public SocialCrawler(String baseUrl, String endpoint) {
 		this.baseUrl = baseUrl;
 		this.endpoint = endpoint;
@@ -33,7 +35,7 @@ public abstract class SocialCrawler {
 
 	public List<Messages> crawl(Customers customer) {
 		List<Messages> extractedMessagesFilterByDate = new ArrayList<Messages>();
-		boolean anyMoreNewMessages = true;
+		anyMoreNewMessages = true;
 
 		while (anyMoreNewMessages && endpoint != null && !endpoint.isEmpty()) {
 			if (logger.isDebugEnabled()) {
@@ -57,24 +59,7 @@ public abstract class SocialCrawler {
 			List<Messages> extractedMessages = extractReviewDataFromHtml(reviewContainer, document.head(),
 					customer.getCustomerId());
 
-			Iterator<Messages> messageIterator = extractedMessages.iterator();
-			if (logger.isDebugEnabled()) {
-				logger.debug("Check if there are messages which are older than the last customer network acces date.");
-			}
-			while (messageIterator.hasNext()) {
-				Messages message = messageIterator.next();
-				Timestamp networkTs = message.getNetworkMessageDate();
-				Timestamp lastNetworkAccess = customer.getLastNetworkdAccess();
-
-				if (isMessageYoungerThanLastNetworkAccess(networkTs, lastNetworkAccess)) {
-					if (logger.isDebugEnabled()) {
-						logger.debug("Found message which is already stored. Remove it from current batch.");
-					}
-
-					anyMoreNewMessages = false;
-					messageIterator.remove();
-				}
-			}
+			extractedMessages = filterMessageByDate(extractedMessages, customer.getLastNetworkdAccess());
 
 			extractedMessagesFilterByDate.addAll(extractedMessages);
 
@@ -84,8 +69,26 @@ public abstract class SocialCrawler {
 		return extractedMessagesFilterByDate;
 	}
 
-	public boolean isMessageYoungerThanLastNetworkAccess(Timestamp messageNetworkTs, Timestamp lastNetworkAccess) {
-		return (messageNetworkTs != null && lastNetworkAccess != null && lastNetworkAccess.after(messageNetworkTs));
+	private List<Messages> filterMessageByDate(List<Messages> extractedMessages, Timestamp customerLastNetworkAccess) {
+		Iterator<Messages> messageIterator = extractedMessages.iterator();
+		if (logger.isDebugEnabled()) {
+			logger.debug("Check if there are messages which are older than the last customer network acces date.");
+		}
+		while (messageIterator.hasNext()) {
+			Messages message = messageIterator.next();
+			Timestamp networkTs = message.getNetworkMessageDate();
+
+			if (UtilDateTime.isMessageYoungerThanLastNetworkAccess(networkTs, customerLastNetworkAccess)) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("Found message which is already stored. Remove it from current batch.");
+				}
+
+				anyMoreNewMessages = false;
+				messageIterator.remove();
+			}
+		}
+
+		return extractedMessages;
 	}
 
 	public Document getDocument() throws IOException {
@@ -103,8 +106,7 @@ public abstract class SocialCrawler {
 
 	public Element getPaginationCurrentSelectedData(Element body) {
 		Element pagination = body.select(getPaginationControlsCssClassName()).first();
-		Element currentPaginationSelection = pagination.select(getSelectedPaginationCssClassName()).first();
-		return currentPaginationSelection;
+		return pagination.select(getSelectedPaginationCssClassName()).first();
 	}
 
 	protected abstract String getPaginationControlsCssClassName();
@@ -166,9 +168,7 @@ public abstract class SocialCrawler {
 
 	private String getNetworkUserRating(Element reviewData) {
 		Element ratingElement = reviewData.select(getRatingClassName()).first();
-
-		String platformUserRating = extractNetworkUserRatingData(ratingElement);
-		return platformUserRating;
+		return extractNetworkUserRatingData(ratingElement);
 	}
 
 	protected abstract String extractNetworkUserRatingData(Element ratingElement);
@@ -190,9 +190,7 @@ public abstract class SocialCrawler {
 
 	private String getUserIdFromUserInfo(Element userInfo) {
 		String href = userInfo.attr("href");
-		String userId = href.substring(href.indexOf("=") + 1);
-		String networkUserId = userId;
-		return networkUserId;
+		return href.substring(href.indexOf("=") + 1);
 	}
 
 	private String getReviewTextFromComment(Element reviewData) {

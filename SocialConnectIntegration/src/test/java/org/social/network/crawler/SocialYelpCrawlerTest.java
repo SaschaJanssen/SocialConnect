@@ -1,12 +1,9 @@
 package org.social.network.crawler;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.List;
 
 import org.jsoup.nodes.Document;
@@ -18,7 +15,6 @@ import org.social.SocialITCase;
 import org.social.core.entity.domain.Messages;
 import org.social.core.network.crawler.SocialCrawler;
 import org.social.core.network.crawler.YelpSocialCrawler;
-import org.social.core.util.UtilDateTime;
 
 public class SocialYelpCrawlerTest extends SocialITCase {
 
@@ -29,33 +25,6 @@ public class SocialYelpCrawlerTest extends SocialITCase {
 	public void setUp() throws Exception {
 		jsoupCrawler = new YelpSocialCrawler("https://www.yelp.com", "/biz/vapiano-new-york-2?sort_by=date_desc");
 		doc = jsoupCrawler.getDocument();
-	}
-
-	@Test
-	public void testIfMessageDateIsYounger() throws Exception {
-		Calendar calendar = Calendar.getInstance();
-
-		Timestamp messageNetworkTs = UtilDateTime.nowTimestamp();
-		Timestamp lastNetworkAccess = UtilDateTime.nowTimestamp();
-
-		boolean younger = jsoupCrawler.isMessageYoungerThanLastNetworkAccess(messageNetworkTs, lastNetworkAccess);
-		assertFalse(younger);
-
-		messageNetworkTs = UtilDateTime.toTimestamp("3/24/2012");
-
-		calendar.set(2012, 7 - 1, 26, 11, 3, 0);
-		lastNetworkAccess = new Timestamp(calendar.getTimeInMillis());
-
-		younger = jsoupCrawler.isMessageYoungerThanLastNetworkAccess(messageNetworkTs, lastNetworkAccess);
-		assertTrue(younger);
-
-		messageNetworkTs = UtilDateTime.toTimestamp("7/26/2012");
-
-		calendar.set(2012, 7 - 1, 26, 11, 3, 0);
-		lastNetworkAccess = new Timestamp(calendar.getTimeInMillis());
-
-		younger = jsoupCrawler.isMessageYoungerThanLastNetworkAccess(messageNetworkTs, lastNetworkAccess);
-		assertFalse(younger);
 	}
 
 	@Test

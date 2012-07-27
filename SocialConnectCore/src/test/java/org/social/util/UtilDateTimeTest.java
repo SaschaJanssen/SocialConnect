@@ -1,6 +1,8 @@
 package org.social.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -73,5 +75,32 @@ public class UtilDateTimeTest {
 
 		Long unixTs =timestamp.getTime() / 1000L;
 		assertEquals(unixTs.toString(), ts);
+	}
+
+	@Test
+	public void testIfMessageDateIsYounger() throws Exception {
+		Calendar calendar = Calendar.getInstance();
+
+		Timestamp messageNetworkTs = UtilDateTime.nowTimestamp();
+		Timestamp lastNetworkAccess = UtilDateTime.nowTimestamp();
+
+		boolean younger = UtilDateTime.isMessageYoungerThanLastNetworkAccess(messageNetworkTs, lastNetworkAccess);
+		assertFalse(younger);
+
+		messageNetworkTs = UtilDateTime.toTimestamp("3/24/2012");
+
+		calendar.set(2012, 7 - 1, 26, 11, 3, 0);
+		lastNetworkAccess = new Timestamp(calendar.getTimeInMillis());
+
+		younger = UtilDateTime.isMessageYoungerThanLastNetworkAccess(messageNetworkTs, lastNetworkAccess);
+		assertTrue(younger);
+
+		messageNetworkTs = UtilDateTime.toTimestamp("7/26/2012");
+
+		calendar.set(2012, 7 - 1, 26, 11, 3, 0);
+		lastNetworkAccess = new Timestamp(calendar.getTimeInMillis());
+
+		younger = UtilDateTime.isMessageYoungerThanLastNetworkAccess(messageNetworkTs, lastNetworkAccess);
+		assertFalse(younger);
 	}
 }

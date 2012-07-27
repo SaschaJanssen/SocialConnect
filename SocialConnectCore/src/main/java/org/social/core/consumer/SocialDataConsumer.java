@@ -57,6 +57,10 @@ public class SocialDataConsumer {
 			executor.execute(openTableThread);
 		}
 
+		if (userNetworks.contains(Networks.QYPE.getName())) {
+			// TODO
+		}
+
 		waitForThreadsToFinish();
 
 		if (logger.isDebugEnabled()) {

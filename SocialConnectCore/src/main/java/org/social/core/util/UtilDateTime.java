@@ -145,4 +145,8 @@ public class UtilDateTime {
 		Long unixTimestamp = timestamp.getTime() / 1000L;
 		return unixTimestamp.toString();
 	}
+
+	public static  boolean isMessageYoungerThanLastNetworkAccess(Timestamp messageNetworkTs, Timestamp lastNetworkAccess) {
+		return (messageNetworkTs != null && lastNetworkAccess != null && lastNetworkAccess.after(messageNetworkTs));
+	}
 }
