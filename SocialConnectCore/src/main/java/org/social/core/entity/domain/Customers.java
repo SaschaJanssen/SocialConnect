@@ -1,15 +1,11 @@
 package org.social.core.entity.domain;
 
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -23,8 +19,6 @@ public class Customers {
 	private Timestamp lastNetworkdAccess;
 	private Timestamp createdTs;
 	private Timestamp lastUpdatedTs;
-
-	private Set<Keywords> keywords = new HashSet<Keywords>();
 
 	public Customers() {
 		this.createdTs = UtilDateTime.nowTimestamp();
@@ -68,14 +62,4 @@ public class Customers {
 	public void setLastUpdatedTs(Timestamp lastUpdatedTs) {
 		this.lastUpdatedTs = lastUpdatedTs;
 	}
-
-	@OneToMany(targetEntity = Keywords.class, mappedBy = "customerId", fetch = FetchType.LAZY)
-	public Set<Keywords> getKeywords() {
-		return keywords;
-	}
-
-	public void setKeywords(Set<Keywords> keywords) {
-		this.keywords = keywords;
-	}
-
 }

@@ -1,16 +1,19 @@
 package org.social.core.consumer;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.social.core.constants.Networks;
 import org.social.core.data.DataCrafter;
 import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
+import org.social.core.entity.helper.KeywordDAO;
 import org.social.core.filter.sentiment.SentimentAnalyser;
 import org.social.core.network.FacebookConnection;
 import org.social.core.network.OpenTableConnection;
@@ -31,18 +34,28 @@ public class SocialDataConsumer {
 	}
 
 	public FilteredMessageList consumeData(Customers customer) {
+		KeywordDAO keywordDao = new KeywordDAO();
+		Set<String> userNetworks = keywordDao.getUserNetworks(customer.getCustomerId());
 
-		Thread fbThread = new Thread(new NetworkConsumeAndCraftThread(new FacebookConnection(customer)));
-		executor.execute(fbThread);
+		if (userNetworks.contains(Networks.FACEBOOK.getName())) {
+			Thread fbThread = new Thread(new NetworkConsumeAndCraftThread(new FacebookConnection(customer)));
+			executor.execute(fbThread);
+		}
 
-		Thread twitterThread = new Thread(new NetworkConsumeAndCraftThread(new TwitterConnection(customer)));
-		executor.execute(twitterThread);
+		if (userNetworks.contains(Networks.TWITTER.getName())) {
+			Thread twitterThread = new Thread(new NetworkConsumeAndCraftThread(new TwitterConnection(customer)));
+			executor.execute(twitterThread);
+		}
 
-		Thread yelpThread = new Thread(new NetworkConsumeThread(new YelpConnection(customer)));
-		executor.execute(yelpThread);
+		if (userNetworks.contains(Networks.YELP.getName())) {
+			Thread yelpThread = new Thread(new NetworkConsumeThread(new YelpConnection(customer)));
+			executor.execute(yelpThread);
+		}
 
-		Thread openTableThread = new Thread(new NetworkConsumeThread(new OpenTableConnection(customer)));
-		executor.execute(openTableThread);
+		if (userNetworks.contains(Networks.OPENTABLE.getName())) {
+			Thread openTableThread = new Thread(new NetworkConsumeThread(new OpenTableConnection(customer)));
+			executor.execute(openTableThread);
+		}
 
 		waitForThreadsToFinish();
 
@@ -81,7 +94,8 @@ public class SocialDataConsumer {
 			List<Messages> receivedMsgList = networkConnection.fetchMessages();
 
 			if (logger.isDebugEnabled()) {
-				logger.debug("Found " + receivedMsgList.size() + " Messages from Network: " + networkConnection.getClass().getName());
+				logger.debug("Found " + receivedMsgList.size() + " Messages from Network: "
+						+ networkConnection.getClass().getName());
 			}
 
 			DataCrafter crafter = new DataCrafter(receivedMsgList);
@@ -107,7 +121,8 @@ public class SocialDataConsumer {
 			List<Messages> receivedMsgList = networkConnection.fetchMessages();
 
 			if (logger.isDebugEnabled()) {
-				logger.debug("Found " + receivedMsgList.size() + " Messages from Network: " + networkConnection.getClass().getName());
+				logger.debug("Found " + receivedMsgList.size() + " Messages from Network: "
+						+ networkConnection.getClass().getName());
 			}
 
 			SentimentAnalyser sentimentAnalyser = SentimentAnalyser.getInstance();
