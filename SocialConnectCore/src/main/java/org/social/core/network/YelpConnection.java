@@ -7,11 +7,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.constants.Networks;
+import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 import org.social.core.network.crawler.YelpSocialCrawler;
 import org.social.core.query.YelpQuery;
-import org.social.core.util.UtilValidate;
 
 public class YelpConnection extends SocialNetworkConnection {
 
@@ -25,22 +25,19 @@ public class YelpConnection extends SocialNetworkConnection {
 	}
 
 	@Override
-	public List<Messages> fetchMessages() {
+	public FilteredMessageList fetchAndCraftMessages() {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Fetch information from YELP for customer: " + this.customer.getCustomerId());
 		}
 
 		YelpQuery query = buildQueryFromKeywords();
 
-		List<Messages> resultList = new ArrayList<Messages>();
-		if (UtilValidate.isEmpty(query.getEndpoint())) {
-			return resultList;
-		}
-
 		YelpSocialCrawler crawler = new YelpSocialCrawler(query.getSearchUrl(), query.constructQuery());
 
-		resultList = crawler.crawl(customer);
-		return resultList;
+		List<Messages> resultMessages = new ArrayList<Messages>();
+		resultMessages = crawler.crawl(customer);
+
+		return sentimentMessages(resultMessages);
 	}
 
 	private YelpQuery buildQueryFromKeywords() {

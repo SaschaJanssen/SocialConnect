@@ -51,7 +51,7 @@ public class DataCrafterTest {
 
 		CustomerNetworkKeywords cnk = new CustomerNetworkKeywords(keywordListForNetwork);
 
-		FilteredMessageList result = crafter.craft(cnk);
+		FilteredMessageList result = crafter.reliabilityAndSentimentCrafter(cnk);
 
 		assertEquals(2, result.countPositivMessages());
 		assertEquals(2, result.countNegativeMessages());
@@ -82,7 +82,7 @@ public class DataCrafterTest {
 
 		CustomerNetworkKeywords cnk = new CustomerNetworkKeywords(keywordListForNetwork);
 
-		FilteredMessageList result = crafter.craft(cnk);
+		FilteredMessageList result = crafter.reliabilityAndSentimentCrafter(cnk);
 
 		assertEquals(3, result.countPositivMessages());
 		assertEquals(3, result.countNegativeMessages());

@@ -17,6 +17,7 @@ import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.constants.Networks;
+import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 import org.social.core.query.TwitterQuery;
@@ -59,7 +60,7 @@ public class TwitterConnection extends SocialNetworkConnection {
 	}
 
 	@Override
-	public List<Messages> fetchMessages() {
+	public FilteredMessageList fetchAndCraftMessages() {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Fetch tweets from Twitter for customer: " + this.customer.getCustomerId());
 		}
@@ -67,7 +68,7 @@ public class TwitterConnection extends SocialNetworkConnection {
 		TwitterQuery query = buildQueryFromKeywords();
 		String constructedQuery = query.constructQuery();
 
-		List<Messages> resultList = new ArrayList<Messages>();
+		List<Messages> resultMessages = new ArrayList<Messages>();
 
 		while (true) {
 			if (logger.isDebugEnabled()) {
@@ -85,7 +86,7 @@ public class TwitterConnection extends SocialNetworkConnection {
 			JSONObject json = (JSONObject) JSONSerializer.toJSON(response.getBody());
 
 			if (json.containsKey("results")) {
-				resultList.addAll(extractMessageData(json));
+				resultMessages.addAll(extractMessageData(json));
 			}
 
 			if (json.containsKey("next_page")) {
@@ -96,9 +97,12 @@ public class TwitterConnection extends SocialNetworkConnection {
 		}
 
 		if (logger.isDebugEnabled()) {
-			logger.debug("Got " + resultList.size() + " tweets from Twitter.");
+			logger.debug("Got " + resultMessages.size() + " tweets from Twitter.");
 		}
-		return resultList;
+
+		FilteredMessageList filteredResultMessages = reliabilityAndSentimentMessages(resultMessages);
+
+		return filteredResultMessages;
 	}
 
 	private TwitterQuery buildQueryFromKeywords() {

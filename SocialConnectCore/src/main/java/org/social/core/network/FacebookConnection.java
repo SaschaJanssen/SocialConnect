@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.constants.Networks;
+import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 import org.social.core.query.FacebookQuery;
@@ -35,25 +36,27 @@ public class FacebookConnection extends SocialNetworkConnection {
 	}
 
 	@Override
-	public List<Messages> fetchMessages() {
+	public FilteredMessageList fetchAndCraftMessages() {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Fetch posts from Facebook for customer: " + super.customer.getCustomerId());
 		}
 
 		FacebookQuery query = buildQueryFromKeywords();
 
-		List<Messages> results = new ArrayList<Messages>();
+		List<Messages> resultMessages = new ArrayList<Messages>();
 		Connection<JsonObject> searchResult = fbClient.fetchConnection(query.constructQuery(), JsonObject.class);
-		results.addAll(extractMessageData(searchResult));
+		resultMessages.addAll(extractMessageData(searchResult));
 		String nextPageUrl = searchResult.getNextPageUrl();
 
 		while (nextPageUrl != null && !nextPageUrl.isEmpty()) {
 			searchResult = fbClient.fetchConnectionPage(nextPageUrl, JsonObject.class);
-			results.addAll(extractMessageData(searchResult));
+			resultMessages.addAll(extractMessageData(searchResult));
 			nextPageUrl = searchResult.getNextPageUrl();
 		}
 
-		return results;
+		FilteredMessageList filteredResultMessages = reliabilityAndSentimentMessages(resultMessages);
+
+		return filteredResultMessages;
 	}
 
 	private FacebookQuery buildQueryFromKeywords() {

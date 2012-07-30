@@ -40,7 +40,7 @@ public class SocialYelpCrawlerTest extends SocialITCase {
 
 		assertNotNull(reviewContainer);
 		assertTrue(reviewContainer.size() > 1);
-		assertEquals("media-block-no-margin clearfix media-block", reviewContainer.get(0).className());
+		assertTrue(reviewContainer.get(0).className().contains("media-block-no-margin"));
 	}
 
 	@Test

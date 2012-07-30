@@ -7,12 +7,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.constants.Networks;
+import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 import org.social.core.network.crawler.OpenTableSocialCrawler;
 import org.social.core.network.crawler.SocialCrawler;
 import org.social.core.query.OpenTableQuery;
-import org.social.core.util.UtilValidate;
 
 public class OpenTableConnection extends SocialNetworkConnection {
 
@@ -26,20 +26,19 @@ public class OpenTableConnection extends SocialNetworkConnection {
 	}
 
 	@Override
-	public List<Messages> fetchMessages() {
+	public FilteredMessageList fetchAndCraftMessages() {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Fetch information from OpenTable for customer: " + this.customer.getCustomerId());
 		}
 
-		List<Messages> resultList = new ArrayList<Messages>();
 		OpenTableQuery query = buildQueryFromKeywords();
-		if (UtilValidate.isEmpty(query.getEndpoint())) {
-			return resultList;
-		}
+
 		SocialCrawler crawler = new OpenTableSocialCrawler(query.getSearchUrl(), query.constructQuery());
 
-		resultList = crawler.crawl(customer);
-		return resultList;
+		List<Messages> resultMessages = new ArrayList<Messages>();
+		resultMessages = crawler.crawl(customer);
+
+		return sentimentMessages(resultMessages);
 	}
 
 	private OpenTableQuery buildQueryFromKeywords() {

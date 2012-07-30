@@ -30,8 +30,7 @@ public class DataCrafter {
 		negativeList = new ArrayList<Messages>();
 	}
 
-	public FilteredMessageList craft(CustomerNetworkKeywords customerKeywords) {
-
+	public FilteredMessageList reliabilityAndSentimentCrafter(CustomerNetworkKeywords customerKeywords) {
 		wordlistFilter();
 		mentionedFilter(customerKeywords);
 		sentimentAnalyser();
@@ -39,6 +38,16 @@ public class DataCrafter {
 		FilteredMessageList filteredMessages = new FilteredMessageList();
 		filteredMessages.setPositiveList(positiveList);
 		filteredMessages.setNegativeList(negativeList);
+		return filteredMessages;
+	}
+
+	public FilteredMessageList sentimentCrafter() {
+		this.positiveList = this.rawData;
+
+		sentimentAnalyser();
+
+		FilteredMessageList filteredMessages = new FilteredMessageList();
+		filteredMessages.setPositiveList(positiveList);
 		return filteredMessages;
 	}
 

@@ -4,22 +4,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.social.SocialITCase;
 import org.social.core.data.CustomerNetworkKeywords;
+import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
-import org.social.core.entity.domain.Messages;
 import org.social.core.network.FacebookConnection;
 
 public class FacebookConnectionITCase extends SocialITCase {
-
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public FacebookConnectionITCase() {
 		super();
@@ -39,17 +33,10 @@ public class FacebookConnectionITCase extends SocialITCase {
 		customer.setCustomerId(1L);
 
 		FacebookConnection con = new FacebookConnection(customer);
-		List<Messages> result = con.fetchMessages();
+		FilteredMessageList result = con.fetchAndCraftMessages();
 
 		assertNotNull(result);
-		assertTrue(!result.isEmpty());
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("Foud: " + result.size() + " results.");
-			for (Messages messageData : result) {
-				logger.debug(messageData.toString());
-			}
-		}
+		assertTrue(result.size() > 0);
 	}
 
 	@Test

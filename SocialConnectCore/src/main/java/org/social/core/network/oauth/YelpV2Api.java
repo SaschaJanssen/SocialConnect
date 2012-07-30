@@ -1,8 +1,6 @@
 package org.social.core.network.oauth;
 
 import org.scribe.builder.api.DefaultApi10a;
-import org.scribe.builder.api.DefaultApi20;
-import org.scribe.model.OAuthConfig;
 import org.scribe.model.Token;
 
 public class YelpV2Api extends DefaultApi10a {
