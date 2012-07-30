@@ -95,7 +95,8 @@ public abstract class SocialCrawler {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Start crawling data from: " + baseUrl + endpoint);
 		}
-		return Jsoup.connect(baseUrl + endpoint).get();
+
+		return Jsoup.connect(baseUrl + endpoint).timeout(5000).get();
 	}
 
 	public Elements getReviewDataContainer(Element body) {
