@@ -92,7 +92,7 @@
 				<executions>
 					<execution>
 						<id>copy-dependencies</id>
-						<phase>package</phase>
+						<phase>prepare-package</phase>
 						<goals>
 							<goal>copy-dependencies</goal>
 						</goals>
@@ -105,27 +105,44 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+
 				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
+					<finalName>${artifactId}</finalName>
 					<archive>
 						<manifest>
-							<mainClass>org.social.core.Start</mainClass>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+							<mainClass>org.social.core.Start</mainClass>
 						</manifest>
 					</archive>
+					<outputDirectory>${project.build.directory}/lib</outputDirectory>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.3</version>
 				<executions>
 					<execution>
+						<id>assemble-package</id>
 						<phase>package</phase>
 						<goals>
-							<goal>attached</goal>
+							<goal>single</goal>
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<descriptors>
+						<descriptor>src/main/assemble/distribution.xml</descriptor>
+					</descriptors>
+				</configuration>
 			</plugin>
 
 		</plugins>
