@@ -34,7 +34,7 @@ public class SentimentAnalyser {
 			try {
 				classification = classifier.classify(unClassifiedText).getCategory();
 			} catch (IllegalStateException e) {
-				logger.error("Classifier throw the following Exception. Classification will be skiped.", e);
+				logger.warn("Classifier throw the following Exception. Classification will be skiped.");
 				break;
 			}
 
