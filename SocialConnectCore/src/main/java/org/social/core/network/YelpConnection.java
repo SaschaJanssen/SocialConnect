@@ -10,6 +10,7 @@ import org.social.core.constants.Networks;
 import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
+import org.social.core.network.crawler.JsoupBaseCrwaler;
 import org.social.core.network.crawler.YelpSocialCrawler;
 import org.social.core.query.YelpQuery;
 
@@ -32,7 +33,8 @@ public class YelpConnection extends SocialNetworkConnection {
 
 		YelpQuery query = buildQueryFromKeywords();
 
-		YelpSocialCrawler crawler = new YelpSocialCrawler(query.getSearchUrl(), query.constructQuery());
+		YelpSocialCrawler crawler = new YelpSocialCrawler(new JsoupBaseCrwaler(), query.getSearchUrl(),
+				query.constructQuery());
 
 		List<Messages> resultMessages = new ArrayList<Messages>();
 		resultMessages = crawler.crawl(customer);

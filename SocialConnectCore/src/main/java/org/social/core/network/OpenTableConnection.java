@@ -10,6 +10,7 @@ import org.social.core.constants.Networks;
 import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
+import org.social.core.network.crawler.JsoupBaseCrwaler;
 import org.social.core.network.crawler.OpenTableSocialCrawler;
 import org.social.core.network.crawler.SocialCrawler;
 import org.social.core.query.OpenTableQuery;
@@ -33,7 +34,8 @@ public class OpenTableConnection extends SocialNetworkConnection {
 
 		OpenTableQuery query = buildQueryFromKeywords();
 
-		SocialCrawler crawler = new OpenTableSocialCrawler(query.getSearchUrl(), query.constructQuery());
+		SocialCrawler crawler = new OpenTableSocialCrawler(new JsoupBaseCrwaler(), query.getSearchUrl(),
+				query.constructQuery());
 
 		List<Messages> resultMessages = new ArrayList<Messages>();
 		resultMessages = crawler.crawl(customer);
@@ -45,7 +47,7 @@ public class OpenTableConnection extends SocialNetworkConnection {
 		OpenTableQuery openTableQuery = new OpenTableQuery(super.customerNetworkKeywords);
 
 		Timestamp sinceTs = this.customer.getLastNetworkdAccess();
-		if(sinceTs != null) {
+		if (sinceTs != null) {
 			String since = sinceTs.toString();
 			openTableQuery.setSince(since);
 		}

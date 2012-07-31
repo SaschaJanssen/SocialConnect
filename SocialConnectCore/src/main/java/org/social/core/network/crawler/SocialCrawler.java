@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -22,15 +21,18 @@ public abstract class SocialCrawler {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private final String baseUrl;
+	private final BaseCrawler crawler;
 
 	private String endpoint;
 	private Document document = null;
 
 	private boolean anyMoreNewMessages;
 
-	public SocialCrawler(String baseUrl, String endpoint) {
+	public SocialCrawler(BaseCrawler crawler, String baseUrl, String endpoint) {
 		this.baseUrl = baseUrl;
 		this.endpoint = endpoint;
+
+		this.crawler = crawler;
 	}
 
 	public List<Messages> crawl(Customers customer) {
@@ -45,7 +47,7 @@ public abstract class SocialCrawler {
 			try {
 				document = getDocument();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("", e);
 				break;
 			}
 
@@ -92,11 +94,7 @@ public abstract class SocialCrawler {
 	}
 
 	public Document getDocument() throws IOException {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Start crawling data from: " + baseUrl + endpoint);
-		}
-
-		return Jsoup.connect(baseUrl + endpoint).timeout(5000).get();
+		return crawler.crwal(baseUrl + endpoint);
 	}
 
 	public Elements getReviewDataContainer(Element body) {

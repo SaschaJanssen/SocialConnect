@@ -15,8 +15,8 @@ public class OpenTableSocialCrawler extends SocialCrawler {
 	private final String paginationControlsCssClassName = "div.BVRRPageBasedPager";
 	private final String reviewContainerCssClassName = "div.BVRRSDisplayContentBody";
 
-	public OpenTableSocialCrawler(String baseUrl, String endpoint) {
-		super(baseUrl, endpoint);
+	public OpenTableSocialCrawler(BaseCrawler crawler, String baseUrl, String endpoint) {
+		super(crawler, baseUrl, endpoint);
 	}
 
 	@Override

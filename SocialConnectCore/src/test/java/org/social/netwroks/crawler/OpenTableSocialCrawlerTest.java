@@ -1,4 +1,4 @@
-package org.social.network.crawler;
+package org.social.netwroks.crawler;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -6,37 +6,33 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Before;
 import org.junit.Test;
-import org.social.SocialITCase;
 import org.social.core.entity.domain.Messages;
 import org.social.core.network.crawler.OpenTableSocialCrawler;
 import org.social.core.network.crawler.SocialCrawler;
 
-public class SocialOpenTableCrawlerTest extends SocialITCase {
+public class OpenTableSocialCrawlerTest {
 
 	SocialCrawler jsoupCrawler;
-	private Document doc = null;
 
 	@Before
 	public void setUp() throws Exception {
-		jsoupCrawler = new OpenTableSocialCrawler("http://reviews.opentable.com",
-				"/0938/41533/reviews.htm");
-		doc = jsoupCrawler.getDocument();
+		jsoupCrawler = new OpenTableSocialCrawler(new MockBaseCrawler(), "src/test/resources/",
+				"OpenTableWolfgangsTest_WithoutPagination.html");
 	}
 
 	@Test
 	public void testGetDocument() throws Exception {
-		assertNotNull(doc);
-		assertEquals("Wolfgang's Steak House - 54th Street Reviews - Rated by OpenTable Diners", doc.title());
+		assertNotNull(jsoupCrawler.getDocument());
+		assertEquals("Wolfgang's Steak House - 54th Street Reviews - Rated by OpenTable Diners", jsoupCrawler.getDocument().title());
 	}
 
 	@Test
 	public void testGetContainerOfReviewData() throws Exception {
-		Element body = doc.body();
+		Element body = jsoupCrawler.getDocument().body();
 		Elements reviewContainer = jsoupCrawler.getReviewDataContainer(body);
 
 		assertNotNull(reviewContainer);
@@ -46,9 +42,12 @@ public class SocialOpenTableCrawlerTest extends SocialITCase {
 
 	@Test
 	public void testGetNextPageLinkFromPagination() throws Exception {
-		Element body = doc.body();
+		SocialCrawler secondJsoupCrawler = new OpenTableSocialCrawler(new MockBaseCrawler(), "src/test/resources/",
+				"OpenTableWolfgangsTest_WithPagination.html");
 
-		String nextLink = jsoupCrawler.getNextPageFromPagination(body);
+		Element body = secondJsoupCrawler.getDocument().body();
+
+		String nextLink = secondJsoupCrawler.getNextPageFromPagination(body);
 
 		assertNotNull(nextLink);
 		assertEquals("/0938/41533/reviews.htm?page=2", nextLink);
@@ -56,10 +55,10 @@ public class SocialOpenTableCrawlerTest extends SocialITCase {
 
 	@Test
 	public void testExtractReviewData() throws Exception {
-		Element body = doc.body();
+		Element body = jsoupCrawler.getDocument().body();
 		Elements reviewContainer = jsoupCrawler.getReviewDataContainer(body);
 
-		List<Messages> result = jsoupCrawler.extractReviewDataFromHtml(reviewContainer, doc.head(), 1L);
+		List<Messages> result = jsoupCrawler.extractReviewDataFromHtml(reviewContainer, jsoupCrawler.getDocument().head(), 1L);
 
 		assertTrue(result.size() >= 10);
 

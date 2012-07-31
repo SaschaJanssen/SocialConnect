@@ -16,8 +16,8 @@ public class YelpSocialCrawler extends SocialCrawler {
 	private final String paginationControlsCssCLassName = "div.pagination_controls";
 	private final String reviewContainerCssClassName = "div.media-block-no-margin";
 
-	public YelpSocialCrawler(String baseUrl, String endpoint) {
-		super(baseUrl, endpoint);
+	public YelpSocialCrawler(BaseCrawler crawler, String baseUrl, String endpoint) {
+		super(crawler, baseUrl, endpoint);
 	}
 
 	@Override
