@@ -4,18 +4,16 @@ import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.Session;
-import org.social.core.entity.HibernateUtil;
 import org.social.core.entity.domain.LearningData;
 
-public class LearningDAO {
+public class LearningDAO extends AbstractDAO {
 
 	public List<LearningData> getLearningData() {
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		Session session = super.beginAndGetSession();
 
 		List<LearningData> learningDataList = getLearningData(session);
 
-		session.getTransaction().commit();
+		super.commitSession(session);
 
 		return learningDataList;
 	}
@@ -28,14 +26,12 @@ public class LearningDAO {
 	}
 
 	public void storeLearningData(List<LearningData> learningData) {
-		Session session = HibernateUtil.getSessionFactory().openSession();
-
-		session.beginTransaction();
+		Session session = super.beginAndGetSession();
 
 		for (LearningData data : learningData) {
 			session.save(data);
 		}
 
-		session.getTransaction().commit();
+		super.commitSession(session);
 	}
 }

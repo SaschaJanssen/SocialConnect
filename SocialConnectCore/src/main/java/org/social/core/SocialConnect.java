@@ -9,6 +9,7 @@ import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.LearningData;
 import org.social.core.entity.helper.CustomerDAO;
+import org.social.core.entity.helper.KeywordDAO;
 import org.social.core.entity.helper.LearningDAO;
 import org.social.core.entity.helper.MessageDAO;
 import org.social.core.filter.classifier.bayes.BayesClassifier;
@@ -33,7 +34,7 @@ public class SocialConnect {
 
 		List<Customers> customers = customerDao.getAllCustomersAndKeywords();
 		for (Customers customer : customers) {
-			SocialDataConsumer consumer = new SocialDataConsumer();
+			SocialDataConsumer consumer = new SocialDataConsumer(new KeywordDAO());
 			FilteredMessageList filteredMessageDataList = consumer.consumeData(customer);
 			consumer = null;
 

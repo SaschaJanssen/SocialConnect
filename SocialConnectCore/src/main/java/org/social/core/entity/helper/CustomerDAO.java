@@ -5,32 +5,26 @@ import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.Session;
-import org.social.core.entity.HibernateUtil;
 import org.social.core.entity.domain.Customers;
 
-public class CustomerDAO {
+public class CustomerDAO extends AbstractDAO{
 
 	public List<Customers> getAllCustomersAndKeywords() {
-
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		Session session = super.beginAndGetSession();
 
 		List<Customers> customerList = getCustomers(session);
 
-		session.getTransaction().commit();
-
+		super.commitSession(session);
 		return customerList;
 	}
 
 	public void updateCustomerNetworkAccess(Customers customer, Timestamp newTimestamp) {
+		Session session = super.beginAndGetSession();
+
 		customer.setLastNetworkdAccess(newTimestamp);
-
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-
 		session.update(customer);
 
-		session.getTransaction().commit();
+		super.commitSession(session);
 	}
 
 	private List<Customers> getCustomers(Session session) {

@@ -2,15 +2,12 @@ package org.social.core.entity.helper;
 
 import org.hibernate.Session;
 import org.social.core.data.FilteredMessageList;
-import org.social.core.entity.HibernateUtil;
 import org.social.core.entity.domain.Messages;
 
-public class MessageDAO {
+public class MessageDAO extends AbstractDAO {
 
 	public void storeMessages(FilteredMessageList filteredMessageDataList) {
-		Session session = HibernateUtil.getSessionFactory().openSession();
-
-		session.beginTransaction();
+		Session session = super.beginAndGetSession();
 
 		for (Messages messageData : filteredMessageDataList.getPositivList()) {
 			session.save(messageData);
@@ -20,6 +17,6 @@ public class MessageDAO {
 			session.save(messageData);
 		}
 
-		session.getTransaction().commit();
+		super.commitSession(session);
 	}
 }

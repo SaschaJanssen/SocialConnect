@@ -11,7 +11,9 @@ import org.social.SocialITCase;
 import org.social.core.data.CustomerNetworkKeywords;
 import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
-import org.social.core.network.FacebookConnection;
+import org.social.core.entity.helper.KeywordDAO;
+import org.social.core.network.FacebookKraken;
+import org.social.core.network.connection.FacebookConnection;
 
 public class FacebookConnectionITCase extends SocialITCase {
 
@@ -32,7 +34,7 @@ public class FacebookConnectionITCase extends SocialITCase {
 		Customers customer = new Customers();
 		customer.setCustomerId(1L);
 
-		FacebookConnection con = new FacebookConnection(customer);
+		FacebookKraken con = new FacebookKraken(customer, new KeywordDAO(), new FacebookConnection());
 		FilteredMessageList result = con.fetchAndCraftMessages();
 
 		assertNotNull(result);
@@ -44,7 +46,7 @@ public class FacebookConnectionITCase extends SocialITCase {
 		Customers customer = new Customers();
 		customer.setCustomerId(1L);
 
-		FacebookConnection con = new FacebookConnection(customer);
+		FacebookKraken con = new FacebookKraken(customer, new KeywordDAO(), new FacebookConnection());
 		CustomerNetworkKeywords cnk = con.getCustomerNetworkKeywords();
 
 		assertNotNull(cnk);

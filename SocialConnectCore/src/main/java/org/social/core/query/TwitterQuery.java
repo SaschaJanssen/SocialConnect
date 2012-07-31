@@ -77,6 +77,7 @@ public class TwitterQuery extends Query {
 		return constructedQuery;
 	}
 
+	@Override
 	public String getSearchUrl() {
 		return this.searchUrl;
 	}

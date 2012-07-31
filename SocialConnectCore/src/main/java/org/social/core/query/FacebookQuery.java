@@ -39,6 +39,7 @@ public class FacebookQuery extends Query {
 		this.type = type;
 	}
 
+	@Override
 	public String getSearchUrl() {
 		return this.searchUrl;
 	}

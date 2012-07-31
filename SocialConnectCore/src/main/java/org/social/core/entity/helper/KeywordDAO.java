@@ -7,26 +7,21 @@ import java.util.Set;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.social.core.entity.HibernateUtil;
 import org.social.core.entity.domain.Keywords;
 
-public class KeywordDAO {
+public class KeywordDAO extends AbstractDAO{
 
 	/**
 	 * Returns a list with keywords for a specific customer.
 	 */
 	public List<Keywords> getMappedKeywordByCustomerAndNetwork(Long customerId, String networkId) {
-		Session session = HibernateUtil.getSessionFactory().openSession();
-
-		session.beginTransaction();
+		Session session = super.beginAndGetSession();
 
 		Query keywordQuery = session.createQuery("from Keywords kw where id.customerId=" + customerId + " and " + " id.networkId='" + networkId + "'");
-
 		List<Keywords> keywordsForCustomer = queryForList(keywordQuery);
-		session.getTransaction().commit();
 
+		super.commitSession(session);
 		return keywordsForCustomer;
-
 	}
 
 	private List<Keywords> queryForList(Query keywordQuery) {
@@ -42,14 +37,12 @@ public class KeywordDAO {
 	}
 
 	public Set<String> getUserNetworks(Long customerId) {
-		Session session = HibernateUtil.getSessionFactory().openSession();
-
-		session.beginTransaction();
+		Session session = super.beginAndGetSession();
 
 		Query keywordQuery = session.createQuery("select distinct networkId from Keywords kw where kw.customerId=" + customerId + "");
 
 		List<String> netwroks = queryForStringList(keywordQuery);
-		session.getTransaction().commit();
+		super.commitSession(session);
 
 		Set<String> networksForCustomer = new HashSet<String>();
 		networksForCustomer.addAll(netwroks);

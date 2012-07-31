@@ -10,13 +10,15 @@ import org.social.core.entity.domain.Keywords;
 import org.social.core.entity.domain.Messages;
 import org.social.core.entity.helper.KeywordDAO;
 
-public abstract class SocialNetworkConnection {
+public abstract class SocialNetworkKraken {
 
 	protected CustomerNetworkKeywords customerNetworkKeywords;
 	protected Customers customer;
+	private KeywordDAO keywordDao;
 
-	protected SocialNetworkConnection(Customers customer) {
+	protected SocialNetworkKraken(Customers customer, KeywordDAO keywordDao) {
 		this.customer = customer;
+		this.keywordDao = keywordDao;
 	}
 
 	public abstract FilteredMessageList fetchAndCraftMessages();
@@ -26,11 +28,10 @@ public abstract class SocialNetworkConnection {
 	}
 
 	protected void getCustomersKeywords(String networkName) {
-		KeywordDAO helper = new KeywordDAO();
 
 		Long customerId = this.customer.getCustomerId();
 
-		List<Keywords> keywords = helper.getMappedKeywordByCustomerAndNetwork(customerId, networkName);
+		List<Keywords> keywords = keywordDao.getMappedKeywordByCustomerAndNetwork(customerId, networkName);
 		this.customerNetworkKeywords = new CustomerNetworkKeywords(keywords);
 	}
 

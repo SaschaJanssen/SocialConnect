@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.helper.KeywordDAO;
-import org.social.core.network.SocialNetworkConnection;
-import org.social.core.network.SocialNetworkFactory;
+import org.social.core.network.SocialNetworkKraken;
+import org.social.core.network.SocialKrakenFactory;
 
 public class SocialDataConsumer {
 
@@ -19,18 +19,20 @@ public class SocialDataConsumer {
 
 	private final ExecutorService executor;
 	private final FilteredMessageList results;
+	private final KeywordDAO keywordDao;
 
-	public SocialDataConsumer() {
-		executor = Executors.newCachedThreadPool();
-		results = new FilteredMessageList();
+	public SocialDataConsumer(KeywordDAO keywordDao) {
+		this.executor = Executors.newCachedThreadPool();
+		this.results = new FilteredMessageList();
+		this.keywordDao = keywordDao;
 	}
 
 	public FilteredMessageList consumeData(Customers customer) {
-		KeywordDAO keywordDao = new KeywordDAO();
 		Set<String> userNetworks = keywordDao.getUserNetworks(customer.getCustomerId());
 
 		for (String network : userNetworks) {
-			SocialNetworkConnection socialNetworkCon = SocialNetworkFactory.getInstance(network, customer);
+			SocialNetworkKraken socialNetworkCon = SocialKrakenFactory.getInstance(network, customer, keywordDao);
+
 			Thread networkThread = new Thread(new NetworkConsumeThread(socialNetworkCon));
 			executor.execute(networkThread);
 		}
@@ -56,9 +58,9 @@ public class SocialDataConsumer {
 	}
 
 	private class NetworkConsumeThread implements Runnable {
-		private final SocialNetworkConnection networkConnection;
+		private final SocialNetworkKraken networkConnection;
 
-		public NetworkConsumeThread(SocialNetworkConnection networkConnection) {
+		public NetworkConsumeThread(SocialNetworkKraken networkConnection) {
 			this.networkConnection = networkConnection;
 		}
 

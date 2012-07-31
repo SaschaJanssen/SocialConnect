@@ -24,6 +24,7 @@ public class YelpQuery extends Query {
 		this.endpoint = id;
 	}
 
+	@Override
 	public String getSearchUrl() {
 		return this.searchUrl;
 	}

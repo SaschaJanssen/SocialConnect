@@ -10,17 +10,18 @@ import org.social.core.constants.Networks;
 import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
+import org.social.core.entity.helper.KeywordDAO;
 import org.social.core.network.crawler.JsoupBaseCrwaler;
 import org.social.core.network.crawler.OpenTableSocialCrawler;
 import org.social.core.network.crawler.SocialCrawler;
 import org.social.core.query.OpenTableQuery;
 
-public class OpenTableConnection extends SocialNetworkConnection {
+public class OpenTableKraken extends SocialNetworkKraken {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public OpenTableConnection(Customers customer) {
-		super(customer);
+	public OpenTableKraken(Customers customer, KeywordDAO keywordDao) {
+		super(customer, keywordDao);
 		this.customer = customer;
 
 		getCustomersKeywords(Networks.OPENTABLE.getName());

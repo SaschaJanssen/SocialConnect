@@ -3,35 +3,27 @@ package org.social.core.network;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.json.JSONObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.constants.Networks;
 import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
+import org.social.core.entity.helper.KeywordDAO;
+import org.social.core.network.connection.SocialNetworkConnection;
 import org.social.core.query.FacebookQuery;
 import org.social.core.util.UtilDateTime;
-import org.social.core.util.UtilProperties;
 
-import com.restfb.Connection;
-import com.restfb.DefaultFacebookClient;
-import com.restfb.FacebookClient;
-import com.restfb.json.JsonObject;
-
-public class FacebookConnection extends SocialNetworkConnection {
+public class FacebookKraken extends SocialNetworkKraken {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final SocialNetworkConnection connection;
 
-	private FacebookClient fbClient = null;
-	private String MY_ACCESS_TOKEN = null;
-
-	public FacebookConnection(Customers customer) {
-		super(customer);
-
-		loadProperties();
-
-		fbClient = new DefaultFacebookClient(MY_ACCESS_TOKEN);
-
+	public FacebookKraken(Customers customer, KeywordDAO keywordDao, SocialNetworkConnection fbConnection) {
+		super(customer, keywordDao);
+		connection = fbConnection;
 		getCustomersKeywords(Networks.FACEBOOK.getName());
 	}
 
@@ -43,16 +35,8 @@ public class FacebookConnection extends SocialNetworkConnection {
 
 		FacebookQuery query = buildQueryFromKeywords();
 
-		List<Messages> resultMessages = new ArrayList<Messages>();
-		Connection<JsonObject> searchResult = fbClient.fetchConnection(query.constructQuery(), JsonObject.class);
-		resultMessages.addAll(extractMessageData(searchResult));
-		String nextPageUrl = searchResult.getNextPageUrl();
-
-		while (nextPageUrl != null && !nextPageUrl.isEmpty()) {
-			searchResult = fbClient.fetchConnectionPage(nextPageUrl, JsonObject.class);
-			resultMessages.addAll(extractMessageData(searchResult));
-			nextPageUrl = searchResult.getNextPageUrl();
-		}
+		List<JSONObject> searchResult = connection.getRemoteData(query);
+		List<Messages> resultMessages = extractMessageData(searchResult);
 
 		FilteredMessageList filteredResultMessages = reliabilityAndSentimentMessages(resultMessages);
 
@@ -70,11 +54,11 @@ public class FacebookConnection extends SocialNetworkConnection {
 		return fbQuery;
 	}
 
-	private List<Messages> extractMessageData(Connection<JsonObject> searchResult) {
+	private List<Messages> extractMessageData(List<JSONObject> searchResult) {
 
 		List<Messages> results = new ArrayList<Messages>();
 
-		for (JsonObject object : searchResult.getData()) {
+		for (JSONObject object : searchResult) {
 			if (!object.has("message")) {
 				// object could be ignored if no message attribute is set.
 				continue;
@@ -83,7 +67,7 @@ public class FacebookConnection extends SocialNetworkConnection {
 
 			messageData.setCustomerId(super.customer.getCustomerId());
 
-			JsonObject userData = object.getJsonObject("from");
+			JSONObject userData = object.getJSONObject("from");
 			messageData.setNetworkUser(userData.getString("name"));
 			messageData.setNetworkUserId(userData.getString("id"));
 
@@ -98,9 +82,4 @@ public class FacebookConnection extends SocialNetworkConnection {
 
 		return results;
 	}
-
-	private void loadProperties() {
-		MY_ACCESS_TOKEN = UtilProperties.getPropertyValue("conf/fb.properties", "token");
-	}
-
 }

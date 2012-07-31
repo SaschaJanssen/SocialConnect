@@ -27,6 +27,7 @@ public class OpenTableQuery extends Query {
 		this.endpoint = endpoint;
 	}
 
+	@Override
 	public String getSearchUrl() {
 		return searchUrl;
 	}

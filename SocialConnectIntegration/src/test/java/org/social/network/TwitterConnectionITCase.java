@@ -10,7 +10,9 @@ import org.social.SocialITCase;
 import org.social.core.data.CustomerNetworkKeywords;
 import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
-import org.social.core.network.TwitterConnection;
+import org.social.core.entity.helper.KeywordDAO;
+import org.social.core.network.TwitterKraken;
+import org.social.core.network.connection.TwitterConnection;
 
 public class TwitterConnectionITCase extends SocialITCase {
 
@@ -31,7 +33,7 @@ public class TwitterConnectionITCase extends SocialITCase {
 		Customers customer = new Customers();
 		customer.setCustomerId(1L);
 
-		TwitterConnection con = new TwitterConnection(customer);
+		TwitterKraken con = new TwitterKraken(customer, new KeywordDAO(), new TwitterConnection());
 		FilteredMessageList result = con.fetchAndCraftMessages();
 
 		assertNotNull(result);
@@ -42,7 +44,7 @@ public class TwitterConnectionITCase extends SocialITCase {
 		Customers customer = new Customers();
 		customer.setCustomerId(1L);
 
-		TwitterConnection con = new TwitterConnection(customer);
+		TwitterKraken con = new TwitterKraken(customer, new KeywordDAO(), new TwitterConnection());
 		CustomerNetworkKeywords cnk = con.getCustomerNetworkKeywords();
 
 		assertNotNull(cnk);
