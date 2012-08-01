@@ -14,7 +14,6 @@ import org.social.core.entity.helper.LearningDAO;
 import org.social.core.entity.helper.MessageDAO;
 import org.social.core.filter.classifier.bayes.BayesClassifier;
 import org.social.core.filter.classifier.bayes.Classifier;
-import org.social.core.filter.wordlists.WordlistFilter;
 import org.social.core.util.UtilLucene;
 import org.social.core.util.UtilProperties;
 
@@ -29,9 +28,6 @@ public class SocialConnect {
 	public void start() {
 
 		learn();
-
-		// initialize wordlist filter
-		WordlistFilter.getInstance();
 
 		CustomerDAO customerDao = new CustomerDAO();
 		MessageDAO messageDao = new MessageDAO();
