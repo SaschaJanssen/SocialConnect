@@ -56,6 +56,10 @@ public class WordlistFilter {
 				if (bufferedReader != null) {
 					bufferedReader.close();
 				}
+
+				if (inputStreamReader != null) {
+					inputStreamReader.close();
+				}
 			} catch (IOException e) {
 				logger.error("", e);
 			}
