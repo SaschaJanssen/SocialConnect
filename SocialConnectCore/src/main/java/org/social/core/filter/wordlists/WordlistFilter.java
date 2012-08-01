@@ -1,9 +1,9 @@
 package org.social.core.filter.wordlists;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,31 +31,30 @@ public class WordlistFilter {
 			logger.debug("Initialize wordlist filter - loading data");
 		}
 
+		InputStream wordlistInputStream = ClassLoader.getSystemResourceAsStream("wordlists/FoodEng");
+		Set<String> foodwordlist = writeStreamInStringSet(wordlistInputStream);
+
+		return foodwordlist;
+	}
+
+	private static Set<String> writeStreamInStringSet(InputStream wordlistInputStream) {
 		Set<String> foodwordlist = new HashSet<String>();
 
-		String engFoodList = "";
+		InputStreamReader inputStreamReader = new InputStreamReader(wordlistInputStream);
+		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 		try {
-			engFoodList = ClassLoader.getSystemResource("wordlists/FoodEng").toURI().getPath();
-		} catch (URISyntaxException e) {
-			logger.error("", e);
-			return null;
-		}
-
-		BufferedReader bufferedFileReader = null;
-		try {
-			bufferedFileReader = new BufferedReader(new FileReader(engFoodList));
 			String lineInFile;
-			while ((lineInFile = bufferedFileReader.readLine()) != null) {
+			while ((lineInFile = bufferedReader.readLine()) != null) {
 				if (UtilValidate.isNotEmpty(lineInFile)) {
 					foodwordlist.add(lineInFile);
 				}
 			}
 		} catch (IOException e) {
-			logger.error("", e);
+			logger.error("Can't read wordlist: ", e);
 		} finally {
 			try {
-				if (bufferedFileReader != null) {
-					bufferedFileReader.close();
+				if (bufferedReader != null) {
+					bufferedReader.close();
 				}
 			} catch (IOException e) {
 				logger.error("", e);
