@@ -188,12 +188,16 @@ public class Messages {
 		builder.append(messageId);
 		builder.append(", message=");
 		builder.append(message);
-		builder.append(", fromUserId=");
+		builder.append(", networkUserId=");
 		builder.append(networkUserId);
 		builder.append(", language=");
 		builder.append(language);
 		builder.append(", networkId=");
 		builder.append(networkId);
+		builder.append(", networkUser=");
+		builder.append(networkUser);
+		builder.append(", geoLocation=");
+		builder.append(geoLocation);
 		builder.append(", networkMessageDate=");
 		builder.append(networkMessageDate);
 		builder.append(", messageReceivedDate=");
@@ -206,6 +210,10 @@ public class Messages {
 		builder.append(reliabilityId);
 		builder.append(", sentimentId=");
 		builder.append(sentimentId);
+		builder.append(", createdTs=");
+		builder.append(createdTs);
+		builder.append(", lastUpdatedTs=");
+		builder.append(lastUpdatedTs);
 		builder.append("]");
 
 		return builder.toString();
