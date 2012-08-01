@@ -82,7 +82,7 @@ public abstract class SocialCrawler {
 
 			if (UtilDateTime.isMessageYoungerThanLastNetworkAccess(networkTs, customerLastNetworkAccess)) {
 				if (logger.isDebugEnabled()) {
-					logger.debug("Found message which is already stored. Remove it from current batch.");
+					logger.debug("Found message which is already stored. Remove it from current batch: " + message.toString());
 				}
 
 				anyMoreNewMessages = false;
