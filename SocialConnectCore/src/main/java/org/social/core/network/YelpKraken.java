@@ -11,7 +11,7 @@ import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 import org.social.core.entity.helper.KeywordDAO;
-import org.social.core.network.crawler.JsoupBaseCrwaler;
+import org.social.core.network.crawler.BaseCrawler;
 import org.social.core.network.crawler.YelpSocialCrawler;
 import org.social.core.query.YelpQuery;
 
@@ -19,9 +19,12 @@ public class YelpKraken extends SocialNetworkKraken {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public YelpKraken(Customers customer, KeywordDAO keywordDao) {
+	private final BaseCrawler crawler;
+
+	public YelpKraken(Customers customer, KeywordDAO keywordDao, BaseCrawler crawler) {
 		super(customer, keywordDao);
 		this.customer = customer;
+		this.crawler = crawler;
 
 		getCustomersKeywords(Networks.YELP.getName());
 	}
@@ -34,11 +37,11 @@ public class YelpKraken extends SocialNetworkKraken {
 
 		YelpQuery query = buildQueryFromKeywords();
 
-		YelpSocialCrawler crawler = new YelpSocialCrawler(new JsoupBaseCrwaler(), query.getSearchUrl(),
+		YelpSocialCrawler yelpCrawler = new YelpSocialCrawler(this.crawler, query.getSearchUrl(),
 				query.constructQuery());
 
 		List<Messages> resultMessages = new ArrayList<Messages>();
-		resultMessages = crawler.crawl(customer);
+		resultMessages = yelpCrawler.crawl(customer);
 
 		return sentimentMessages(resultMessages);
 	}

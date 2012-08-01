@@ -5,6 +5,7 @@ import org.social.core.entity.domain.Customers;
 import org.social.core.entity.helper.KeywordDAO;
 import org.social.core.network.connection.FacebookConnection;
 import org.social.core.network.connection.TwitterConnection;
+import org.social.core.network.crawler.JsoupBaseCrwaler;
 
 public class SocialKrakenFactory {
 
@@ -16,9 +17,9 @@ public class SocialKrakenFactory {
 		} else if (Networks.TWITTER.getName().equals(network)) {
 			return new TwitterKraken(customer, keywordDao, new TwitterConnection());
 		} else if (Networks.YELP.getName().equals(network)) {
-			return new YelpKraken(customer, keywordDao);
+			return new YelpKraken(customer, keywordDao, new JsoupBaseCrwaler());
 		} else if (Networks.OPENTABLE.getName().equals(network)) {
-			return new OpenTableKraken(customer, keywordDao);
+			return new OpenTableKraken(customer, keywordDao, new JsoupBaseCrwaler());
 		}
 
 		throw new IllegalArgumentException("The Network: " + network

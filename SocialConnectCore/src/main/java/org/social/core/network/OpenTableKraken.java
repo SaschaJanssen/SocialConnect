@@ -11,7 +11,7 @@ import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 import org.social.core.entity.helper.KeywordDAO;
-import org.social.core.network.crawler.JsoupBaseCrwaler;
+import org.social.core.network.crawler.BaseCrawler;
 import org.social.core.network.crawler.OpenTableSocialCrawler;
 import org.social.core.network.crawler.SocialCrawler;
 import org.social.core.query.OpenTableQuery;
@@ -19,10 +19,12 @@ import org.social.core.query.OpenTableQuery;
 public class OpenTableKraken extends SocialNetworkKraken {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final BaseCrawler crawler;
 
-	public OpenTableKraken(Customers customer, KeywordDAO keywordDao) {
+	public OpenTableKraken(Customers customer, KeywordDAO keywordDao, BaseCrawler crawler) {
 		super(customer, keywordDao);
 		this.customer = customer;
+		this.crawler = crawler;
 
 		getCustomersKeywords(Networks.OPENTABLE.getName());
 	}
@@ -35,11 +37,11 @@ public class OpenTableKraken extends SocialNetworkKraken {
 
 		OpenTableQuery query = buildQueryFromKeywords();
 
-		SocialCrawler crawler = new OpenTableSocialCrawler(new JsoupBaseCrwaler(), query.getSearchUrl(),
+		SocialCrawler otCrawler = new OpenTableSocialCrawler(this.crawler, query.getSearchUrl(),
 				query.constructQuery());
 
 		List<Messages> resultMessages = new ArrayList<Messages>();
-		resultMessages = crawler.crawl(customer);
+		resultMessages = otCrawler.crawl(customer);
 
 		return sentimentMessages(resultMessages);
 	}
