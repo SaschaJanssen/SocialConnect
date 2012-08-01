@@ -1,6 +1,6 @@
 package org.social.core.entity;
 
-import java.net.URL;
+import java.io.File;
 import java.util.Properties;
 
 import org.hibernate.SessionFactory;
@@ -22,7 +22,7 @@ public class HibernateUtil {
 
 		try {
 			// Create the SessionFactory from hibernate.cfg.xml
-			URL hibernateConfigurationFile = ClassLoader.getSystemResource(hibernateConfig);
+			File hibernateConfigurationFile = new File("conf/" + hibernateConfig);
 			Configuration configuration = new Configuration().configure(hibernateConfigurationFile);
 
 			Properties configurationProperties = configuration.getProperties();

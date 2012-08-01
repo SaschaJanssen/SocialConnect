@@ -1,20 +1,27 @@
 package org.social.network;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.sf.json.JSONObject;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.social.SocialITCase;
+import org.social.core.constants.KeywordType;
 import org.social.core.data.CustomerNetworkKeywords;
-import org.social.core.data.FilteredMessageList;
-import org.social.core.entity.domain.Customers;
-import org.social.core.entity.helper.KeywordDAO;
-import org.social.core.network.TwitterKraken;
+import org.social.core.entity.domain.Keywords;
+import org.social.core.network.connection.SocialNetworkConnection;
 import org.social.core.network.connection.TwitterConnection;
+import org.social.core.query.Query;
+import org.social.core.query.TwitterQuery;
 
 public class TwitterConnectionITCase extends SocialITCase {
+
+	private CustomerNetworkKeywords cnk;
 
 	public TwitterConnectionITCase() {
 		super();
@@ -22,33 +29,25 @@ public class TwitterConnectionITCase extends SocialITCase {
 
 	@Before
 	public void setUp() throws Exception {
-	}
+		List<Keywords> keywordListForNetwork = new ArrayList<Keywords>();
+		Keywords keywords = new Keywords();
+		keywords.setCustomerId(1L);
+		keywords.setKeywordTypeId(KeywordType.QUERY.getName());
+		keywords.setKeyword("Vapiano");
+		keywordListForNetwork.add(keywords);
 
-	@After
-	public void tearDown() throws Exception {
+		cnk = new CustomerNetworkKeywords(keywordListForNetwork);
 	}
 
 	@Test
 	public void testTwitterSearch() throws Exception {
-		Customers customer = new Customers();
-		customer.setCustomerId(1L);
+		Query query = new TwitterQuery(cnk);
 
-		TwitterKraken con = new TwitterKraken(customer, new KeywordDAO(), new TwitterConnection());
-		FilteredMessageList result = con.fetchAndCraftMessages();
+		SocialNetworkConnection con = new TwitterConnection();
+		List<JSONObject> result = con.getRemoteData(query);
 
 		assertNotNull(result);
-	}
-
-	@Test
-	public void testGetCustNetworkKeys() throws Exception {
-		Customers customer = new Customers();
-		customer.setCustomerId(1L);
-
-		TwitterKraken con = new TwitterKraken(customer, new KeywordDAO(), new TwitterConnection());
-		CustomerNetworkKeywords cnk = con.getCustomerNetworkKeywords();
-
-		assertNotNull(cnk);
-		assertEquals("Vapiano", cnk.getQueryForNetwork());
+		assertTrue(result.size() > 0);
 	}
 
 }

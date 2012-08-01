@@ -118,7 +118,7 @@
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
+							<classpathPrefix></classpathPrefix>
 							<mainClass>org.social.core.Start</mainClass>
 						</manifest>
 					</archive>

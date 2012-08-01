@@ -1,4 +1,4 @@
-package org.social.netwroks.crawler;
+package org.social.networks.crawler;
 
 import java.io.File;
 import java.io.IOException;

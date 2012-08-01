@@ -25,6 +25,7 @@ import org.social.core.entity.domain.LearningData;
 import org.social.core.entity.domain.Messages;
 import org.social.core.entity.helper.CustomerDAO;
 import org.social.core.entity.helper.KeywordDAO;
+import org.social.core.entity.helper.KeywordDAOImpl;
 import org.social.core.entity.helper.LearningDAO;
 import org.social.core.entity.helper.MessageDAO;
 import org.social.core.util.UtilDateTime;
@@ -126,7 +127,7 @@ public class DaoITCase extends SocialITCase {
 
 	@Test
 	public void testKeywordDao() throws Exception {
-		KeywordDAO keywordDao = new KeywordDAO();
+		KeywordDAO keywordDao = new KeywordDAOImpl();
 
 		List<Keywords> kws = keywordDao.getMappedKeywordByCustomerAndNetwork(1L, Networks.TWITTER.getName());
 

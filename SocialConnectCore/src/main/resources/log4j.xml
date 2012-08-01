@@ -7,7 +7,7 @@
 		<param name="File" value="runtime/logs/SocialConnect.log" />
 		<param name="DatePattern" value=".yyyy-MM-dd-a" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d %c [%t] %-5p - %m%n" />
+			<param name="ConversionPattern" value="%d (%t) [%24F:%-3L:%-5p]%x %m%n" />
 		</layout>
 	</appender>
 
@@ -15,7 +15,7 @@
 	      disabled in  real life (see root logger config below). -->
 	<appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d %c [%t] %-5p - %m%n" />
+			<param name="ConversionPattern" value="%d (%t) [%24F:%-3L:%-5p]%x %m%n" />
 		</layout>
 	</appender>
 

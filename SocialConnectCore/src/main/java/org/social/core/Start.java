@@ -14,10 +14,10 @@ public class Start {
 				3600000);
 		ApplicationScheduler appScheduler = new ApplicationScheduler(HOUR_IN_MILLISEC);
 
-		try {
-			appScheduler.schedule();
-		} catch (Exception e) {
-			logger.debug("", e);
+		appScheduler.schedule();
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("Application scheduled.");
 		}
 
 	}

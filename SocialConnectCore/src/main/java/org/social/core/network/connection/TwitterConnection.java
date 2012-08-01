@@ -3,6 +3,7 @@ package org.social.core.network.connection;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
@@ -18,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.social.core.query.Query;
 import org.social.core.util.UtilProperties;
 
-public class TwitterConnection implements SocialNetworkConnection{
+public class TwitterConnection implements SocialNetworkConnection {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -66,7 +67,13 @@ public class TwitterConnection implements SocialNetworkConnection{
 				break;
 			}
 
-			JSONObject json = (JSONObject) JSONSerializer.toJSON(response.getBody());
+			JSONObject json = null;
+			try {
+				json = (JSONObject) JSONSerializer.toJSON(response.getBody());
+			} catch (JSONException je) {
+				logger.error(je.getMessage());
+				continue;
+			}
 
 			if (json.containsKey("results")) {
 				resultMessages.add(json);

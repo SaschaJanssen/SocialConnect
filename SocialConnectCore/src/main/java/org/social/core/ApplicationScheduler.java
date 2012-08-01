@@ -22,7 +22,7 @@ public class ApplicationScheduler {
 		this.attachShutdownHook();
 	}
 
-	public void schedule() throws Exception {
+	public void schedule() {
 
 		final SocialConnect socialConnect = new SocialConnect();
 
@@ -41,7 +41,12 @@ public class ApplicationScheduler {
 		tt.scheduleAtFixedRate(timerTask, new Date(), period);
 
 		while(shutdownHook.get()){
-			Thread.sleep(2000);
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				logger.error("", e);
+				break;
+			}
 		}
 	}
 

@@ -10,7 +10,7 @@ import org.social.SocialITCase;
 import org.social.core.consumer.SocialDataConsumer;
 import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
-import org.social.core.entity.helper.KeywordDAO;
+import org.social.core.entity.helper.KeywordDAOImpl;
 
 public class SocialDataConsumerITCase extends SocialITCase {
 
@@ -32,7 +32,7 @@ public class SocialDataConsumerITCase extends SocialITCase {
 		Customers customer = new Customers();
 		customer.setCustomerId(1L);
 
-		SocialDataConsumer consumer = new SocialDataConsumer(new KeywordDAO());
+		SocialDataConsumer consumer = new SocialDataConsumer(new KeywordDAOImpl());
 		FilteredMessageList messageDataList = consumer.consumeData(customer);
 
 		assertNotNull(messageDataList);

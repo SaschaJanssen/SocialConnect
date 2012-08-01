@@ -1,21 +1,27 @@
 package org.social.network;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.sf.json.JSONObject;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.social.SocialITCase;
+import org.social.core.constants.KeywordType;
 import org.social.core.data.CustomerNetworkKeywords;
-import org.social.core.data.FilteredMessageList;
-import org.social.core.entity.domain.Customers;
-import org.social.core.entity.helper.KeywordDAO;
-import org.social.core.network.FacebookKraken;
+import org.social.core.entity.domain.Keywords;
 import org.social.core.network.connection.FacebookConnection;
+import org.social.core.network.connection.SocialNetworkConnection;
+import org.social.core.query.FacebookQuery;
+import org.social.core.query.Query;
 
 public class FacebookConnectionITCase extends SocialITCase {
+
+	private CustomerNetworkKeywords cnk;
 
 	public FacebookConnectionITCase() {
 		super();
@@ -23,34 +29,24 @@ public class FacebookConnectionITCase extends SocialITCase {
 
 	@Before
 	public void setUp() throws Exception {
-	}
+		List<Keywords> keywordListForNetwork = new ArrayList<Keywords>();
+		Keywords keywords = new Keywords();
+		keywords.setCustomerId(1L);
+		keywords.setKeywordTypeId(KeywordType.QUERY.getName());
+		keywords.setKeyword("Vapiano");
+		keywordListForNetwork.add(keywords);
 
-	@After
-	public void tearDown() throws Exception {
+		cnk = new CustomerNetworkKeywords(keywordListForNetwork);
 	}
 
 	@Test
 	public void testFacebookSearch() {
-		Customers customer = new Customers();
-		customer.setCustomerId(1L);
+		Query query = new FacebookQuery(cnk);
 
-		FacebookKraken con = new FacebookKraken(customer, new KeywordDAO(), new FacebookConnection());
-		FilteredMessageList result = con.fetchAndCraftMessages();
+		SocialNetworkConnection con = new FacebookConnection();
+		List<JSONObject> result = con.getRemoteData(query);
 
 		assertNotNull(result);
 		assertTrue(result.size() > 0);
 	}
-
-	@Test
-	public void testFB_Connect() throws Exception {
-		Customers customer = new Customers();
-		customer.setCustomerId(1L);
-
-		FacebookKraken con = new FacebookKraken(customer, new KeywordDAO(), new FacebookConnection());
-		CustomerNetworkKeywords cnk = con.getCustomerNetworkKeywords();
-
-		assertNotNull(cnk);
-		assertEquals("Vapiano", cnk.getQueryForNetwork());
-	}
-
 }

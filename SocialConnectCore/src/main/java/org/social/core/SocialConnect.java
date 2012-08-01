@@ -9,11 +9,12 @@ import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.LearningData;
 import org.social.core.entity.helper.CustomerDAO;
-import org.social.core.entity.helper.KeywordDAO;
+import org.social.core.entity.helper.KeywordDAOImpl;
 import org.social.core.entity.helper.LearningDAO;
 import org.social.core.entity.helper.MessageDAO;
 import org.social.core.filter.classifier.bayes.BayesClassifier;
 import org.social.core.filter.classifier.bayes.Classifier;
+import org.social.core.filter.wordlists.WordlistFilter;
 import org.social.core.util.UtilLucene;
 import org.social.core.util.UtilProperties;
 
@@ -29,12 +30,15 @@ public class SocialConnect {
 
 		learn();
 
+		// initialize wordlist filter
+		WordlistFilter.getInstance();
+
 		CustomerDAO customerDao = new CustomerDAO();
 		MessageDAO messageDao = new MessageDAO();
 
 		List<Customers> customers = customerDao.getAllCustomersAndKeywords();
 		for (Customers customer : customers) {
-			SocialDataConsumer consumer = new SocialDataConsumer(new KeywordDAO());
+			SocialDataConsumer consumer = new SocialDataConsumer(new KeywordDAOImpl());
 			FilteredMessageList filteredMessageDataList = consumer.consumeData(customer);
 			consumer = null;
 

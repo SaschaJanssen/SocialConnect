@@ -1,4 +1,4 @@
-package org.social.netwroks.crawler;
+package org.social.networks.crawler;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
