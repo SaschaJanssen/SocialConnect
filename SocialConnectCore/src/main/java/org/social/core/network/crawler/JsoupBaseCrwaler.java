@@ -32,7 +32,7 @@ public class JsoupBaseCrwaler implements BaseCrawler {
 			}
 		}
 
-		throw new IOException("After the " + maxTriesToGetRemoteData + " run, gave up on fatching data from remote url " + url, ex);
+		throw new IOException("After " + maxTriesToGetRemoteData + " runs, gave up on fatching data from remote url " + url, ex);
 	}
 
 }
