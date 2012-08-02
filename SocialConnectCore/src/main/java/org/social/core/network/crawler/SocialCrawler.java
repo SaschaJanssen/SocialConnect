@@ -89,6 +89,7 @@ public abstract class SocialCrawler {
 				messageIterator.remove();
 			}
 		}
+		messageIterator = null;
 
 		return extractedMessages;
 	}

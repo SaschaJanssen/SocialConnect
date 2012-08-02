@@ -10,8 +10,8 @@ import org.social.core.util.UtilValidate;
 
 public class FacebookQuery extends Query {
 
-	// private final String searchUrl = "https://graph.facebook.com/search";
-	private final String searchUrl = "search";
+	private final String searchUrl = "https://graph.facebook.com/search";
+	// private final String searchUrl = "search";
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -76,8 +76,11 @@ public class FacebookQuery extends Query {
 
 		queryBuilder.append("&limit=");
 		queryBuilder.append(this.limit);
-		queryBuilder.append("&locale=");
-		queryBuilder.append(this.language);
+
+		if (UtilValidate.isNotEmpty(language)) {
+			queryBuilder.append("&locale=");
+			queryBuilder.append(this.language);
+		}
 
 		return queryBuilder.toString();
 	}
