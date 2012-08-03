@@ -69,6 +69,12 @@ public class FacebookConnection implements SocialNetworkConnection {
 				continue;
 			}
 
+			if (json.containsKey("error")) {
+				JSONObject error = json.getJSONObject("error");
+				logger.error("The following error occurd during the Facebook request: " + error.getString("type")+ " - "+ error.getString("message"));
+				break;
+			}
+
 			if (json.containsKey("data")) {
 				resultList.addAll(addToResultList(json.getJSONArray("data")));
 			}
