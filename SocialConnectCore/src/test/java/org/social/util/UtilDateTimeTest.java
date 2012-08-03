@@ -39,6 +39,19 @@ public class UtilDateTimeTest {
 	}
 
 	@Test
+	public void testConvertToTimestamp_TribAdvisorTimeFormat() throws Exception {
+		// Reviewed July 24, 2012
+		String tsString = "Reviewed July 24, 2012";
+		Timestamp ts = UtilDateTime.toTimestamp(tsString);
+		assertEquals("2012-07-24 23:59:59.0", ts.toString());
+
+		// Bewertet am 24. Juli 2012
+		tsString = "Bewertet am 24. Juli 2012";
+		ts = UtilDateTime.toTimestamp(tsString);
+		assertEquals("2012-07-24 23:59:59.0", ts.toString());
+	}
+
+	@Test
 	public void testConvertToTimestamp_YelpTimeFormat() throws Exception {
 		String tsString = "7/8/2012";
 		Timestamp ts = UtilDateTime.toTimestamp(tsString);

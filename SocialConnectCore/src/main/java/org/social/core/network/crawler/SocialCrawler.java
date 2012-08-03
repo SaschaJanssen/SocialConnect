@@ -211,4 +211,8 @@ public abstract class SocialCrawler {
 
 	protected abstract String getUserDataCssClassName();
 
+	public String getEndpoint() {
+		return this.endpoint;
+	}
+
 }

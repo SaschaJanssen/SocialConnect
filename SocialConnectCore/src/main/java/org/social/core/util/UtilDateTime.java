@@ -24,6 +24,33 @@ public class UtilDateTime {
 		monthsMapping.put("Nov", 11);
 		monthsMapping.put("Dec", 12);
 
+		monthsMapping.put("January", 1);
+		monthsMapping.put("February", 2);
+		monthsMapping.put("March", 3);
+		monthsMapping.put("April", 4);
+		monthsMapping.put("May", 5);
+		monthsMapping.put("June", 6);
+		monthsMapping.put("July", 7);
+		monthsMapping.put("August", 8);
+		monthsMapping.put("September", 9);
+		monthsMapping.put("October", 10);
+		monthsMapping.put("November", 11);
+		monthsMapping.put("December", 12);
+
+		monthsMapping.put("Januar", 1);
+		monthsMapping.put("Februar", 2);
+		monthsMapping.put("März", 3);
+		monthsMapping.put("Maerz", 3);
+		monthsMapping.put("April", 4);
+		monthsMapping.put("Mai", 5);
+		monthsMapping.put("Juni", 6);
+		monthsMapping.put("Juli", 7);
+		monthsMapping.put("August", 8);
+		monthsMapping.put("September", 9);
+		monthsMapping.put("Oktober", 10);
+		monthsMapping.put("November", 11);
+		monthsMapping.put("Dezember", 12);
+
 		return monthsMapping;
 	};
 
@@ -63,13 +90,41 @@ public class UtilDateTime {
 			calendar = toCalendarFromTwitterTime(dateString);
 		} else if (dateString.matches("\\d{1,2}/\\d{1,2}/\\d{4,4}")) {
 			calendar = toCalendarFromYelpTime(dateString);
-		} else {
+		} else if (dateString.matches("Reviewed .*")) {
+			calendar = toCalendarFromTripAdvisorUsTime(dateString);
+		}else if (dateString.matches("Bewertet am .*")) {
+			calendar = toCalendarFromTripAdvisorDeTime(dateString);
+		}else {
 			return null;
 		}
 
 		Timestamp timestamp = new Timestamp(calendar.getTimeInMillis());
 
 		return timestamp;
+	}
+
+	private static Calendar toCalendarFromTripAdvisorDeTime(String dateString) {
+		dateString = dateString.replace("Bewertet am ", "");
+		dateString = dateString.replace(".", "");
+
+		String[] dateTime = dateString.split(" ");
+		int day = Integer.parseInt(dateTime[0]);
+		int month = months.get(dateTime[1]);
+		int year = Integer.parseInt(dateTime[2]);
+
+		return toCalendar("0", year, month, day, 23, 59, 59);
+	}
+
+	private static Calendar toCalendarFromTripAdvisorUsTime(String dateString) {
+		dateString = dateString.replace("Reviewed ", "");
+		dateString = dateString.replace(",", "");
+
+		String[] dateTime = dateString.split(" ");
+		int month = months.get(dateTime[0]);
+		int day = Integer.parseInt(dateTime[1]);
+		int year = Integer.parseInt(dateTime[2]);
+
+		return toCalendar("0", year, month, day, 23, 59, 59);
 	}
 
 	private static Calendar toCalendarFromYelpTime(String dateString) {

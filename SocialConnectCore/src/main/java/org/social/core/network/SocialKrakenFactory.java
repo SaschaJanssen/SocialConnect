@@ -20,6 +20,8 @@ public class SocialKrakenFactory {
 			return new YelpKraken(customer, keywordDao, new JsoupBaseCrwaler());
 		} else if (Networks.OPENTABLE.getName().equals(network)) {
 			return new OpenTableKraken(customer, keywordDao, new JsoupBaseCrwaler());
+		} else if (Networks.TRIPADVISOR.getName().equals(network)) {
+			return new TripAdvisorKraken(customer, keywordDao, new JsoupBaseCrwaler());
 		}
 
 		throw new IllegalArgumentException("The Network: " + network
