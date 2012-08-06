@@ -3,19 +3,23 @@ package org.social.core.network.crawler;
 import org.jsoup.nodes.Element;
 import org.social.core.constants.Networks;
 
-public class OpenTableSocialCrawler extends SocialCrawler {
+public class ZagatSocialCrawler extends SocialCrawler {
 
-	private final String ratingClassName = "span.BVRRRatingNumber";
-	private final String messageDateClassName = "span.BVRRAdditionalFielddinedate";
-	private final String userNameLinkClassName = "";
-	private final String reviewCommentCssClassName = "span.BVRRReviewText";
-	private final String reviewDataCssClassName = "div.BVRRReviewDisplayStyle5BodyContent";
-	private final String userDataCssClassName = "div.user-passport";
-	private final String selectedPaginationCssClassName = "span.BVRRSelectedPageNumber";
-	private final String paginationControlsCssClassName = "div.BVRRPageBasedPager";
-	private final String reviewContainerCssClassName = "div.BVRRSDisplayContentBody";
+	private final String ratingClassName = "";
 
-	public OpenTableSocialCrawler(BaseCrawler crawler, String baseUrl, String endpoint) {
+	private final String reviewContainerCssClassName = "div.view-zagat-comments-recent";
+
+	private final String reviewDataCssClassName = "div.comment";
+	private final String reviewCommentCssClassName = "div.content p";
+	private final String messageDateClassName = "div.submitted";
+
+	private final String userNameLinkClassName = "div.user-display-name";
+	private final String userDataCssClassName = "div.user-info";
+
+	private final String paginationControlsCssClassName = "li.pager-next a";
+	private final String selectedPaginationCssClassName = "";
+
+	public ZagatSocialCrawler(BaseCrawler crawler, String baseUrl, String endpoint) {
 		super(crawler, baseUrl, endpoint);
 	}
 
@@ -78,21 +82,23 @@ public class OpenTableSocialCrawler extends SocialCrawler {
 	public String getNextPageFromPagination(Element body) {
 		String nextPage = null;
 
-		Element nextPageLink = body.select("span.BVRRNextPage a").first();
+		Element nextPageLink = body.select(getPaginationControlsCssClassName()).first();
 		if (nextPageLink != null) {
 			nextPage = nextPageLink.attr("href");
-			nextPage = nextPage.substring(nextPage.indexOf(".com") + 4 );
 		}
 		return nextPage;
 	}
 
 	@Override
 	protected String getNetworkName() {
-		return Networks.OPENTABLE.name();
+		return Networks.ZAGAT.name();
 	}
 
 	@Override
 	protected String getUserIdFromUserInfo(Element userInfo) {
-		return "n/a";
+		String href = userInfo.child(0).attr("href");
+		String[] splited = href.split("/");
+
+		return splited[2];
 	}
 }

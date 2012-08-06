@@ -15,6 +15,7 @@ import org.social.core.constants.Classification;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 import org.social.core.util.UtilDateTime;
+import org.social.core.util.UtilValidate;
 
 public abstract class SocialCrawler {
 
@@ -82,7 +83,8 @@ public abstract class SocialCrawler {
 
 			if (UtilDateTime.isMessageYoungerThanLastNetworkAccess(networkTs, customerLastNetworkAccess)) {
 				if (logger.isDebugEnabled()) {
-					logger.debug("Found message which is already stored. Remove it from current batch: " + message.toString());
+					logger.debug("Found message which is already stored. Remove it from current batch: "
+							+ message.toString());
 				}
 
 				anyMoreNewMessages = false;
@@ -167,8 +169,15 @@ public abstract class SocialCrawler {
 	protected abstract String getUserNameLinkClassName();
 
 	private String getNetworkUserRating(Element reviewData) {
-		Element ratingElement = reviewData.select(getRatingClassName()).first();
-		return extractNetworkUserRatingData(ratingElement);
+		String userRating = "n/a";
+		String selector = getRatingClassName();
+
+		if (UtilValidate.isNotEmpty(selector)) {
+			Element ratingElement = reviewData.select(getRatingClassName()).first();
+			userRating = extractNetworkUserRatingData(ratingElement);
+		}
+
+		return userRating;
 	}
 
 	protected abstract String extractNetworkUserRatingData(Element ratingElement);
@@ -188,10 +197,7 @@ public abstract class SocialCrawler {
 
 	protected abstract String getLanguageFromHeadMetaData(Element headerElements);
 
-	private String getUserIdFromUserInfo(Element userInfo) {
-		String href = userInfo.attr("href");
-		return href.substring(href.indexOf("=") + 1);
-	}
+	abstract protected String getUserIdFromUserInfo(Element userInfo);
 
 	private String getReviewTextFromComment(Element reviewData) {
 		return reviewData.select(getReviewCommentCssClassName()).first().text();
@@ -210,9 +216,4 @@ public abstract class SocialCrawler {
 	}
 
 	protected abstract String getUserDataCssClassName();
-
-	public String getEndpoint() {
-		return this.endpoint;
-	}
-
 }

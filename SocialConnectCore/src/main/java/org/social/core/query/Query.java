@@ -11,5 +11,8 @@ public abstract class Query {
 	}
 
 	abstract public String constructQuery();
+
 	abstract public String getSearchUrl();
+
+	abstract public void setSince(String since);
 }

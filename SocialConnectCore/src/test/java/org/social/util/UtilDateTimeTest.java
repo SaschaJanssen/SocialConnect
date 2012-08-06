@@ -52,6 +52,14 @@ public class UtilDateTimeTest {
 	}
 
 	@Test
+	public void testConvertToTimestamp_ZagatTimeFormat() throws Exception {
+		// Published June 12, 2012
+		String tsString = "Published June 12, 2012 ";
+		Timestamp ts = UtilDateTime.toTimestamp(tsString);
+		assertEquals("2012-06-12 23:59:59.0", ts.toString());
+	}
+
+	@Test
 	public void testConvertToTimestamp_YelpTimeFormat() throws Exception {
 		String tsString = "7/8/2012";
 		Timestamp ts = UtilDateTime.toTimestamp(tsString);

@@ -92,15 +92,29 @@ public class UtilDateTime {
 			calendar = toCalendarFromYelpTime(dateString);
 		} else if (dateString.matches("Reviewed .*")) {
 			calendar = toCalendarFromTripAdvisorUsTime(dateString);
-		}else if (dateString.matches("Bewertet am .*")) {
+		} else if (dateString.matches("Bewertet am .*")) {
 			calendar = toCalendarFromTripAdvisorDeTime(dateString);
-		}else {
+		} else if (dateString.matches("Published .*")) {
+			calendar = toCalendarFromZagatTime(dateString);
+		} else {
 			return null;
 		}
 
 		Timestamp timestamp = new Timestamp(calendar.getTimeInMillis());
 
 		return timestamp;
+	}
+
+	private static Calendar toCalendarFromZagatTime(String dateString) {
+		dateString = dateString.replace("Published ", "");
+		dateString = dateString.replace(",", "");
+
+		String[] dateTime = dateString.split(" ");
+		int month = months.get(dateTime[0]);
+		int day = Integer.parseInt(dateTime[1]);
+		int year = Integer.parseInt(dateTime[2]);
+
+		return toCalendar("0", year, month, day, 23, 59, 59);
 	}
 
 	private static Calendar toCalendarFromTripAdvisorDeTime(String dateString) {
@@ -201,7 +215,7 @@ public class UtilDateTime {
 		return unixTimestamp.toString();
 	}
 
-	public static  boolean isMessageYoungerThanLastNetworkAccess(Timestamp messageNetworkTs, Timestamp lastNetworkAccess) {
+	public static boolean isMessageYoungerThanLastNetworkAccess(Timestamp messageNetworkTs, Timestamp lastNetworkAccess) {
 		return (messageNetworkTs != null && lastNetworkAccess != null && lastNetworkAccess.after(messageNetworkTs));
 	}
 }

@@ -148,4 +148,8 @@ public class TripAdvisorSocialCrawler extends SocialCrawler {
 	protected String getNetworkName() {
 		return Networks.TRIPADVISOR.name();
 	}
+
+	protected String getUserIdFromUserInfo(Element userInfo) {
+		return "n/a";
+	}
 }

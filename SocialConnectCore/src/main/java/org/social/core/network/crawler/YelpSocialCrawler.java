@@ -111,4 +111,10 @@ public class YelpSocialCrawler extends SocialCrawler {
 		return Networks.YELP.name();
 	}
 
+	@Override
+	protected String getUserIdFromUserInfo(Element userInfo) {
+		String href = userInfo.attr("href");
+		return href.substring(href.indexOf("=") + 1);
+	}
+
 }

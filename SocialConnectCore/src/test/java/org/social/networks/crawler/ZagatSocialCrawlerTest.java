@@ -11,24 +11,24 @@ import org.jsoup.select.Elements;
 import org.junit.Before;
 import org.junit.Test;
 import org.social.core.entity.domain.Messages;
-import org.social.core.network.crawler.OpenTableSocialCrawler;
 import org.social.core.network.crawler.SocialCrawler;
+import org.social.core.network.crawler.ZagatSocialCrawler;
 
-public class OpenTableSocialCrawlerTest {
+public class ZagatSocialCrawlerTest {
 
 	SocialCrawler jsoupCrawler;
 
 	@Before
 	public void setUp() throws Exception {
-		jsoupCrawler = new OpenTableSocialCrawler(new MockBaseCrawler(), "src/test/resources/",
-				"OpenTableWolfgangsTest_WithoutPagination.html");
+		// http://www.zagat.com/r/n/five-guys-queens-3/reviews
+		jsoupCrawler = new ZagatSocialCrawler(new MockBaseCrawler(), "src/test/resources/",
+				"ZagatFivaGuysTest_WithoutPagination.html");
 	}
 
 	@Test
 	public void testGetDocument() throws Exception {
 		assertNotNull(jsoupCrawler.getDocument());
-		assertEquals("Wolfgang's Steak House - 54th Street Reviews - Rated by OpenTable Diners", jsoupCrawler
-				.getDocument().title());
+		assertEquals("Five Guys | Zagat", jsoupCrawler.getDocument().title());
 	}
 
 	@Test
@@ -38,20 +38,22 @@ public class OpenTableSocialCrawlerTest {
 
 		assertNotNull(reviewContainer);
 		assertTrue(reviewContainer.size() > 0);
-		assertEquals("BVRRSDisplayContentBody", reviewContainer.get(0).className());
+		assertEquals(
+				"view view-zagat-comments-recent view-id-zagat_comments_recent view-display-id-page view-dom-id-1 view-zagat-comments-recent view-id-zagat_comments_recent view-display-id-page view-dom-id-1",
+				reviewContainer.get(0).className());
 	}
 
 	@Test
 	public void testGetNextPageLinkFromPagination() throws Exception {
-		SocialCrawler secondJsoupCrawler = new OpenTableSocialCrawler(new MockBaseCrawler(), "src/test/resources/",
-				"OpenTableWolfgangsTest_WithPagination.html");
+		SocialCrawler secondJsoupCrawler = new ZagatSocialCrawler(new MockBaseCrawler(), "src/test/resources/",
+				"ZagatFivaGuysTest_WithPagination.html");
 
 		Element body = secondJsoupCrawler.getDocument().body();
 
 		String nextLink = secondJsoupCrawler.getNextPageFromPagination(body);
 
 		assertNotNull(nextLink);
-		assertEquals("/0938/41533/reviews.htm?page=2", nextLink);
+		assertEquals("/r/n/five-guys-queens-3/reviews?page=1", nextLink);
 	}
 
 	@Test
@@ -60,17 +62,17 @@ public class OpenTableSocialCrawlerTest {
 		Elements reviewContainer = jsoupCrawler.getReviewDataContainer(body);
 
 		List<Messages> result = jsoupCrawler.extractReviewDataFromHtml(reviewContainer, jsoupCrawler.getDocument()
-				.head(), 1L);
+				.head(), 3L);
 
 		assertTrue(result.size() >= 10);
 
-		// assertTrue(result.get(0).getMessage().startsWith("Even though Vapiano is one of my favorite places"));
-		assertEquals("n/a", result.get(0).getNetworkUser());
-		assertEquals("n/a", result.get(0).getNetworkUserId());
-		assertEquals("en-US", result.get(0).getLanguage());
-		assertEquals("OPENTABLE", result.get(0).getNetworkId());
-		assertEquals(1, result.get(0).getCustomerId().longValue());
-		// assertEquals("4.0", result.get(0).getNetworkUserRating());
+		assertTrue(result.get(0).getMessage().startsWith("Amazingly juicy and nice burgers and"));
+		assertEquals("Ray Y", result.get(0).getNetworkUser());
+		assertEquals("4355100", result.get(0).getNetworkUserId());
+		assertEquals("en", result.get(0).getLanguage());
+		assertEquals("ZAGAT", result.get(0).getNetworkId());
+		assertEquals(3, result.get(0).getCustomerId().longValue());
+		assertEquals("n/a", result.get(0).getNetworkUserRating());
 	}
 
 }
