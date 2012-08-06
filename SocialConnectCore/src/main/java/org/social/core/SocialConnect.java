@@ -53,6 +53,7 @@ public class SocialConnect {
 		LearningDAO learningDao = new LearningDAO();
 		List<LearningData> learningData = learningDao.getLearningData();
 		Classifier<String, String> classifier = BayesClassifier.getInstance();
+		classifier.reset();
 		for (LearningData data : learningData) {
 			List<String> t = UtilLucene.ngramString(data.getLearningData());
 			classifier.learn(data.getClassificationId(), t);
@@ -60,7 +61,6 @@ public class SocialConnect {
 	}
 
 	private void loadProperties() {
-
 		System.setProperty("https.proxyHost",
 				UtilProperties.getPropertyValue("conf/social.properties", "https.proxyHost"));
 		System.setProperty("https.proxyPort",

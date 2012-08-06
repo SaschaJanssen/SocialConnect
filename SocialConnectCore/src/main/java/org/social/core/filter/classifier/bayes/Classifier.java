@@ -70,7 +70,7 @@ public abstract class Classifier<T, K> implements IFeatureProbability<T, K> {
 	/**
 	 * Resets the <i>learned</i> feature and category counts.
 	 */
-	private void reset() {
+	public void reset() {
 		this.featureCountPerCategory = new HashMap<K, Map<T, Integer>>(Classifier.INITIAL_CATEGORY_DICTIONARY_CAPACITY);
 		this.totalFeatureCount = new HashMap<T, Integer>(Classifier.INITIAL_FEATURE_DICTIONARY_CAPACITY);
 		this.totalCategoryCount = new HashMap<K, Integer>(Classifier.INITIAL_CATEGORY_DICTIONARY_CAPACITY);
@@ -83,7 +83,7 @@ public abstract class Classifier<T, K> implements IFeatureProbability<T, K> {
 	 * @return The <code>Set</code> of features the classifier knows about.
 	 */
 	public Set<T> getFeatures() {
-		return ((HashMap<T, Integer>) this.totalFeatureCount).keySet();
+		return this.totalFeatureCount.keySet();
 	}
 
 	/**
@@ -92,7 +92,7 @@ public abstract class Classifier<T, K> implements IFeatureProbability<T, K> {
 	 * @return The <code>Set</code> of categories the classifier knows about.
 	 */
 	public Set<K> getCategories() {
-		return ((HashMap<K, Integer>) this.totalCategoryCount).keySet();
+		return this.totalCategoryCount.keySet();
 	}
 
 	/**
@@ -314,7 +314,7 @@ public abstract class Classifier<T, K> implements IFeatureProbability<T, K> {
 	 *            The calculating object.
 	 * @return The weighed average probability.
 	 */
-	private float featureWeighedAverage(T feature, K category, IFeatureProbability<T, K> calculator) {
+	protected float featureWeighedAverage(T feature, K category, IFeatureProbability<T, K> calculator) {
 		return this.featureWeighedAverage(feature, category, calculator, 1.0f, 0.5f);
 	}
 
@@ -336,7 +336,7 @@ public abstract class Classifier<T, K> implements IFeatureProbability<T, K> {
 	 *            The feature weight.
 	 * @return The weighed average probability.
 	 */
-	private float featureWeighedAverage(T feature, K category, IFeatureProbability<T, K> calculator, float weight) {
+	protected float featureWeighedAverage(T feature, K category, IFeatureProbability<T, K> calculator, float weight) {
 		return this.featureWeighedAverage(feature, category, calculator, weight, 0.5f);
 	}
 
