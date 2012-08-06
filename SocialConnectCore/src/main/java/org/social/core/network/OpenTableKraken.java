@@ -15,6 +15,7 @@ import org.social.core.network.crawler.BaseCrawler;
 import org.social.core.network.crawler.OpenTableSocialCrawler;
 import org.social.core.network.crawler.SocialCrawler;
 import org.social.core.query.OpenTableQuery;
+import org.social.core.query.Query;
 
 public class OpenTableKraken extends SocialNetworkKraken {
 
@@ -35,7 +36,7 @@ public class OpenTableKraken extends SocialNetworkKraken {
 			logger.debug("Fetch information from OpenTable for customer: " + this.customer.getCustomerId());
 		}
 
-		OpenTableQuery query = buildQueryFromKeywords();
+		Query query = buildQueryFromKeywords();
 
 		SocialCrawler otCrawler = new OpenTableSocialCrawler(this.crawler, query.getSearchUrl(),
 				query.constructQuery());
@@ -46,8 +47,8 @@ public class OpenTableKraken extends SocialNetworkKraken {
 		return sentimentMessages(resultMessages);
 	}
 
-	private OpenTableQuery buildQueryFromKeywords() {
-		OpenTableQuery openTableQuery = new OpenTableQuery(super.customerNetworkKeywords);
+	private Query buildQueryFromKeywords() {
+		Query openTableQuery = new OpenTableQuery(super.customerNetworkKeywords);
 
 		Timestamp sinceTs = this.customer.getLastNetworkdAccess();
 		if (sinceTs != null) {

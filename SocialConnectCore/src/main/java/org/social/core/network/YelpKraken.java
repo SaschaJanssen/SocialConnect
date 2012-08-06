@@ -13,6 +13,7 @@ import org.social.core.entity.domain.Messages;
 import org.social.core.entity.helper.KeywordDAO;
 import org.social.core.network.crawler.BaseCrawler;
 import org.social.core.network.crawler.YelpSocialCrawler;
+import org.social.core.query.Query;
 import org.social.core.query.YelpQuery;
 
 public class YelpKraken extends SocialNetworkKraken {
@@ -35,7 +36,7 @@ public class YelpKraken extends SocialNetworkKraken {
 			logger.debug("Fetch information from YELP for customer: " + this.customer.getCustomerId());
 		}
 
-		YelpQuery query = buildQueryFromKeywords();
+		Query query = buildQueryFromKeywords();
 
 		YelpSocialCrawler yelpCrawler = new YelpSocialCrawler(this.crawler, query.getSearchUrl(),
 				query.constructQuery());
@@ -46,8 +47,8 @@ public class YelpKraken extends SocialNetworkKraken {
 		return sentimentMessages(resultMessages);
 	}
 
-	private YelpQuery buildQueryFromKeywords() {
-		YelpQuery yelpQuery = new YelpQuery(super.customerNetworkKeywords);
+	private Query buildQueryFromKeywords() {
+		Query yelpQuery = new YelpQuery(super.customerNetworkKeywords);
 
 		Timestamp sinceTs = this.customer.getLastNetworkdAccess();
 		if (sinceTs != null) {

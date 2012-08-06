@@ -47,8 +47,8 @@ public class TripAdvisorKraken extends SocialNetworkKraken {
 		return sentimentMessages(resultMessages);
 	}
 
-	private TripAdvisorQuery buildQueryFromKeywords() {
-		TripAdvisorQuery query = new TripAdvisorQuery(super.customerNetworkKeywords);
+	private Query buildQueryFromKeywords() {
+		Query query = new TripAdvisorQuery(super.customerNetworkKeywords);
 
 		Timestamp sinceTs = this.customer.getLastNetworkdAccess();
 		if (sinceTs != null) {
