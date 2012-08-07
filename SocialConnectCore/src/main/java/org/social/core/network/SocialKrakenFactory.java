@@ -4,6 +4,7 @@ import org.social.core.constants.Networks;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.helper.KeywordDAO;
 import org.social.core.network.connection.FacebookConnection;
+import org.social.core.network.connection.QypeConnection;
 import org.social.core.network.connection.TwitterConnection;
 import org.social.core.network.crawler.JsoupBaseCrwaler;
 
@@ -24,6 +25,8 @@ public class SocialKrakenFactory {
 			return new TripAdvisorKraken(customer, keywordDao, new JsoupBaseCrwaler());
 		} else if (Networks.ZAGAT.getName().equals(network)) {
 			return new ZagatKraken(customer, keywordDao, new JsoupBaseCrwaler());
+		} else if (Networks.QYPE.getName().equals(network)) {
+			return new QypeKraken(customer, keywordDao, new QypeConnection());
 		}
 
 		throw new IllegalArgumentException("The Network: " + network

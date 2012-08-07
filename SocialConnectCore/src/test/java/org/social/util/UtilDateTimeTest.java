@@ -39,6 +39,15 @@ public class UtilDateTimeTest {
 	}
 
 	@Test
+	public void testConvertToTimestamp_QypeTimeFormat() throws Exception {
+		// 2012-07-27T22:13:03+02:00
+		String tsString = "2012-07-27T22:13:03+02:00";
+        Timestamp ts = UtilDateTime.toTimestamp(tsString);
+
+		assertEquals("2012-07-27 22:13:03.0", ts.toString());
+	}
+
+	@Test
 	public void testConvertToTimestamp_TribAdvisorTimeFormat() throws Exception {
 		// Reviewed July 24, 2012
 		String tsString = "Reviewed July 24, 2012";

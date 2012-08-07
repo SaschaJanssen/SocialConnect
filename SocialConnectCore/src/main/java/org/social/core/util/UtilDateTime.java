@@ -1,7 +1,10 @@
 package org.social.core.util;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,6 +85,10 @@ public class UtilDateTime {
 	 * @return
 	 */
 	public static java.sql.Timestamp toTimestamp(String dateString) {
+		Timestamp timestamp = null;
+		if (UtilValidate.isEmpty(dateString)) {
+			return timestamp;
+		}
 
 		Calendar calendar;
 		if (dateString.matches(".{10}T.{1,13}")) {
@@ -96,13 +103,32 @@ public class UtilDateTime {
 			calendar = toCalendarFromTripAdvisorDeTime(dateString);
 		} else if (dateString.matches("Published .*")) {
 			calendar = toCalendarFromZagatTime(dateString);
-		} else {
-			return null;
+		} else if (dateString.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{2}:\\d{2}")) {
+			calendar = toCalendarFromQypeTime(dateString);
+		}else {
+			return timestamp;
 		}
 
-		Timestamp timestamp = new Timestamp(calendar.getTimeInMillis());
+		timestamp = new Timestamp(calendar.getTimeInMillis());
 
 		return timestamp;
+	}
+
+	private static Calendar toCalendarFromQypeTime(String dateString) {
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ");
+        String dts = dateString.replaceAll("([\\+\\-]\\d\\d):(\\d\\d)","$1$2");
+
+        Calendar calendar = null;
+        try {
+			Date date = formatter.parse(dts);
+			calendar = Calendar.getInstance();
+			calendar.setTime(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return calendar;
 	}
 
 	private static Calendar toCalendarFromZagatTime(String dateString) {
