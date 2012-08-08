@@ -34,6 +34,7 @@ public class QypeQuery extends Query {
 		return this.searchUrl;
 	}
 
+	@Override
 	public String getLanguage() {
 		return language;
 	}

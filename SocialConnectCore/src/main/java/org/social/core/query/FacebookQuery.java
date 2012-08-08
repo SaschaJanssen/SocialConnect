@@ -44,6 +44,7 @@ public class FacebookQuery extends Query {
 		return this.searchUrl;
 	}
 
+	@Override
 	public String getLanguage() {
 		return language;
 	}

@@ -21,20 +21,15 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.query.Query;
-import org.social.core.util.UtilProperties;
 import org.social.core.util.UtilValidate;
 
 public class FacebookConnection implements SocialNetworkConnection {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private String MY_ACCESS_TOKEN = null;
-
 	private HttpClient httpClient;
 
 	public FacebookConnection() {
-		loadProperties();
-
 		httpClient = new DefaultHttpClient();
 
 		setHttpsProxy();
@@ -56,10 +51,10 @@ public class FacebookConnection implements SocialNetworkConnection {
 	@Override
 	public List<JSONObject> getRemoteData(Query query) {
 		List<JSONObject> resultList = new ArrayList<JSONObject>();
-		String nextPageUrl = query.constructQuery() + "&access_token=" + MY_ACCESS_TOKEN;
+		String nextPageUrl = query.constructQuery();
 
 		do {
-			String response = readDataFromUrl(nextPageUrl);
+			String response = readDataFromUrl(nextPageUrl, query.getLanguage());
 
 			JSONObject json = null;
 			try {
@@ -71,7 +66,8 @@ public class FacebookConnection implements SocialNetworkConnection {
 
 			if (json.containsKey("error")) {
 				JSONObject error = json.getJSONObject("error");
-				logger.error("The following error occurd during the Facebook request: " + error.getString("type")+ " - "+ error.getString("message"));
+				logger.error("The following error occurd during the Facebook request: " + error.getString("type")
+						+ " - " + error.getString("message"));
 				break;
 			}
 
@@ -96,12 +92,17 @@ public class FacebookConnection implements SocialNetworkConnection {
 		return nextPageUrl;
 	}
 
-	private String readDataFromUrl(String queryUrl) {
+	private String readDataFromUrl(String queryUrl, String language) {
 
 		StringBuilder resultStringBuilder = null;
 		BufferedReader in = null;
 		try {
 			HttpUriRequest req = new HttpGet(queryUrl);
+
+			if (UtilValidate.isNotEmpty(language)) {
+				req.setHeader("Accept-Language", language);
+			}
+
 			HttpResponse resp = httpClient.execute(req);
 
 			in = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
@@ -136,9 +137,5 @@ public class FacebookConnection implements SocialNetworkConnection {
 			resultList.add(jo);
 		}
 		return resultList;
-	}
-
-	private void loadProperties() {
-		MY_ACCESS_TOKEN = UtilProperties.getPropertyValue("conf/fb.properties", "token");
 	}
 }

@@ -41,6 +41,9 @@ public class YelpQuery extends Query {
 		return endpoint;
 	}
 
-
+	@Override
+	public String getLanguage() {
+		return null;
+	}
 
 }

@@ -51,6 +51,11 @@ public class TwitterQuery extends Query {
 		this.language = language;
 	}
 
+	@Override
+	public String getLanguage() {
+		return this.language;
+	}
+
 	public void setSince(String since) {
 		this.since = since;
 	}

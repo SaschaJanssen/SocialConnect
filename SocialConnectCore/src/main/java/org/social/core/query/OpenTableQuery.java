@@ -40,4 +40,9 @@ public class OpenTableQuery extends Query {
 		this.since = since;
 	}
 
+	@Override
+	public String getLanguage() {
+		return null;
+	}
+
 }

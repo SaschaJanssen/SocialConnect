@@ -40,4 +40,9 @@ public class TripAdvisorQuery extends Query {
 	public String getEndpoint() {
 		return endpoint;
 	}
+
+	@Override
+	public String getLanguage() {
+		return null;
+	}
 }

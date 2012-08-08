@@ -41,4 +41,9 @@ public class ZagatQuery extends Query {
 		this.since = since;
 	}
 
+	@Override
+	public String getLanguage() {
+		return null;
+	}
+
 }

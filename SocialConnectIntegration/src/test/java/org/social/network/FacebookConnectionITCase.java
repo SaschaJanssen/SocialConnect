@@ -17,7 +17,6 @@ import org.social.core.entity.domain.Keywords;
 import org.social.core.network.connection.FacebookConnection;
 import org.social.core.network.connection.SocialNetworkConnection;
 import org.social.core.query.FacebookQuery;
-import org.social.core.query.Query;
 
 public class FacebookConnectionITCase extends SocialITCase {
 
@@ -41,12 +40,14 @@ public class FacebookConnectionITCase extends SocialITCase {
 
 	@Test
 	public void testFacebookSearch() {
-		Query query = new FacebookQuery(cnk);
+		FacebookQuery query = new FacebookQuery(cnk);
+
+		query.setLanguage("en_us");
 
 		SocialNetworkConnection con = new FacebookConnection();
 		List<JSONObject> result = con.getRemoteData(query);
 
 		assertNotNull(result);
-		assertTrue(result.size() > 0);
+		assertTrue(result.size() >= 25);
 	}
 }
