@@ -7,7 +7,7 @@ import org.social.core.constants.Networks;
 public class YelpSocialCrawler extends SocialCrawler {
 
 	private final String ratingClassName = "div.rating";
-	private final String messageDateClassName = "em.smaller";
+	private final String messageDateClassName = "span.date";
 	private final String userNameLinkClassName = "li.user-name a";
 	private final String reviewCommentCssClassName = "p.review_comment";
 	private final String reviewDataCssClassName = "div.media-story";
