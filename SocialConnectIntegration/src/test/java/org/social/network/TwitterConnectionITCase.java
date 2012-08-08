@@ -16,7 +16,6 @@ import org.social.core.data.CustomerNetworkKeywords;
 import org.social.core.entity.domain.Keywords;
 import org.social.core.network.connection.SocialNetworkConnection;
 import org.social.core.network.connection.TwitterConnection;
-import org.social.core.query.Query;
 import org.social.core.query.TwitterQuery;
 
 public class TwitterConnectionITCase extends SocialITCase {
@@ -41,7 +40,8 @@ public class TwitterConnectionITCase extends SocialITCase {
 
 	@Test
 	public void testTwitterSearch() throws Exception {
-		Query query = new TwitterQuery(cnk);
+		TwitterQuery query = new TwitterQuery(cnk);
+		query.setLanguage("en");
 
 		SocialNetworkConnection con = new TwitterConnection();
 		List<JSONObject> result = con.getRemoteData(query);

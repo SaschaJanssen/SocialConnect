@@ -1,5 +1,8 @@
 package org.social.core.network.connection;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,46 +10,41 @@ import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
-import org.scribe.builder.ServiceBuilder;
-import org.scribe.builder.api.TwitterApi;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
-import org.scribe.oauth.OAuthService;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.params.ConnRoutePNames;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.query.Query;
-import org.social.core.util.UtilProperties;
+import org.social.core.util.UtilValidate;
 
 public class TwitterConnection implements SocialNetworkConnection {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private String CONSUMER_KEY = "consumerKey";
-	private String CONSUMER_SECRET = "consumerSecret";
-	private String ACCESS_TOKEN = "accessToken";
-	private String ACESS_TOEN_SECRET = "accessTokenSecret";
-
-	private String consumerKey = "";
-	private String consumerSecret = "";
-	private String accessTokenPub = "";
-	private String accessTokenSecret = "";
-
-	private OAuthService service = null;
-	private Token accessToken;
+	private HttpClient httpClient;
 
 	public TwitterConnection() {
-		loadProperties();
+		httpClient = new DefaultHttpClient();
 
-		ServiceBuilder builder = new ServiceBuilder();
-		builder.provider(TwitterApi.SSL.class);
-		builder.apiKey(consumerKey);
-		builder.apiSecret(consumerSecret);
+		setHttpsProxy();
+	}
 
-		service = builder.build();
+	private void setHttpsProxy() {
 
-		accessToken = new Token(accessTokenPub, accessTokenSecret);
+		String host = System.getProperty("https.proxyHost");
+		String portString = System.getProperty("https.proxyPort");
+
+		if (UtilValidate.isNotEmpty(host) && UtilValidate.isNotEmpty(portString)) {
+			int port = Integer.parseInt(portString);
+
+			HttpHost proxy = new HttpHost(host, port);
+			httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+		}
 	}
 
 	@Override
@@ -58,18 +56,15 @@ public class TwitterConnection implements SocialNetworkConnection {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Twitter GET Request: " + constructedQuery);
 			}
-			OAuthRequest request = new OAuthRequest(Verb.GET, constructedQuery);
-			service.signRequest(accessToken, request);
-			Response response = request.send();
 
-			String responseBody = response.getBody();
+			String responseBody = readDataFromUrl(constructedQuery);
 			if (responseBody.isEmpty()) {
 				break;
 			}
 
 			JSONObject json = null;
 			try {
-				json = (JSONObject) JSONSerializer.toJSON(response.getBody());
+				json = (JSONObject) JSONSerializer.toJSON(responseBody);
 			} catch (JSONException je) {
 				logger.error(je.getMessage());
 				continue;
@@ -88,11 +83,37 @@ public class TwitterConnection implements SocialNetworkConnection {
 		return resultMessages;
 	}
 
-	private void loadProperties() {
-		this.consumerKey = UtilProperties.getPropertyValue("conf/twitter.properties", CONSUMER_KEY);
-		this.consumerSecret = UtilProperties.getPropertyValue("conf/twitter.properties", CONSUMER_SECRET);
-		this.accessTokenPub = UtilProperties.getPropertyValue("conf/twitter.properties", ACCESS_TOKEN);
-		this.accessTokenSecret = UtilProperties.getPropertyValue("conf/twitter.properties", ACESS_TOEN_SECRET);
+	private String readDataFromUrl(String queryUrl) {
+
+		StringBuilder resultStringBuilder = null;
+		BufferedReader in = null;
+		try {
+			HttpUriRequest req = new HttpGet(queryUrl);
+
+			HttpResponse resp = httpClient.execute(req);
+
+			in = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
+
+			resultStringBuilder = new StringBuilder();
+			String inputLine;
+			while ((inputLine = in.readLine()) != null) {
+				resultStringBuilder.append(inputLine);
+			}
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					logger.error(e.getMessage());
+				}
+			}
+		}
+
+		return resultStringBuilder.toString();
+
 	}
 
 }

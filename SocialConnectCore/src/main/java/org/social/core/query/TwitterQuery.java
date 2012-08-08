@@ -68,9 +68,10 @@ public class TwitterQuery extends Query {
 		queryBuilder.append("?");
 		queryBuilder.append("q=");
 		queryBuilder.append(encodedQuery);
-		queryBuilder.append("&lang=");
-		queryBuilder.append(this.language);
-
+		if (UtilValidate.isNotEmpty(this.language)) {
+			queryBuilder.append("&lang=");
+			queryBuilder.append(this.language);
+		}
 		if (UtilValidate.isNotEmpty(this.since)) {
 			queryBuilder.append("&since=");
 			queryBuilder.append(this.since);
