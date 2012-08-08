@@ -105,7 +105,9 @@ public class UtilDateTime {
 			calendar = toCalendarFromZagatTime(dateString);
 		} else if (dateString.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{2}:\\d{2}")) {
 			calendar = toCalendarFromQypeTime(dateString);
-		}else {
+		} else if (dateString.matches("\\d{10,}")) {
+			calendar = toCalendarFromFoursquareTime(dateString);
+		} else {
 			return timestamp;
 		}
 
@@ -114,12 +116,21 @@ public class UtilDateTime {
 		return timestamp;
 	}
 
+	private static Calendar toCalendarFromFoursquareTime(String dateString) {
+		long dateLong = Long.valueOf(dateString);
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(dateLong * 1000);
+
+		return cal;
+	}
+
 	private static Calendar toCalendarFromQypeTime(String dateString) {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ");
-        String dts = dateString.replaceAll("([\\+\\-]\\d\\d):(\\d\\d)","$1$2");
+		String dts = dateString.replaceAll("([\\+\\-]\\d\\d):(\\d\\d)", "$1$2");
 
-        Calendar calendar = null;
-        try {
+		Calendar calendar = null;
+		try {
 			Date date = formatter.parse(dts);
 			calendar = Calendar.getInstance();
 			calendar.setTime(date);
@@ -241,7 +252,17 @@ public class UtilDateTime {
 		return unixTimestamp.toString();
 	}
 
-	public static boolean isMessageYoungerThanLastNetworkAccess(Timestamp messageNetworkTs, Timestamp lastNetworkAccess) {
+	public static boolean isMessageDateBeforeLastNetworkAccess(Timestamp messageNetworkTs, Timestamp lastNetworkAccess) {
 		return (messageNetworkTs != null && lastNetworkAccess != null && lastNetworkAccess.after(messageNetworkTs));
+	}
+
+	public static Timestamp stirngToTimestamp(String tsString) {
+		Timestamp newTimestamp = null;
+
+		if (UtilValidate.isNotEmpty(tsString)) {
+			newTimestamp = Timestamp.valueOf(tsString);
+		}
+
+		return newTimestamp;
 	}
 }

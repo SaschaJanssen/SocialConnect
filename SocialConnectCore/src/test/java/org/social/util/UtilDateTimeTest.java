@@ -48,6 +48,15 @@ public class UtilDateTimeTest {
 	}
 
 	@Test
+	public void testConvertToTimestamp_FoursquareTimeFormat() throws Exception {
+		//1341085680
+		String tsString = "1341085680";
+        Timestamp ts = UtilDateTime.toTimestamp(tsString);
+
+		assertEquals("2012-06-30 21:48:00.0", ts.toString());
+	}
+
+	@Test
 	public void testConvertToTimestamp_TribAdvisorTimeFormat() throws Exception {
 		// Reviewed July 24, 2012
 		String tsString = "Reviewed July 24, 2012";
@@ -114,7 +123,7 @@ public class UtilDateTimeTest {
 		Timestamp messageNetworkTs = UtilDateTime.nowTimestamp();
 		Timestamp lastNetworkAccess = UtilDateTime.nowTimestamp();
 
-		boolean younger = UtilDateTime.isMessageYoungerThanLastNetworkAccess(messageNetworkTs, lastNetworkAccess);
+		boolean younger = UtilDateTime.isMessageDateBeforeLastNetworkAccess(messageNetworkTs, lastNetworkAccess);
 		assertFalse(younger);
 
 		messageNetworkTs = UtilDateTime.toTimestamp("3/24/2012");
@@ -122,7 +131,7 @@ public class UtilDateTimeTest {
 		calendar.set(2012, 7 - 1, 26, 11, 3, 0);
 		lastNetworkAccess = new Timestamp(calendar.getTimeInMillis());
 
-		younger = UtilDateTime.isMessageYoungerThanLastNetworkAccess(messageNetworkTs, lastNetworkAccess);
+		younger = UtilDateTime.isMessageDateBeforeLastNetworkAccess(messageNetworkTs, lastNetworkAccess);
 		assertTrue(younger);
 
 		messageNetworkTs = UtilDateTime.toTimestamp("7/26/2012");
@@ -130,7 +139,16 @@ public class UtilDateTimeTest {
 		calendar.set(2012, 7 - 1, 26, 11, 3, 0);
 		lastNetworkAccess = new Timestamp(calendar.getTimeInMillis());
 
-		younger = UtilDateTime.isMessageYoungerThanLastNetworkAccess(messageNetworkTs, lastNetworkAccess);
+		younger = UtilDateTime.isMessageDateBeforeLastNetworkAccess(messageNetworkTs, lastNetworkAccess);
 		assertFalse(younger);
+	}
+
+	@Test
+	public void testToTimestamp() throws Exception {
+		Timestamp resultTs = UtilDateTime.stirngToTimestamp(null);
+		assertTrue(resultTs == null);
+
+		resultTs = UtilDateTime.stirngToTimestamp(UtilDateTime.nowTimestamp().toString());
+		assertTrue(resultTs != null);
 	}
 }

@@ -118,4 +118,9 @@ public class TwitterQuery extends Query {
 
 		return encodedQuery;
 	}
+
+	@Override
+	public String getSince() {
+		return this.since;
+	}
 }

@@ -17,4 +17,6 @@ public abstract class Query {
 	abstract public void setSince(String since);
 
 	public abstract String getLanguage();
+
+	public abstract String getSince();
 }

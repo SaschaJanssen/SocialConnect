@@ -54,6 +54,12 @@ public enum Networks {
 			return null;
 		}
 
+	}, FOURSQUARE {
+		@Override
+		public String convertTimestampToNetworkTime(Timestamp timestamp) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	};
 
 	public String getName() {

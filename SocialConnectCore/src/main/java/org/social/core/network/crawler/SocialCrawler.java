@@ -81,7 +81,7 @@ public abstract class SocialCrawler {
 			Messages message = messageIterator.next();
 			Timestamp networkTs = message.getNetworkMessageDate();
 
-			if (UtilDateTime.isMessageYoungerThanLastNetworkAccess(networkTs, customerLastNetworkAccess)) {
+			if (UtilDateTime.isMessageDateBeforeLastNetworkAccess(networkTs, customerLastNetworkAccess)) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Found message which is already stored. Remove it from current batch: "
 							+ message.toString());

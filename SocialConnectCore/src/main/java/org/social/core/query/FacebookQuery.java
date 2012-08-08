@@ -86,4 +86,9 @@ public class FacebookQuery extends Query {
 		return queryBuilder.toString();
 	}
 
+	@Override
+	public String getSince() {
+		return this.since;
+	}
+
 }
