@@ -23,35 +23,38 @@ public class UtilDateTimeTest {
 	}
 
 	@Test
-	public void testConvertToTimestamp_TwitterTimeFormat() throws Exception {
+	public void testConvertToTimestamp_FbTimeFormat() throws Exception {
 		// 2011-05-10T18:35:38+0000
+
+		// +0000 means no offset to UTC. Germany has an offset from +0200 -->
+		// +2h
 		String tsString = "2011-05-10T18:35:38+0000";
 		Timestamp ts = UtilDateTime.toTimestamp(tsString);
-		assertEquals("2011-05-10 18:35:38.0", ts.toString());
+		assertEquals("2011-05-10 20:35:38.0", ts.toString());
 	}
 
 	@Test
-	public void testConvertToTimestamp_FbTimeFormat() throws Exception {
+	public void testConvertToTimestamp_TwitterTimeFormat() throws Exception {
 		// Wed, 19 Jan 2011 20:21:46 +0000
 		String tsString = "Wed, 19 Jan 2011 20:21:46 +0000";
 		Timestamp ts = UtilDateTime.toTimestamp(tsString);
-		assertEquals("2011-01-19 20:21:46.0", ts.toString());
+		assertEquals("2011-01-19 21:21:46.0", ts.toString());
 	}
 
 	@Test
 	public void testConvertToTimestamp_QypeTimeFormat() throws Exception {
 		// 2012-07-27T22:13:03+02:00
 		String tsString = "2012-07-27T22:13:03+02:00";
-        Timestamp ts = UtilDateTime.toTimestamp(tsString);
+		Timestamp ts = UtilDateTime.toTimestamp(tsString);
 
 		assertEquals("2012-07-27 22:13:03.0", ts.toString());
 	}
 
 	@Test
 	public void testConvertToTimestamp_FoursquareTimeFormat() throws Exception {
-		//1341085680
+		// 1341085680
 		String tsString = "1341085680";
-        Timestamp ts = UtilDateTime.toTimestamp(tsString);
+		Timestamp ts = UtilDateTime.toTimestamp(tsString);
 
 		assertEquals("2012-06-30 21:48:00.0", ts.toString());
 	}
@@ -63,6 +66,10 @@ public class UtilDateTimeTest {
 		Timestamp ts = UtilDateTime.toTimestamp(tsString);
 		assertEquals("2012-07-24 23:59:59.0", ts.toString());
 
+		tsString = "Reviewed December 24, 2012";
+		ts = UtilDateTime.toTimestamp(tsString);
+		assertEquals("2012-12-24 23:59:59.0", ts.toString());
+
 		// Bewertet am 24. Juli 2012
 		tsString = "Bewertet am 24. Juli 2012";
 		ts = UtilDateTime.toTimestamp(tsString);
@@ -72,7 +79,7 @@ public class UtilDateTimeTest {
 	@Test
 	public void testConvertToTimestamp_ZagatTimeFormat() throws Exception {
 		// Published June 12, 2012
-		String tsString = "Published June 12, 2012 ";
+		String tsString = "Published June 12, 2012";
 		Timestamp ts = UtilDateTime.toTimestamp(tsString);
 		assertEquals("2012-06-12 23:59:59.0", ts.toString());
 	}
@@ -112,7 +119,7 @@ public class UtilDateTimeTest {
 
 		String ts = UtilDateTime.connvertTimestampToFacebookTime(timestamp);
 
-		Long unixTs =timestamp.getTime() / 1000L;
+		Long unixTs = timestamp.getTime() / 1000L;
 		assertEquals(unixTs.toString(), ts);
 	}
 

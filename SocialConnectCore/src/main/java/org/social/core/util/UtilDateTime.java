@@ -5,57 +5,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Locale;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UtilDateTime {
 
-	private static Map<String, Integer> months = createMonthMapping();
-
-	private static Map<String, Integer> createMonthMapping() {
-		Map<String, Integer> monthsMapping = new HashMap<String, Integer>();
-		monthsMapping.put("Jan", 1);
-		monthsMapping.put("Feb", 2);
-		monthsMapping.put("Mar", 3);
-		monthsMapping.put("Apr", 4);
-		monthsMapping.put("May", 5);
-		monthsMapping.put("Jun", 6);
-		monthsMapping.put("Jul", 7);
-		monthsMapping.put("Aug", 8);
-		monthsMapping.put("Sep", 9);
-		monthsMapping.put("Oct", 10);
-		monthsMapping.put("Nov", 11);
-		monthsMapping.put("Dec", 12);
-
-		monthsMapping.put("January", 1);
-		monthsMapping.put("February", 2);
-		monthsMapping.put("March", 3);
-		monthsMapping.put("April", 4);
-		monthsMapping.put("May", 5);
-		monthsMapping.put("June", 6);
-		monthsMapping.put("July", 7);
-		monthsMapping.put("August", 8);
-		monthsMapping.put("September", 9);
-		monthsMapping.put("October", 10);
-		monthsMapping.put("November", 11);
-		monthsMapping.put("December", 12);
-
-		monthsMapping.put("Januar", 1);
-		monthsMapping.put("Februar", 2);
-		monthsMapping.put("März", 3);
-		monthsMapping.put("Maerz", 3);
-		monthsMapping.put("April", 4);
-		monthsMapping.put("Mai", 5);
-		monthsMapping.put("Juni", 6);
-		monthsMapping.put("Juli", 7);
-		monthsMapping.put("August", 8);
-		monthsMapping.put("September", 9);
-		monthsMapping.put("Oktober", 10);
-		monthsMapping.put("November", 11);
-		monthsMapping.put("Dezember", 12);
-
-		return monthsMapping;
-	};
+	private static Logger logger = LoggerFactory.getLogger(UtilDateTime.class);
 
 	/**
 	 * Return a Timestamp for right now
@@ -116,6 +73,7 @@ public class UtilDateTime {
 		return timestamp;
 	}
 
+	// create Calendar from date time string 1325687943 (unix time)
 	private static Calendar toCalendarFromFoursquareTime(String dateString) {
 		long dateLong = Long.valueOf(dateString);
 
@@ -126,113 +84,95 @@ public class UtilDateTime {
 	}
 
 	private static Calendar toCalendarFromQypeTime(String dateString) {
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ");
-		String dts = dateString.replaceAll("([\\+\\-]\\d\\d):(\\d\\d)", "$1$2");
+		String pattern = "yyyy-MM-dd'T'hh:mm:ssZ";
+		dateString = dateString.replaceAll("([\\+\\-]\\d\\d):(\\d\\d)", "$1$2");
 
-		Calendar calendar = null;
-		try {
-			Date date = formatter.parse(dts);
-			calendar = Calendar.getInstance();
-			calendar.setTime(date);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		return parseDateTimeToCalendar(dateString, pattern, Locale.ENGLISH);
+	}
+
+	// create Calendar from date time string Published June 12, 2012
+	private static Calendar toCalendarFromZagatTime(String dateString) {
+		dateString = dateString.replace("Published ", "");
+
+		String pattern = "MMM dd, yyyy";
+
+		Calendar calendar = parseDateTimeToCalendar(dateString, pattern, Locale.ENGLISH);
+
+		setTimeToDayEnd(calendar);
 
 		return calendar;
 	}
 
-	private static Calendar toCalendarFromZagatTime(String dateString) {
-		dateString = dateString.replace("Published ", "");
-		dateString = dateString.replace(",", "");
-
-		String[] dateTime = dateString.split(" ");
-		int month = months.get(dateTime[0]);
-		int day = Integer.parseInt(dateTime[1]);
-		int year = Integer.parseInt(dateTime[2]);
-
-		return toCalendar("0", year, month, day, 23, 59, 59);
+	private static void setTimeToDayEnd(Calendar calendar) {
+		calendar.set(Calendar.HOUR, 23);
+		calendar.set(Calendar.MINUTE, 59);
+		calendar.set(Calendar.SECOND, 59);
 	}
 
+	// create Calendar from date time string Bewertet am 24. Juli 2012
 	private static Calendar toCalendarFromTripAdvisorDeTime(String dateString) {
 		dateString = dateString.replace("Bewertet am ", "");
-		dateString = dateString.replace(".", "");
 
-		String[] dateTime = dateString.split(" ");
-		int day = Integer.parseInt(dateTime[0]);
-		int month = months.get(dateTime[1]);
-		int year = Integer.parseInt(dateTime[2]);
+		String pattern = "dd. MMM yyyy";
 
-		return toCalendar("0", year, month, day, 23, 59, 59);
+		Calendar calendar = parseDateTimeToCalendar(dateString, pattern, Locale.GERMAN);
+
+		setTimeToDayEnd(calendar);
+
+		return calendar;
 	}
 
+	// create Calendar from date time string Reviewed July 24, 2012
 	private static Calendar toCalendarFromTripAdvisorUsTime(String dateString) {
 		dateString = dateString.replace("Reviewed ", "");
-		dateString = dateString.replace(",", "");
 
-		String[] dateTime = dateString.split(" ");
-		int month = months.get(dateTime[0]);
-		int day = Integer.parseInt(dateTime[1]);
-		int year = Integer.parseInt(dateTime[2]);
+		String pattern = "MMM dd, yyyy";
 
-		return toCalendar("0", year, month, day, 23, 59, 59);
+
+		Calendar calendar = parseDateTimeToCalendar(dateString, pattern, Locale.ENGLISH);
+
+		setTimeToDayEnd(calendar);
+
+		return calendar;
 	}
 
+	// create Calendar from date time string 12/20/2012
 	private static Calendar toCalendarFromYelpTime(String dateString) {
-		String[] dateTime = dateString.split("/");
-		int month = Integer.parseInt(dateTime[0]);
-		int day = Integer.parseInt(dateTime[1]);
-		int year = Integer.parseInt(dateTime[2]);
+		String pattern = "MM/dd/yyyy";
 
-		return toCalendar("0", year, month, day, 23, 59, 59);
+		Calendar calendar = parseDateTimeToCalendar(dateString, pattern, Locale.ENGLISH);
+
+		setTimeToDayEnd(calendar);
+
+		return calendar;
 	}
 
 	// create Calendar from date time string Wed, 19 Jan 2011 20:21:46 +0000
 	private static Calendar toCalendarFromTwitterTime(String dateString) {
+		String pattern = "EEE, dd MMM yyyy HH:mm:ss Z";
 
-		String[] dateTime = dateString.split(" ");
-		int day = Integer.parseInt(dateTime[1]);
-		String m = dateTime[2].trim();
-		int month = months.get(m);
-		int year = Integer.parseInt(dateTime[3]);
-
-		String[] splitedTime = dateTime[4].split(":");
-		int hour = new Integer(splitedTime[0]);
-		int minutes = new Integer(splitedTime[1]);
-		int seconds = new Integer(splitedTime[2]);
-
-		String milisec = dateTime[5].trim();
-		if (milisec.startsWith("+")) {
-			milisec = milisec.substring(milisec.indexOf("+") + 1);
-		}
-
-		return toCalendar(milisec, year, month, day, hour, minutes, seconds);
+		return parseDateTimeToCalendar(dateString, pattern, Locale.ENGLISH);
 	}
 
 	// create Calendar from date time string 2011-05-10T18:35:38+0000
 	private static Calendar toCalendarFromFbTime(String dateString) {
-		String date = dateString.substring(0, dateString.indexOf("T"));
-		String time = dateString.substring(dateString.indexOf("T") + 1, dateString.indexOf("+"));
-		String milisec = dateString.substring(dateString.indexOf("+") + 1);
+		String pattern = "yyyy-MM-dd'T'HH:mm:ssZ";
 
-		String[] splitedDate = date.split("-");
-		int year = new Integer(splitedDate[0]);
-		int month = new Integer(splitedDate[1]);
-		int day = new Integer(splitedDate[2]);
-
-		String[] splitedTime = time.split(":");
-		int hour = new Integer(splitedTime[0]);
-		int minutes = new Integer(splitedTime[1]);
-		int seconds = new Integer(splitedTime[2]);
-
-		return toCalendar(milisec, year, month, day, hour, minutes, seconds);
+		return parseDateTimeToCalendar(dateString, pattern, Locale.ENGLISH);
 	}
 
-	private static Calendar toCalendar(String milisec, int year, int month, int day, int hour, int minutes, int seconds) {
-		Calendar calendar = Calendar.getInstance();
+	private static Calendar parseDateTimeToCalendar(String dateString, String pattern, Locale locale) {
+		SimpleDateFormat formatter = new SimpleDateFormat(pattern, locale);
 
-		calendar.set(year, month - 1, day, hour, minutes, seconds);
-		calendar.set(Calendar.MILLISECOND, new Integer(milisec));
+		Calendar calendar = null;
+		try {
+			Date date = formatter.parse(dateString);
+			calendar = Calendar.getInstance();
+			calendar.setTime(date);
+		} catch (ParseException e) {
+			logger.error("Could not parse date: " + dateString, e);
+		}
+
 		return calendar;
 	}
 

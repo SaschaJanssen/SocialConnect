@@ -25,10 +25,16 @@ public class KeywordTypeTest {
 	}
 
 	@Test
+	public void testPage() {
+		assertEquals("PAGE", KeywordType.PAGE.getName());
+	}
+
+	@Test
 	public void testIsKeywordType() throws Exception {
 		assertTrue(KeywordType.QUERY.isKeywordType("QUERY"));
 		assertTrue(KeywordType.HASH.isKeywordType("HASH"));
 		assertTrue(KeywordType.MENTIONED.isKeywordType("MENTIONED"));
+		assertTrue(KeywordType.PAGE.isKeywordType("PAGE"));
 
 		assertFalse(KeywordType.MENTIONED.isKeywordType("HASH"));
 	}
