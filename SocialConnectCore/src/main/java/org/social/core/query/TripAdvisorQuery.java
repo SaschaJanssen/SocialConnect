@@ -4,45 +4,47 @@ import org.social.core.data.CustomerNetworkKeywords;
 
 public class TripAdvisorQuery extends Query {
 
-	private final String searchUrl = "http://www.tripadvisor.com";
+    private final String searchUrl = "http://www.tripadvisor.com";
 
-	private String endpoint;
-	private String since;
+    private String endpoint;
+    private String since;
 
-	public TripAdvisorQuery(CustomerNetworkKeywords customerNetworkKeywords) {
-		super(customerNetworkKeywords);
+    public TripAdvisorQuery(CustomerNetworkKeywords customerNetworkKeywords) {
+        super(customerNetworkKeywords);
 
-		setEndpoint(customerNetworkKeywords.getPage());
-	}
+        setEndpoint(customerNetworkKeywords.getPage());
+    }
 
-	@Override
-	public String constructQuery() {
-		return this.endpoint;
-	}
+    @Override
+    public String constructQuery() {
+        return endpoint;
+    }
 
-	private void setEndpoint(String endpoint) {
-		this.endpoint = endpoint;
-	}
+    private void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
 
-	@Override
-	public String getSearchUrl() {
-		return this.searchUrl;
-	}
+    @Override
+    public String getSearchUrl() {
+        return searchUrl;
+    }
 
-	public String getSince() {
-		return since;
-	}
+    @Override
+    public String getSince() {
+        return since;
+    }
 
-	public void setSince(String since) {
-		this.since = since;
-	}
+    @Override
+    public void setSince(String since) {
+        this.since = since;
+    }
 
-	public String getEndpoint() {
-		return endpoint;
-	}
+    public String getEndpoint() {
+        return endpoint;
+    }
 
-	@Override
-	public String getLanguage() {
-		return null;
-	}
+    @Override
+    public String getLanguage() {
+        return null;
+    }
 }

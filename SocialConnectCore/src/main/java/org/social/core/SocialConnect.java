@@ -14,65 +14,66 @@ import org.social.core.entity.helper.LearningDAO;
 import org.social.core.entity.helper.MessageDAO;
 import org.social.core.filter.classifier.bayes.BayesClassifier;
 import org.social.core.filter.classifier.bayes.Classifier;
+import org.social.core.util.UtilDateTime;
 import org.social.core.util.UtilLucene;
 import org.social.core.util.UtilProperties;
 
 public class SocialConnect {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
-	public SocialConnect() {
-		loadProperties();
-	}
+    public SocialConnect() {
+        loadProperties();
+    }
 
-	public void start() {
+    public void start() {
 
-		learn();
+        learn();
 
-		CustomerDAO customerDao = new CustomerDAO();
-		MessageDAO messageDao = new MessageDAO();
+        CustomerDAO customerDao = new CustomerDAO();
+        MessageDAO messageDao = new MessageDAO();
 
-		List<Customers> customers = customerDao.getAllCustomersAndKeywords();
-		for (Customers customer : customers) {
-			SocialDataConsumer consumer = new SocialDataConsumer(new KeywordDAOImpl());
-			FilteredMessageList filteredMessageDataList = consumer.consumeData(customer);
-			consumer = null;
+        List<Customers> customers = customerDao.getAllCustomersAndKeywords();
+        for (Customers customer : customers) {
+            SocialDataConsumer consumer = new SocialDataConsumer(new KeywordDAOImpl());
+            FilteredMessageList filteredMessageDataList = consumer.consumeData(customer);
+            consumer = null;
 
-			messageDao.storeMessages(filteredMessageDataList);
+            messageDao.storeMessages(filteredMessageDataList);
 
-			//customerDao.updateCustomerNetworkAccess(customer, UtilDateTime.nowTimestamp());
-		}
+            customerDao.updateCustomerNetworkAccess(customer, UtilDateTime.nowTimestamp());
+        }
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Finished social connect run successfully.");
-		}
+        if (logger.isDebugEnabled()) {
+            logger.debug("Finished social connect run successfully.");
+        }
 
-	}
+    }
 
-	private void learn() {
-		LearningDAO learningDao = new LearningDAO();
-		List<LearningData> learningData = learningDao.getLearningData();
-		Classifier<String, String> classifier = BayesClassifier.getInstance();
-		classifier.reset();
-		for (LearningData data : learningData) {
-			List<String> t = UtilLucene.ngramString(data.getLearningData());
-			classifier.learn(data.getClassificationId(), t);
-		}
-	}
+    private void learn() {
+        LearningDAO learningDao = new LearningDAO();
+        List<LearningData> learningData = learningDao.getLearningData();
+        Classifier<String, String> classifier = BayesClassifier.getInstance();
+        classifier.reset();
+        for (LearningData data : learningData) {
+            List<String> t = UtilLucene.ngramString(data.getLearningData());
+            classifier.learn(data.getClassificationId(), t);
+        }
+    }
 
-	private void loadProperties() {
-		System.setProperty("https.proxyHost",
-				UtilProperties.getPropertyValue("conf/social.properties", "https.proxyHost"));
-		System.setProperty("https.proxyPort",
-				UtilProperties.getPropertyValue("conf/social.properties", "https.proxyPort"));
+    private void loadProperties() {
+        System.setProperty("https.proxyHost",
+                UtilProperties.getPropertyValue("conf/social.properties", "https.proxyHost"));
+        System.setProperty("https.proxyPort",
+                UtilProperties.getPropertyValue("conf/social.properties", "https.proxyPort"));
 
-		System.setProperty("http.proxyHost",
-				UtilProperties.getPropertyValue("conf/social.properties", "http.proxyHost"));
-		System.setProperty("http.proxyPort",
-				UtilProperties.getPropertyValue("conf/social.properties", "http.proxyPort"));
+        System.setProperty("http.proxyHost",
+                UtilProperties.getPropertyValue("conf/social.properties", "http.proxyHost"));
+        System.setProperty("http.proxyPort",
+                UtilProperties.getPropertyValue("conf/social.properties", "http.proxyPort"));
 
-		System.setProperty("derby.system.home",
-				UtilProperties.getPropertyValue("conf/social.properties", "derby.system.home"));
-	}
+        System.setProperty("derby.system.home",
+                UtilProperties.getPropertyValue("conf/social.properties", "derby.system.home"));
+    }
 
 }

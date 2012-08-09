@@ -18,41 +18,41 @@ import org.social.core.network.ZagatKraken;
 
 public class SocialKrankenFactoryTest {
 
-	@Before
-	public void setUp() throws Exception {
-	}
+    @Before
+    public void setUp() throws Exception {
+    }
 
-	@Test
-	public void testFactoryForAllNetworks() {
-		SocialNetworkKraken snk = SocialKrakenFactory.getInstance("FACEBOOK", new Customers(), new KeywordDAOMock());
-		assertTrue(snk instanceof FacebookKraken);
+    @Test
+    public void testFactoryForAllNetworks() {
+        SocialNetworkKraken snk = SocialKrakenFactory.getInstance("FACEBOOK", new Customers(), new KeywordDAOMock());
+        assertTrue(snk instanceof FacebookKraken);
 
-		snk = SocialKrakenFactory.getInstance("TWITTER", new Customers(), new KeywordDAOMock());
-		assertTrue(snk instanceof TwitterKraken);
+        snk = SocialKrakenFactory.getInstance("TWITTER", new Customers(), new KeywordDAOMock());
+        assertTrue(snk instanceof TwitterKraken);
 
-		snk = SocialKrakenFactory.getInstance("YELP", new Customers(), new KeywordDAOMock());
-		assertTrue(snk instanceof YelpKraken);
+        snk = SocialKrakenFactory.getInstance("YELP", new Customers(), new KeywordDAOMock());
+        assertTrue(snk instanceof YelpKraken);
 
-		snk = SocialKrakenFactory.getInstance("OPENTABLE", new Customers(), new KeywordDAOMock());
-		assertTrue(snk instanceof OpenTableKraken);
+        snk = SocialKrakenFactory.getInstance("OPENTABLE", new Customers(), new KeywordDAOMock());
+        assertTrue(snk instanceof OpenTableKraken);
 
-		snk = SocialKrakenFactory.getInstance("TRIPADVISOR", new Customers(), new KeywordDAOMock());
-		assertTrue(snk instanceof TripAdvisorKraken);
+        snk = SocialKrakenFactory.getInstance("TRIPADVISOR", new Customers(), new KeywordDAOMock());
+        assertTrue(snk instanceof TripAdvisorKraken);
 
-		snk = SocialKrakenFactory.getInstance("ZAGAT", new Customers(), new KeywordDAOMock());
-		assertTrue(snk instanceof ZagatKraken);
+        snk = SocialKrakenFactory.getInstance("ZAGAT", new Customers(), new KeywordDAOMock());
+        assertTrue(snk instanceof ZagatKraken);
 
-		snk = SocialKrakenFactory.getInstance("QYPE", new Customers(), new KeywordDAOMock());
-		assertTrue(snk instanceof QypeKraken);
+        snk = SocialKrakenFactory.getInstance("QYPE", new Customers(), new KeywordDAOMock());
+        assertTrue(snk instanceof QypeKraken);
 
-		snk = SocialKrakenFactory.getInstance("FOURSQUARE", new Customers(), new KeywordDAOMock());
-		assertTrue(snk instanceof FoursquareKraken);
+        snk = SocialKrakenFactory.getInstance("FOURSQUARE", new Customers(), new KeywordDAOMock());
+        assertTrue(snk instanceof FoursquareKraken);
 
-	}
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testIllegalArgumentException() throws Exception {
-		SocialKrakenFactory.getInstance("FOOBAA", new Customers(), new KeywordDAOMock());
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void testIllegalArgumentException() throws Exception {
+        SocialKrakenFactory.getInstance("FOOBAA", new Customers(), new KeywordDAOMock());
+    }
 
 }

@@ -2,7 +2,7 @@ package org.social.core.filter.classifier.bayes;
 
 /**
  * Simple interface defining the method to calculate the feature probability.
- *
+ * 
  * @param <T>
  *            The feature class.
  * @param <K>
@@ -10,6 +10,6 @@ package org.social.core.filter.classifier.bayes;
  */
 public interface IFeatureProbability<T, K> {
 
-	public float featureProbability(T feature, K category);
+    public float featureProbability(T feature, K category);
 
 }

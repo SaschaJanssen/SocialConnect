@@ -10,56 +10,56 @@ import org.slf4j.LoggerFactory;
 
 public class ApplicationScheduler {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private final long period;
+    private final long period;
 
-	private AtomicBoolean shutdownHook;
+    private AtomicBoolean shutdownHook;
 
-	ApplicationScheduler(Long period) {
-		this.period = period;
-		this.shutdownHook = new AtomicBoolean(true);
-		this.attachShutdownHook();
-	}
+    ApplicationScheduler(Long period) {
+        this.period = period;
+        shutdownHook = new AtomicBoolean(true);
+        attachShutdownHook();
+    }
 
-	public void schedule() {
+    public void schedule() {
 
-		final SocialConnect socialConnect = new SocialConnect();
+        final SocialConnect socialConnect = new SocialConnect();
 
-		TimerTask timerTask = new TimerTask() {
+        TimerTask timerTask = new TimerTask() {
 
-			@Override
-			public void run() {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Schedule Social Connect Run");
-				}
-				socialConnect.start();
-			}
-		};
+            @Override
+            public void run() {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Schedule Social Connect Run");
+                }
+                socialConnect.start();
+            }
+        };
 
-		Timer tt = new Timer();
-		tt.scheduleAtFixedRate(timerTask, new Date(), period);
+        Timer tt = new Timer();
+        tt.scheduleAtFixedRate(timerTask, new Date(), period);
 
-		while(shutdownHook.get()){
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				logger.error("", e);
-				break;
-			}
-		}
-	}
+        while (shutdownHook.get()) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                logger.error("", e);
+                break;
+            }
+        }
+    }
 
-	private void attachShutdownHook() {
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Shutdown Hook called.");
-				}
-				ApplicationScheduler.this.shutdownHook.set(false);
-			}
-		});
-	}
+    private void attachShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Shutdown Hook called.");
+                }
+                shutdownHook.set(false);
+            }
+        });
+    }
 
 }

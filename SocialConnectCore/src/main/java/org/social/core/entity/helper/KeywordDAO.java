@@ -7,11 +7,11 @@ import org.social.core.entity.domain.Keywords;
 
 public interface KeywordDAO {
 
-	/**
-	 * Returns a list with keywords for a specific customer.
-	 */
-	public abstract List<Keywords> getMappedKeywordByCustomerAndNetwork(Long customerId, String networkId);
+    /**
+     * Returns a list with keywords for a specific customer.
+     */
+    public abstract List<Keywords> getMappedKeywordByCustomerAndNetwork(Long customerId, String networkId);
 
-	public abstract Set<String> getUserNetworks(Long customerId);
+    public abstract Set<String> getUserNetworks(Long customerId);
 
 }

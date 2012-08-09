@@ -5,14 +5,14 @@ import org.hibernate.SessionFactory;
 import org.social.core.entity.HibernateUtil;
 
 public abstract class AbstractDAO {
-	protected Session beginAndGetSession() {
-		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		return session;
-	}
+    protected Session beginAndGetSession() {
+        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+        Session session = sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        return session;
+    }
 
-	protected void commitSession(Session startedSession) {
-		startedSession.getTransaction().commit();
-	}
+    protected void commitSession(Session startedSession) {
+        startedSession.getTransaction().commit();
+    }
 }

@@ -12,48 +12,48 @@ import org.social.core.entity.helper.KeywordDAO;
 
 public abstract class SocialNetworkKraken {
 
-	protected CustomerNetworkKeywords customerNetworkKeywords;
-	protected Customers customer;
-	private KeywordDAO keywordDao;
+    protected CustomerNetworkKeywords customerNetworkKeywords;
+    protected Customers customer;
+    private KeywordDAO keywordDao;
 
-	protected SocialNetworkKraken(Customers customer, KeywordDAO keywordDao) {
-		this.customer = customer;
-		this.keywordDao = keywordDao;
-	}
+    protected SocialNetworkKraken(Customers customer, KeywordDAO keywordDao) {
+        this.customer = customer;
+        this.keywordDao = keywordDao;
+    }
 
-	public abstract FilteredMessageList fetchAndCraftMessages();
+    public abstract FilteredMessageList fetchAndCraftMessages();
 
-	public CustomerNetworkKeywords getCustomerNetworkKeywords() {
-		return this.customerNetworkKeywords;
-	}
+    public CustomerNetworkKeywords getCustomerNetworkKeywords() {
+        return customerNetworkKeywords;
+    }
 
-	protected void getCustomersKeywords(String networkName) {
+    protected void getCustomersKeywords(String networkName) {
 
-		Long customerId = this.customer.getCustomerId();
+        Long customerId = customer.getCustomerId();
 
-		List<Keywords> keywords = keywordDao.getMappedKeywordByCustomerAndNetwork(customerId, networkName);
-		this.customerNetworkKeywords = new CustomerNetworkKeywords(keywords);
-	}
+        List<Keywords> keywords = keywordDao.getMappedKeywordByCustomerAndNetwork(customerId, networkName);
+        customerNetworkKeywords = new CustomerNetworkKeywords(keywords);
+    }
 
-	/**
-	 * Categories messages after reliability and there sentiment.
-	 *
-	 * @param messagesToCraft
-	 * @return
-	 */
-	protected FilteredMessageList reliabilityAndSentimentMessages(List<Messages> messagesToCraft) {
-		DataCrafter crafter = new DataCrafter(messagesToCraft);
-		return crafter.reliabilityAndSentimentCrafter(this.customerNetworkKeywords);
-	}
+    /**
+     * Categories messages after reliability and there sentiment.
+     * 
+     * @param messagesToCraft
+     * @return
+     */
+    protected FilteredMessageList reliabilityAndSentimentMessages(List<Messages> messagesToCraft) {
+        DataCrafter crafter = new DataCrafter(messagesToCraft);
+        return crafter.reliabilityAndSentimentCrafter(customerNetworkKeywords);
+    }
 
-	/**
-	 * Categories messages only after there sentiment.
-	 *
-	 * @param messagesToCraft
-	 * @return
-	 */
-	protected FilteredMessageList sentimentMessages(List<Messages> messagesToCraft) {
-		DataCrafter crafter = new DataCrafter(messagesToCraft);
-		return crafter.sentimentCrafter();
-	}
+    /**
+     * Categories messages only after there sentiment.
+     * 
+     * @param messagesToCraft
+     * @return
+     */
+    protected FilteredMessageList sentimentMessages(List<Messages> messagesToCraft) {
+        DataCrafter crafter = new DataCrafter(messagesToCraft);
+        return crafter.sentimentCrafter();
+    }
 }

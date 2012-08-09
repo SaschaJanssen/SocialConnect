@@ -14,34 +14,35 @@ import org.social.core.query.FacebookQuery;
 
 public class FacebookQueryTest {
 
-	CustomerNetworkKeywords cnk;
+    CustomerNetworkKeywords cnk;
 
-	@Before
-	public void setUp() {
-		List<Keywords> keywordListForNetwork = new ArrayList<Keywords>();
-		Keywords keywords = new Keywords();
-		keywords.setCustomerId(1L);
-		keywords.setKeywordTypeId(KeywordType.QUERY.getName());
-		keywords.setKeyword("Test");
-		keywordListForNetwork.add(keywords);
+    @Before
+    public void setUp() {
+        List<Keywords> keywordListForNetwork = new ArrayList<Keywords>();
+        Keywords keywords = new Keywords();
+        keywords.setCustomerId(1L);
+        keywords.setKeywordTypeId(KeywordType.QUERY.getName());
+        keywords.setKeyword("Test");
+        keywordListForNetwork.add(keywords);
 
-		cnk = new CustomerNetworkKeywords(keywordListForNetwork);
-	}
+        cnk = new CustomerNetworkKeywords(keywordListForNetwork);
+    }
 
-	@Test
-	public void testConstructQuery() {
-		FacebookQuery query = new FacebookQuery(cnk);
-		query.setSince("yesterday");
-		query.setType("post");
-		query.setLanguage("en_Us");
+    @Test
+    public void testConstructQuery() {
+        FacebookQuery query = new FacebookQuery(cnk);
+        query.setSince("yesterday");
+        query.setType("post");
+        query.setLanguage("en_Us");
 
-		assertEquals(query.getSearchUrl() + "?q=Test&type=post&since=yesterday&limit=1500&locale=en_Us", query.constructQuery());
+        assertEquals(query.getSearchUrl() + "?q=Test&type=post&since=yesterday&limit=1500&locale=en_Us",
+                query.constructQuery());
 
-		query = new FacebookQuery(cnk);
-		query.setType("post");
-		query.setLanguage("en_Us");
+        query = new FacebookQuery(cnk);
+        query.setType("post");
+        query.setLanguage("en_Us");
 
-		assertEquals(query.getSearchUrl() + "?q=Test&type=post&limit=1500&locale=en_Us", query.constructQuery());
-	}
+        assertEquals(query.getSearchUrl() + "?q=Test&type=post&limit=1500&locale=en_Us", query.constructQuery());
+    }
 
 }

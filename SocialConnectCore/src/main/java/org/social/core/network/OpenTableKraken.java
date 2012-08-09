@@ -19,43 +19,42 @@ import org.social.core.query.Query;
 
 public class OpenTableKraken extends SocialNetworkKraken {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	private final BaseCrawler crawler;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final BaseCrawler crawler;
 
-	public OpenTableKraken(Customers customer, KeywordDAO keywordDao, BaseCrawler crawler) {
-		super(customer, keywordDao);
-		this.customer = customer;
-		this.crawler = crawler;
+    public OpenTableKraken(Customers customer, KeywordDAO keywordDao, BaseCrawler crawler) {
+        super(customer, keywordDao);
+        this.customer = customer;
+        this.crawler = crawler;
 
-		getCustomersKeywords(Networks.OPENTABLE.getName());
-	}
+        getCustomersKeywords(Networks.OPENTABLE.getName());
+    }
 
-	@Override
-	public FilteredMessageList fetchAndCraftMessages() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Fetch information from OpenTable for customer: " + this.customer.getCustomerId());
-		}
+    @Override
+    public FilteredMessageList fetchAndCraftMessages() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Fetch information from OpenTable for customer: " + customer.getCustomerId());
+        }
 
-		Query query = buildQueryFromKeywords();
+        Query query = buildQueryFromKeywords();
 
-		SocialCrawler otCrawler = new OpenTableSocialCrawler(this.crawler, query.getSearchUrl(),
-				query.constructQuery());
+        SocialCrawler otCrawler = new OpenTableSocialCrawler(crawler, query.getSearchUrl(), query.constructQuery());
 
-		List<Messages> resultMessages = new ArrayList<Messages>();
-		resultMessages = otCrawler.crawl(customer);
+        List<Messages> resultMessages = new ArrayList<Messages>();
+        resultMessages = otCrawler.crawl(customer);
 
-		return sentimentMessages(resultMessages);
-	}
+        return sentimentMessages(resultMessages);
+    }
 
-	private Query buildQueryFromKeywords() {
-		Query openTableQuery = new OpenTableQuery(super.customerNetworkKeywords);
+    private Query buildQueryFromKeywords() {
+        Query openTableQuery = new OpenTableQuery(super.customerNetworkKeywords);
 
-		Timestamp sinceTs = this.customer.getLastNetworkdAccess();
-		if (sinceTs != null) {
-			String since = sinceTs.toString();
-			openTableQuery.setSince(since);
-		}
+        Timestamp sinceTs = customer.getLastNetworkdAccess();
+        if (sinceTs != null) {
+            String since = sinceTs.toString();
+            openTableQuery.setSince(since);
+        }
 
-		return openTableQuery;
-	}
+        return openTableQuery;
+    }
 }

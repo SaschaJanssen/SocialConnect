@@ -16,113 +16,113 @@ import org.social.core.util.UtilValidate;
 
 public class DataCrafter {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
-	private List<Messages> rawData = null;
+    private List<Messages> rawData = null;
 
-	private List<Messages> positiveList = null;
-	private List<Messages> negativeList = null;
+    private List<Messages> positiveList = null;
+    private List<Messages> negativeList = null;
 
-	public DataCrafter(List<Messages> rawList) {
-		this.rawData = rawList;
+    public DataCrafter(List<Messages> rawList) {
+        rawData = rawList;
 
-		positiveList = new ArrayList<Messages>();
-		negativeList = new ArrayList<Messages>();
-	}
+        positiveList = new ArrayList<Messages>();
+        negativeList = new ArrayList<Messages>();
+    }
 
-	public FilteredMessageList reliabilityAndSentimentCrafter(CustomerNetworkKeywords customerKeywords) {
-		wordlistFilter();
-		mentionedFilter(customerKeywords);
-		sentimentAnalyser();
+    public FilteredMessageList reliabilityAndSentimentCrafter(CustomerNetworkKeywords customerKeywords) {
+        wordlistFilter();
+        mentionedFilter(customerKeywords);
+        sentimentAnalyser();
 
-		FilteredMessageList filteredMessages = new FilteredMessageList();
-		filteredMessages.setPositiveList(positiveList);
-		filteredMessages.setNegativeList(negativeList);
-		return filteredMessages;
-	}
+        FilteredMessageList filteredMessages = new FilteredMessageList();
+        filteredMessages.setPositiveList(positiveList);
+        filteredMessages.setNegativeList(negativeList);
+        return filteredMessages;
+    }
 
-	public FilteredMessageList sentimentCrafter() {
-		this.positiveList = this.rawData;
+    public FilteredMessageList sentimentCrafter() {
+        positiveList = rawData;
 
-		sentimentAnalyser();
+        sentimentAnalyser();
 
-		FilteredMessageList filteredMessages = new FilteredMessageList();
-		filteredMessages.setPositiveList(positiveList);
-		return filteredMessages;
-	}
+        FilteredMessageList filteredMessages = new FilteredMessageList();
+        filteredMessages.setPositiveList(positiveList);
+        return filteredMessages;
+    }
 
-	public void sentimentAnalyser() {
-		SentimentAnalyser sentimentAnalyser = SentimentAnalyser.getInstance();
-		this.positiveList = sentimentAnalyser.sentiment(this.positiveList);
-	}
+    public void sentimentAnalyser() {
+        SentimentAnalyser sentimentAnalyser = SentimentAnalyser.getInstance();
+        positiveList = sentimentAnalyser.sentiment(positiveList);
+    }
 
-	private void wordlistFilter() {
-		WordlistFilter wordlistFilter = WordlistFilter.getInstance();
-		for (Messages msgData : this.rawData) {
-			if (wordlistFilter.matchesWordList(msgData.getMessage())) {
-				addToPositiveList(msgData);
-			} else {
-				addToNegativeList(msgData);
-			}
-		}
-	}
+    private void wordlistFilter() {
+        WordlistFilter wordlistFilter = WordlistFilter.getInstance();
+        for (Messages msgData : rawData) {
+            if (wordlistFilter.matchesWordList(msgData.getMessage())) {
+                addToPositiveList(msgData);
+            } else {
+                addToNegativeList(msgData);
+            }
+        }
+    }
 
-	private void addToNegativeList(Messages negativeMessage) {
-		negativeMessage.setReliabilityId(Classification.NOT_RELIABLE.getName());
-		this.negativeList.add(negativeMessage);
-	}
+    private void addToNegativeList(Messages negativeMessage) {
+        negativeMessage.setReliabilityId(Classification.NOT_RELIABLE.getName());
+        negativeList.add(negativeMessage);
+    }
 
-	private void addToPositiveList(Messages positiveMessage) {
-		positiveMessage.setReliabilityId(Classification.RELIABLE.getName());
-		this.positiveList.add(positiveMessage);
+    private void addToPositiveList(Messages positiveMessage) {
+        positiveMessage.setReliabilityId(Classification.RELIABLE.getName());
+        positiveList.add(positiveMessage);
 
-	}
+    }
 
-	private void mentionedFilter(CustomerNetworkKeywords customerKeywords) {
+    private void mentionedFilter(CustomerNetworkKeywords customerKeywords) {
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Create mentioned filter.");
-		}
+        if (logger.isDebugEnabled()) {
+            logger.debug("Create mentioned filter.");
+        }
 
-		Set<String> mentionedSet = getMentionsetFromKeywords(customerKeywords);
+        Set<String> mentionedSet = getMentionsetFromKeywords(customerKeywords);
 
-		TwitterMentionedFilter mentionFilter = new TwitterMentionedFilter(mentionedSet);
+        TwitterMentionedFilter mentionFilter = new TwitterMentionedFilter(mentionedSet);
 
-		List<Messages> messagesToMove = new ArrayList<Messages>();
-		for (Messages message : this.negativeList) {
-			if (mentionFilter.mentioned(message.getMessage())) {
-				messagesToMove.add(message);
-			}
-		}
+        List<Messages> messagesToMove = new ArrayList<Messages>();
+        for (Messages message : negativeList) {
+            if (mentionFilter.mentioned(message.getMessage())) {
+                messagesToMove.add(message);
+            }
+        }
 
-		moveItemFromNegativeToPositiveList(messagesToMove);
+        moveItemFromNegativeToPositiveList(messagesToMove);
 
-	}
+    }
 
-	public void moveItemFromNegativeToPositiveList(List<Messages> messagesToMove) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Move Item to positive list.");
-		}
+    public void moveItemFromNegativeToPositiveList(List<Messages> messagesToMove) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Move Item to positive list.");
+        }
 
-		for (Messages message : messagesToMove) {
-			if (this.negativeList.contains(message)) {
-				this.negativeList.remove(message);
-			}
-			addToPositiveList(message);
-		}
-	}
+        for (Messages message : messagesToMove) {
+            if (negativeList.contains(message)) {
+                negativeList.remove(message);
+            }
+            addToPositiveList(message);
+        }
+    }
 
-	private Set<String> getMentionsetFromKeywords(CustomerNetworkKeywords customerKeywords) {
-		Set<String> mentionedSet = new HashSet<String>();
-		String tag = customerKeywords.getHashForNetwork();
-		if (UtilValidate.isNotEmpty(tag)) {
-			mentionedSet.add(tag);
-		}
-		tag = customerKeywords.getMentionedForNetwork();
-		if (UtilValidate.isNotEmpty(tag)) {
-			mentionedSet.add(tag);
-		}
-		return mentionedSet;
-	}
+    private Set<String> getMentionsetFromKeywords(CustomerNetworkKeywords customerKeywords) {
+        Set<String> mentionedSet = new HashSet<String>();
+        String tag = customerKeywords.getHashForNetwork();
+        if (UtilValidate.isNotEmpty(tag)) {
+            mentionedSet.add(tag);
+        }
+        tag = customerKeywords.getMentionedForNetwork();
+        if (UtilValidate.isNotEmpty(tag)) {
+            mentionedSet.add(tag);
+        }
+        return mentionedSet;
+    }
 
 }

@@ -9,71 +9,71 @@ import org.social.core.entity.domain.Keywords;
 
 public class CustomerNetworkKeywords {
 
-	private final Map<String, String> networkKeywords;
+    private final Map<String, String> networkKeywords;
 
-	public CustomerNetworkKeywords(List<Keywords> keywordListForNetwork) {
-		networkKeywords = mapKeywords(keywordListForNetwork);
+    public CustomerNetworkKeywords(List<Keywords> keywordListForNetwork) {
+        networkKeywords = mapKeywords(keywordListForNetwork);
 
-	}
+    }
 
-	public String getHashForNetwork() {
-		String hash = "";
+    public String getHashForNetwork() {
+        String hash = "";
 
-		if (networkKeywords.containsKey(KeywordType.HASH.getName())) {
-			hash = networkKeywords.get(KeywordType.HASH.getName());
-		}
+        if (networkKeywords.containsKey(KeywordType.HASH.getName())) {
+            hash = networkKeywords.get(KeywordType.HASH.getName());
+        }
 
-		return hash;
-	}
+        return hash;
+    }
 
-	public String getMentionedForNetwork() {
-		String mentioned = "";
+    public String getMentionedForNetwork() {
+        String mentioned = "";
 
-		if (networkKeywords.containsKey(KeywordType.MENTIONED.getName())) {
-			mentioned = networkKeywords.get(KeywordType.MENTIONED.getName());
-		}
+        if (networkKeywords.containsKey(KeywordType.MENTIONED.getName())) {
+            mentioned = networkKeywords.get(KeywordType.MENTIONED.getName());
+        }
 
-		return mentioned;
-	}
+        return mentioned;
+    }
 
-	public String getQueryForNetwork() {
-		String query = "";
+    public String getQueryForNetwork() {
+        String query = "";
 
-		if (networkKeywords.containsKey(KeywordType.QUERY.getName())) {
-			query = networkKeywords.get(KeywordType.QUERY.getName());
-		}
+        if (networkKeywords.containsKey(KeywordType.QUERY.getName())) {
+            query = networkKeywords.get(KeywordType.QUERY.getName());
+        }
 
-		return query;
-	}
+        return query;
+    }
 
-	private Map<String, String> mapKeywords(List<Keywords> keywordsForCustomer) {
-		Map<String, String> mappedKeywords = new HashMap<String, String>();
+    private Map<String, String> mapKeywords(List<Keywords> keywordsForCustomer) {
+        Map<String, String> mappedKeywords = new HashMap<String, String>();
 
-		for (Keywords keyword : keywordsForCustomer) {
-			String keywordType = keyword.getKeywordTypeId();
+        for (Keywords keyword : keywordsForCustomer) {
+            String keywordType = keyword.getKeywordTypeId();
 
-			if (KeywordType.HASH.isKeywordType(keywordType)) {
-				mappedKeywords.put(KeywordType.HASH.getName(), keyword.getKeyword());
-			} else if (KeywordType.MENTIONED.isKeywordType(keywordType)) {
-				mappedKeywords.put(KeywordType.MENTIONED.getName(), keyword.getKeyword());
-			} else if (KeywordType.QUERY.isKeywordType(keywordType)) {
-				mappedKeywords.put(KeywordType.QUERY.getName(), keyword.getKeyword());
-			} else if (KeywordType.PAGE.isKeywordType(keywordType)) {
-				mappedKeywords.put(KeywordType.PAGE.getName(), keyword.getKeyword());
-			}
-		}
+            if (KeywordType.HASH.isKeywordType(keywordType)) {
+                mappedKeywords.put(KeywordType.HASH.getName(), keyword.getKeyword());
+            } else if (KeywordType.MENTIONED.isKeywordType(keywordType)) {
+                mappedKeywords.put(KeywordType.MENTIONED.getName(), keyword.getKeyword());
+            } else if (KeywordType.QUERY.isKeywordType(keywordType)) {
+                mappedKeywords.put(KeywordType.QUERY.getName(), keyword.getKeyword());
+            } else if (KeywordType.PAGE.isKeywordType(keywordType)) {
+                mappedKeywords.put(KeywordType.PAGE.getName(), keyword.getKeyword());
+            }
+        }
 
-		return mappedKeywords;
-	}
+        return mappedKeywords;
+    }
 
-	public String getPage() {
-		String page = "";
+    public String getPage() {
+        String page = "";
 
-		if (networkKeywords.containsKey(KeywordType.PAGE.getName())) {
-			page = networkKeywords.get(KeywordType.PAGE.getName());
-		}
+        if (networkKeywords.containsKey(KeywordType.PAGE.getName())) {
+            page = networkKeywords.get(KeywordType.PAGE.getName());
+        }
 
-		return page;
-	}
+        return page;
+    }
 
 }

@@ -18,68 +18,68 @@ import org.social.core.util.UtilDateTime;
 
 public class FacebookKraken extends SocialNetworkKraken {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	private final SocialNetworkConnection connection;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final SocialNetworkConnection connection;
 
-	public FacebookKraken(Customers customer, KeywordDAO keywordDao, SocialNetworkConnection fbConnection) {
-		super(customer, keywordDao);
-		connection = fbConnection;
-		getCustomersKeywords(Networks.FACEBOOK.getName());
-	}
+    public FacebookKraken(Customers customer, KeywordDAO keywordDao, SocialNetworkConnection fbConnection) {
+        super(customer, keywordDao);
+        connection = fbConnection;
+        getCustomersKeywords(Networks.FACEBOOK.getName());
+    }
 
-	@Override
-	public FilteredMessageList fetchAndCraftMessages() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Fetch posts from Facebook for customer: " + super.customer.getCustomerId());
-		}
+    @Override
+    public FilteredMessageList fetchAndCraftMessages() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Fetch posts from Facebook for customer: " + super.customer.getCustomerId());
+        }
 
-		FacebookQuery query = buildQueryFromKeywords();
+        FacebookQuery query = buildQueryFromKeywords();
 
-		List<JSONObject> searchResult = connection.getRemoteData(query);
-		List<Messages> resultMessages = extractMessageData(searchResult);
+        List<JSONObject> searchResult = connection.getRemoteData(query);
+        List<Messages> resultMessages = extractMessageData(searchResult);
 
-		FilteredMessageList filteredResultMessages = reliabilityAndSentimentMessages(resultMessages);
+        FilteredMessageList filteredResultMessages = reliabilityAndSentimentMessages(resultMessages);
 
-		return filteredResultMessages;
-	}
+        return filteredResultMessages;
+    }
 
-	private FacebookQuery buildQueryFromKeywords() {
-		FacebookQuery fbQuery = new FacebookQuery(super.customerNetworkKeywords);
+    private FacebookQuery buildQueryFromKeywords() {
+        FacebookQuery fbQuery = new FacebookQuery(super.customerNetworkKeywords);
 
-		String since = UtilDateTime.connvertTimestampToFacebookTime(super.customer.getLastNetworkdAccess());
-		fbQuery.setSince(since);
-		fbQuery.setType("post");
-		fbQuery.setLanguage("en_US");
+        String since = UtilDateTime.connvertTimestampToFacebookTime(super.customer.getLastNetworkdAccess());
+        fbQuery.setSince(since);
+        fbQuery.setType("post");
+        fbQuery.setLanguage("en_US");
 
-		return fbQuery;
-	}
+        return fbQuery;
+    }
 
-	private List<Messages> extractMessageData(List<JSONObject> searchResult) {
+    private List<Messages> extractMessageData(List<JSONObject> searchResult) {
 
-		List<Messages> results = new ArrayList<Messages>();
+        List<Messages> results = new ArrayList<Messages>();
 
-		for (JSONObject object : searchResult) {
-			if (!object.has("message")) {
-				// object could be ignored if no message attribute is set.
-				continue;
-			}
-			Messages messageData = new Messages(Networks.FACEBOOK.getName());
+        for (JSONObject object : searchResult) {
+            if (!object.has("message")) {
+                // object could be ignored if no message attribute is set.
+                continue;
+            }
+            Messages messageData = new Messages(Networks.FACEBOOK.getName());
 
-			messageData.setCustomerId(super.customer.getCustomerId());
+            messageData.setCustomerId(super.customer.getCustomerId());
 
-			JSONObject userData = object.getJSONObject("from");
-			messageData.setNetworkUser(userData.getString("name"));
-			messageData.setNetworkUserId(userData.getString("id"));
+            JSONObject userData = object.getJSONObject("from");
+            messageData.setNetworkUser(userData.getString("name"));
+            messageData.setNetworkUserId(userData.getString("id"));
 
-			String fbMessageDate = object.getString("created_time");
-			messageData.setNetworkMessageDate(UtilDateTime.toTimestamp(fbMessageDate));
+            String fbMessageDate = object.getString("created_time");
+            messageData.setNetworkMessageDate(UtilDateTime.toTimestamp(fbMessageDate));
 
-			messageData.setMessage(object.getString("message"));
-			messageData.setMessageReceivedDate(UtilDateTime.nowTimestamp());
+            messageData.setMessage(object.getString("message"));
+            messageData.setMessageReceivedDate(UtilDateTime.nowTimestamp());
 
-			results.add(messageData);
-		}
+            results.add(messageData);
+        }
 
-		return results;
-	}
+        return results;
+    }
 }

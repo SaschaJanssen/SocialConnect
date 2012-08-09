@@ -18,48 +18,48 @@ import org.apache.lucene.util.Version;
 
 public class UtilLucene {
 
-	private static Version version = Version.LUCENE_36;
+    private static Version version = Version.LUCENE_36;
 
-	public static List<String> tokenizeString(Analyzer analyzer, String phrase) {
-		TokenStream stream = analyzer.tokenStream(null, new StringReader(phrase));
+    public static List<String> tokenizeString(Analyzer analyzer, String phrase) {
+        TokenStream stream = analyzer.tokenStream(null, new StringReader(phrase));
 
-		List<String> result = streamAttributesToList(stream);
-		return result;
-	}
+        List<String> result = streamAttributesToList(stream);
+        return result;
+    }
 
-	public static List<String> ngramString(String phrase) {
-		@SuppressWarnings("deprecation")
-		TokenStream shingleMatrixFilter = new ShingleMatrixFilter(new StandardTokenizer(version, new StringReader(
-				phrase)), 2, 2, ' ');
+    public static List<String> ngramString(String phrase) {
+        @SuppressWarnings("deprecation")
+        TokenStream shingleMatrixFilter = new ShingleMatrixFilter(new StandardTokenizer(version, new StringReader(
+                phrase)), 2, 2, ' ');
 
-		TokenFilter lowerCaseFilter = new LowerCaseFilter(version, shingleMatrixFilter);
+        TokenFilter lowerCaseFilter = new LowerCaseFilter(version, shingleMatrixFilter);
 
-		TokenStream stream = new StopFilter(version, lowerCaseFilter, StopAnalyzer.ENGLISH_STOP_WORDS_SET);
+        TokenStream stream = new StopFilter(version, lowerCaseFilter, StopAnalyzer.ENGLISH_STOP_WORDS_SET);
 
-		List<String> result = streamAttributesToList(stream);
+        List<String> result = streamAttributesToList(stream);
 
-		return result;
-	}
+        return result;
+    }
 
-	private static List<String> streamAttributesToList(TokenStream stream) {
-		List<String> result = new ArrayList<String>();
+    private static List<String> streamAttributesToList(TokenStream stream) {
+        List<String> result = new ArrayList<String>();
 
-		try {
-			while (stream.incrementToken()) {
-				result.add(stream.getAttribute(CharTermAttribute.class).toString());
-			}
-		} catch (IOException e) {
-			// not thrown b/c we're using a string reader...
-			throw new RuntimeException(e);
-		} finally {
-			try {
-				stream.close();
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		}
+        try {
+            while (stream.incrementToken()) {
+                result.add(stream.getAttribute(CharTermAttribute.class).toString());
+            }
+        } catch (IOException e) {
+            // not thrown b/c we're using a string reader...
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                stream.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
 }

@@ -8,30 +8,30 @@ import org.social.core.entity.domain.LearningData;
 
 public class LearningDAO extends AbstractDAO {
 
-	public List<LearningData> getLearningData() {
-		Session session = super.beginAndGetSession();
+    public List<LearningData> getLearningData() {
+        Session session = super.beginAndGetSession();
 
-		List<LearningData> learningDataList = getLearningData(session);
+        List<LearningData> learningDataList = getLearningData(session);
 
-		super.commitSession(session);
+        super.commitSession(session);
 
-		return learningDataList;
-	}
+        return learningDataList;
+    }
 
-	private List<LearningData> getLearningData(Session session) {
-		@SuppressWarnings("unchecked")
-		List<LearningData> learningDataList = Collections.checkedList(session.createQuery("from LearningData").list(),
-				LearningData.class);
-		return learningDataList;
-	}
+    private List<LearningData> getLearningData(Session session) {
+        @SuppressWarnings("unchecked")
+        List<LearningData> learningDataList = Collections.checkedList(session.createQuery("from LearningData").list(),
+                LearningData.class);
+        return learningDataList;
+    }
 
-	public void storeLearningData(List<LearningData> learningData) {
-		Session session = super.beginAndGetSession();
+    public void storeLearningData(List<LearningData> learningData) {
+        Session session = super.beginAndGetSession();
 
-		for (LearningData data : learningData) {
-			session.save(data);
-		}
+        for (LearningData data : learningData) {
+            session.save(data);
+        }
 
-		super.commitSession(session);
-	}
+        super.commitSession(session);
+    }
 }

@@ -16,26 +16,26 @@ import org.social.core.query.ZagatQuery;
 
 public class ZagatQueryTest {
 
-	CustomerNetworkKeywords cnk;
+    CustomerNetworkKeywords cnk;
 
-	@Before
-	public void setUp() {
-		List<Keywords> keywordListForNetwork = new ArrayList<Keywords>();
-		Keywords keywords = new Keywords();
-		keywords.setCustomerId(1L);
-		keywords.setKeywordTypeId(KeywordType.PAGE.getName());
-		keywords.setKeyword("/r/n/five-guys-queens-3");
-		keywordListForNetwork.add(keywords);
+    @Before
+    public void setUp() {
+        List<Keywords> keywordListForNetwork = new ArrayList<Keywords>();
+        Keywords keywords = new Keywords();
+        keywords.setCustomerId(1L);
+        keywords.setKeywordTypeId(KeywordType.PAGE.getName());
+        keywords.setKeyword("/r/n/five-guys-queens-3");
+        keywordListForNetwork.add(keywords);
 
-		cnk = new CustomerNetworkKeywords(keywordListForNetwork);
-	}
+        cnk = new CustomerNetworkKeywords(keywordListForNetwork);
+    }
 
-	@Test
-	public void testConstructQuery() throws Exception {
-		Query yq = new ZagatQuery(cnk);
+    @Test
+    public void testConstructQuery() throws Exception {
+        Query yq = new ZagatQuery(cnk);
 
-		assertEquals("/r/n/five-guys-queens-3/reviews", yq.constructQuery());
-		assertNotNull(yq.getSearchUrl());
-	}
+        assertEquals("/r/n/five-guys-queens-3/reviews", yq.constructQuery());
+        assertNotNull(yq.getSearchUrl());
+    }
 
 }

@@ -21,81 +21,81 @@ import org.social.core.util.UtilDateTime;
 
 public class QypeKraken extends SocialNetworkKraken {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	private final SocialNetworkConnection connection;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final SocialNetworkConnection connection;
 
-	public QypeKraken(Customers customer, KeywordDAO keywordDao, SocialNetworkConnection fbConnection) {
-		super(customer, keywordDao);
-		connection = fbConnection;
-		getCustomersKeywords(Networks.QYPE.getName());
-	}
+    public QypeKraken(Customers customer, KeywordDAO keywordDao, SocialNetworkConnection fbConnection) {
+        super(customer, keywordDao);
+        connection = fbConnection;
+        getCustomersKeywords(Networks.QYPE.getName());
+    }
 
-	@Override
-	public FilteredMessageList fetchAndCraftMessages() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Fetch posts from Qype for customer: " + super.customer.getCustomerId());
-		}
+    @Override
+    public FilteredMessageList fetchAndCraftMessages() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Fetch posts from Qype for customer: " + super.customer.getCustomerId());
+        }
 
-		QypeQuery query = buildQueryFromKeywords();
+        QypeQuery query = buildQueryFromKeywords();
 
-		List<JSONObject> searchResult = connection.getRemoteData(query);
-		List<Messages> resultMessages = extractMessageData(searchResult);
+        List<JSONObject> searchResult = connection.getRemoteData(query);
+        List<Messages> resultMessages = extractMessageData(searchResult);
 
-		FilteredMessageList filteredResultMessages = super.sentimentMessages(resultMessages);
+        FilteredMessageList filteredResultMessages = super.sentimentMessages(resultMessages);
 
-		return filteredResultMessages;
-	}
+        return filteredResultMessages;
+    }
 
-	private QypeQuery buildQueryFromKeywords() {
-		QypeQuery query = new QypeQuery(super.customerNetworkKeywords);
+    private QypeQuery buildQueryFromKeywords() {
+        QypeQuery query = new QypeQuery(super.customerNetworkKeywords);
 
-		Timestamp lastNetworkAccess = super.customer.getLastNetworkdAccess();
+        Timestamp lastNetworkAccess = super.customer.getLastNetworkdAccess();
 
-		if (lastNetworkAccess != null) {
-			query.setSince(lastNetworkAccess.toString());
+        if (lastNetworkAccess != null) {
+            query.setSince(lastNetworkAccess.toString());
 
-		}
-		query.setLanguage("en");
+        }
+        query.setLanguage("en");
 
-		return query;
-	}
+        return query;
+    }
 
-	private List<Messages> extractMessageData(List<JSONObject> searchResult) {
+    private List<Messages> extractMessageData(List<JSONObject> searchResult) {
 
-		List<Messages> results = new ArrayList<Messages>();
+        List<Messages> results = new ArrayList<Messages>();
 
-		for (JSONObject object : searchResult) {
-			Messages messageData = new Messages(Networks.QYPE.getName());
+        for (JSONObject object : searchResult) {
+            Messages messageData = new Messages(Networks.QYPE.getName());
 
-			messageData.setCustomerId(super.customer.getCustomerId());
+            messageData.setCustomerId(super.customer.getCustomerId());
 
-			JSONArray links = object.getJSONArray("links");
-			for (Object link : links) {
-				JSONObject joLink = (JSONObject) link;
-				if (joLink.containsKey("rel") && "http://schemas.qype.com/user".equals(joLink.getString("rel"))) {
-					String title = joLink.getString("title");
-					String href = joLink.getString("href");
-					String networkUserId = href.substring(href.lastIndexOf("/") + 1);
+            JSONArray links = object.getJSONArray("links");
+            for (Object link : links) {
+                JSONObject joLink = (JSONObject) link;
+                if (joLink.containsKey("rel") && "http://schemas.qype.com/user".equals(joLink.getString("rel"))) {
+                    String title = joLink.getString("title");
+                    String href = joLink.getString("href");
+                    String networkUserId = href.substring(href.lastIndexOf("/") + 1);
 
-					messageData.setNetworkUser(title);
-					messageData.setNetworkUserId(networkUserId);
-					break;
-				}
-			}
+                    messageData.setNetworkUser(title);
+                    messageData.setNetworkUserId(networkUserId);
+                    break;
+                }
+            }
 
-			String messageDate = object.getString("created");
-			messageData.setNetworkMessageDate(UtilDateTime.toTimestamp(messageDate));
+            String messageDate = object.getString("created");
+            messageData.setNetworkMessageDate(UtilDateTime.toTimestamp(messageDate));
 
-			messageData.setMessage(object.getString("content_text"));
-			messageData.setMessageReceivedDate(UtilDateTime.nowTimestamp());
+            messageData.setMessage(object.getString("content_text"));
+            messageData.setMessageReceivedDate(UtilDateTime.nowTimestamp());
 
-			messageData.setLanguage(object.getString("language"));
+            messageData.setLanguage(object.getString("language"));
 
-			messageData.setReliabilityId(Classification.RELIABLE.getName());
-			messageData.setNetworkUserRating(object.getString("rating"));
-			results.add(messageData);
-		}
+            messageData.setReliabilityId(Classification.RELIABLE.getName());
+            messageData.setNetworkUserRating(object.getString("rating"));
+            results.add(messageData);
+        }
 
-		return results;
-	}
+        return results;
+    }
 }

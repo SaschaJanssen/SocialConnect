@@ -28,132 +28,132 @@ import org.social.core.util.UtilValidate;
 
 public class QypeConnection implements SocialNetworkConnection {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private HttpClient httpClient;
-	private boolean anyMoreNewMessages;
+    private HttpClient httpClient;
+    private boolean anyMoreNewMessages;
 
-	public QypeConnection() {
-		httpClient = new DefaultHttpClient();
-		anyMoreNewMessages = true;
-		setHttpsProxy();
-	}
+    public QypeConnection() {
+        httpClient = new DefaultHttpClient();
+        anyMoreNewMessages = true;
+        setHttpsProxy();
+    }
 
-	private void setHttpsProxy() {
+    private void setHttpsProxy() {
 
-		String host = System.getProperty("https.proxyHost");
-		String portString = System.getProperty("https.proxyPort");
+        String host = System.getProperty("https.proxyHost");
+        String portString = System.getProperty("https.proxyPort");
 
-		if (UtilValidate.isNotEmpty(host) && UtilValidate.isNotEmpty(portString)) {
-			int port = Integer.parseInt(portString);
+        if (UtilValidate.isNotEmpty(host) && UtilValidate.isNotEmpty(portString)) {
+            int port = Integer.parseInt(portString);
 
-			HttpHost proxy = new HttpHost(host, port);
-			httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
-		}
-	}
+            HttpHost proxy = new HttpHost(host, port);
+            httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+        }
+    }
 
-	@Override
-	public List<JSONObject> getRemoteData(Query query) {
-		QypeQuery qypeQuery = (QypeQuery) query;
+    @Override
+    public List<JSONObject> getRemoteData(Query query) {
+        QypeQuery qypeQuery = (QypeQuery) query;
 
-		List<JSONObject> resultList = new ArrayList<JSONObject>();
-		String nextPageUrl = query.constructQuery();
+        List<JSONObject> resultList = new ArrayList<JSONObject>();
+        String nextPageUrl = query.constructQuery();
 
-		do {
-			String response = readDataFromUrl(nextPageUrl);
+        do {
+            String response = readDataFromUrl(nextPageUrl);
 
-			JSONObject json = null;
-			try {
-				json = (JSONObject) JSONSerializer.toJSON(response);
-			} catch (JSONException je) {
-				logger.error(je.getMessage());
-				return resultList;
-			}
+            JSONObject json = null;
+            try {
+                json = (JSONObject) JSONSerializer.toJSON(response);
+            } catch (JSONException je) {
+                logger.error(je.getMessage());
+                return resultList;
+            }
 
-			if (json.containsKey("status")) {
-				JSONObject status = json.getJSONObject("status");
-				if (status.containsKey("error")) {
-					logger.error("The following error occurd during the Qype request: " + status.getString("error")
-							+ " - " + status.getString("code"));
-					return resultList;
-				}
-			}
+            if (json.containsKey("status")) {
+                JSONObject status = json.getJSONObject("status");
+                if (status.containsKey("error")) {
+                    logger.error("The following error occurd during the Qype request: " + status.getString("error")
+                            + " - " + status.getString("code"));
+                    return resultList;
+                }
+            }
 
-			if (json.containsKey("results")) {
-				resultList.addAll(addToResultList(json.getJSONArray("results"), qypeQuery.getSince()));
-			}
+            if (json.containsKey("results")) {
+                resultList.addAll(addToResultList(json.getJSONArray("results"), qypeQuery.getSince()));
+            }
 
-			nextPageUrl = getNextRequestUrl(json);
-		} while (anyMoreNewMessages && nextPageUrl != null && !nextPageUrl.isEmpty());
+            nextPageUrl = getNextRequestUrl(json);
+        } while (anyMoreNewMessages && nextPageUrl != null && !nextPageUrl.isEmpty());
 
-		return resultList;
-	}
+        return resultList;
+    }
 
-	private String getNextRequestUrl(JSONObject json) {
-		String nextPageUrl = null;
-		if (json.containsKey("links")) {
-			JSONArray paging = json.getJSONArray("links");
-			for (Object object : paging) {
-				JSONObject jo = (JSONObject) object;
-				if (jo.containsKey("rel") && "next".equals(jo.getString("rel"))) {
-					nextPageUrl = jo.getString("rel");
-					return nextPageUrl;
-				}
+    private String getNextRequestUrl(JSONObject json) {
+        String nextPageUrl = null;
+        if (json.containsKey("links")) {
+            JSONArray paging = json.getJSONArray("links");
+            for (Object object : paging) {
+                JSONObject jo = (JSONObject) object;
+                if (jo.containsKey("rel") && "next".equals(jo.getString("rel"))) {
+                    nextPageUrl = jo.getString("rel");
+                    return nextPageUrl;
+                }
 
-			}
-		}
-		return nextPageUrl;
-	}
+            }
+        }
+        return nextPageUrl;
+    }
 
-	private String readDataFromUrl(String queryUrl) {
+    private String readDataFromUrl(String queryUrl) {
 
-		StringBuilder resultStringBuilder = null;
-		BufferedReader in = null;
-		try {
-			HttpUriRequest req = new HttpGet(queryUrl);
-			HttpResponse resp = httpClient.execute(req);
+        StringBuilder resultStringBuilder = null;
+        BufferedReader in = null;
+        try {
+            HttpUriRequest req = new HttpGet(queryUrl);
+            HttpResponse resp = httpClient.execute(req);
 
-			in = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
+            in = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
 
-			resultStringBuilder = new StringBuilder();
-			String inputLine;
-			while ((inputLine = in.readLine()) != null) {
-				resultStringBuilder.append(inputLine);
-			}
+            resultStringBuilder = new StringBuilder();
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                resultStringBuilder.append(inputLine);
+            }
 
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage());
-				}
-			}
-		}
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage());
+                }
+            }
+        }
 
-		return resultStringBuilder.toString();
+        return resultStringBuilder.toString();
 
-	}
+    }
 
-	private List<JSONObject> addToResultList(JSONArray jsonArray, String lastNetworkAccess) {
-		List<JSONObject> resultList = new ArrayList<JSONObject>();
+    private List<JSONObject> addToResultList(JSONArray jsonArray, String lastNetworkAccess) {
+        List<JSONObject> resultList = new ArrayList<JSONObject>();
 
-		for (Object object : jsonArray) {
-			JSONObject jo = (JSONObject) object;
-			JSONObject review = jo.getJSONObject("review");
+        for (Object object : jsonArray) {
+            JSONObject jo = (JSONObject) object;
+            JSONObject review = jo.getJSONObject("review");
 
-			String created = review.getString("created");
-			boolean isMessageYounger = UtilDateTime.isMessageDateBeforeLastNetworkAccess(
-					UtilDateTime.toTimestamp(created), Timestamp.valueOf(lastNetworkAccess));
-			if (isMessageYounger) {
-				anyMoreNewMessages = false;
-				return resultList;
-			}
+            String created = review.getString("created");
+            boolean isMessageYounger = UtilDateTime.isMessageDateBeforeLastNetworkAccess(
+                    UtilDateTime.toTimestamp(created), Timestamp.valueOf(lastNetworkAccess));
+            if (isMessageYounger) {
+                anyMoreNewMessages = false;
+                return resultList;
+            }
 
-			resultList.add(review);
-		}
-		return resultList;
-	}
+            resultList.add(review);
+        }
+        return resultList;
+    }
 }

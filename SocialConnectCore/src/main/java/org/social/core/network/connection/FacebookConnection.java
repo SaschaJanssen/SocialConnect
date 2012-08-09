@@ -25,117 +25,117 @@ import org.social.core.util.UtilValidate;
 
 public class FacebookConnection implements SocialNetworkConnection {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private HttpClient httpClient;
+    private HttpClient httpClient;
 
-	public FacebookConnection() {
-		httpClient = new DefaultHttpClient();
+    public FacebookConnection() {
+        httpClient = new DefaultHttpClient();
 
-		setHttpsProxy();
-	}
+        setHttpsProxy();
+    }
 
-	private void setHttpsProxy() {
+    private void setHttpsProxy() {
 
-		String host = System.getProperty("https.proxyHost");
-		String portString = System.getProperty("https.proxyPort");
+        String host = System.getProperty("https.proxyHost");
+        String portString = System.getProperty("https.proxyPort");
 
-		if (UtilValidate.isNotEmpty(host) && UtilValidate.isNotEmpty(portString)) {
-			int port = Integer.parseInt(portString);
+        if (UtilValidate.isNotEmpty(host) && UtilValidate.isNotEmpty(portString)) {
+            int port = Integer.parseInt(portString);
 
-			HttpHost proxy = new HttpHost(host, port);
-			httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
-		}
-	}
+            HttpHost proxy = new HttpHost(host, port);
+            httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+        }
+    }
 
-	@Override
-	public List<JSONObject> getRemoteData(Query query) {
-		List<JSONObject> resultList = new ArrayList<JSONObject>();
-		String nextPageUrl = query.constructQuery();
+    @Override
+    public List<JSONObject> getRemoteData(Query query) {
+        List<JSONObject> resultList = new ArrayList<JSONObject>();
+        String nextPageUrl = query.constructQuery();
 
-		do {
-			String response = readDataFromUrl(nextPageUrl, query.getLanguage());
+        do {
+            String response = readDataFromUrl(nextPageUrl, query.getLanguage());
 
-			JSONObject json = null;
-			try {
-				json = (JSONObject) JSONSerializer.toJSON(response);
-			} catch (JSONException je) {
-				logger.error(je.getMessage());
-				continue;
-			}
+            JSONObject json = null;
+            try {
+                json = (JSONObject) JSONSerializer.toJSON(response);
+            } catch (JSONException je) {
+                logger.error(je.getMessage());
+                continue;
+            }
 
-			if (json.containsKey("error")) {
-				JSONObject error = json.getJSONObject("error");
-				logger.error("The following error occurd during the Facebook request: " + error.getString("type")
-						+ " - " + error.getString("message"));
-				break;
-			}
+            if (json.containsKey("error")) {
+                JSONObject error = json.getJSONObject("error");
+                logger.error("The following error occurd during the Facebook request: " + error.getString("type")
+                        + " - " + error.getString("message"));
+                break;
+            }
 
-			if (json.containsKey("data")) {
-				resultList.addAll(addToResultList(json.getJSONArray("data")));
-			}
+            if (json.containsKey("data")) {
+                resultList.addAll(addToResultList(json.getJSONArray("data")));
+            }
 
-			nextPageUrl = getNextRequestUrl(json);
-		} while (nextPageUrl != null && !nextPageUrl.isEmpty());
+            nextPageUrl = getNextRequestUrl(json);
+        } while (nextPageUrl != null && !nextPageUrl.isEmpty());
 
-		return resultList;
-	}
+        return resultList;
+    }
 
-	private String getNextRequestUrl(JSONObject json) {
-		String nextPageUrl = null;
-		if (json.containsKey("paging")) {
-			JSONObject paging = json.getJSONObject("paging");
-			if (paging.containsKey("next")) {
-				nextPageUrl = paging.getString("next");
-			}
-		}
-		return nextPageUrl;
-	}
+    private String getNextRequestUrl(JSONObject json) {
+        String nextPageUrl = null;
+        if (json.containsKey("paging")) {
+            JSONObject paging = json.getJSONObject("paging");
+            if (paging.containsKey("next")) {
+                nextPageUrl = paging.getString("next");
+            }
+        }
+        return nextPageUrl;
+    }
 
-	private String readDataFromUrl(String queryUrl, String language) {
+    private String readDataFromUrl(String queryUrl, String language) {
 
-		StringBuilder resultStringBuilder = null;
-		BufferedReader in = null;
-		try {
-			HttpUriRequest req = new HttpGet(queryUrl);
+        StringBuilder resultStringBuilder = null;
+        BufferedReader in = null;
+        try {
+            HttpUriRequest req = new HttpGet(queryUrl);
 
-			if (UtilValidate.isNotEmpty(language)) {
-				req.setHeader("Accept-Language", language);
-			}
+            if (UtilValidate.isNotEmpty(language)) {
+                req.setHeader("Accept-Language", language);
+            }
 
-			HttpResponse resp = httpClient.execute(req);
+            HttpResponse resp = httpClient.execute(req);
 
-			in = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
+            in = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
 
-			resultStringBuilder = new StringBuilder();
-			String inputLine;
-			while ((inputLine = in.readLine()) != null) {
-				resultStringBuilder.append(inputLine);
-			}
+            resultStringBuilder = new StringBuilder();
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                resultStringBuilder.append(inputLine);
+            }
 
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage());
-				}
-			}
-		}
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage());
+                }
+            }
+        }
 
-		return resultStringBuilder.toString();
+        return resultStringBuilder.toString();
 
-	}
+    }
 
-	private List<JSONObject> addToResultList(JSONArray jsonArray) {
-		List<JSONObject> resultList = new ArrayList<JSONObject>();
+    private List<JSONObject> addToResultList(JSONArray jsonArray) {
+        List<JSONObject> resultList = new ArrayList<JSONObject>();
 
-		for (Object object : jsonArray) {
-			JSONObject jo = (JSONObject) object;
-			resultList.add(jo);
-		}
-		return resultList;
-	}
+        for (Object object : jsonArray) {
+            JSONObject jo = (JSONObject) object;
+            resultList.add(jo);
+        }
+        return resultList;
+    }
 }

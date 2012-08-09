@@ -14,33 +14,33 @@ import org.social.core.network.crawler.BaseCrawler;
 
 public class ZagatKrakenTest {
 
-	private Customers customer;
-	private KeywordDAO keywordDaoMock;
-	private BaseCrawler baseCrawler;
+    private Customers customer;
+    private KeywordDAO keywordDaoMock;
+    private BaseCrawler baseCrawler;
 
-	@Before
-	public void setUp() throws Exception {
-		customer = new Customers();
-		customer.setCustomerId(3L);
+    @Before
+    public void setUp() throws Exception {
+        customer = new Customers();
+        customer.setCustomerId(3L);
 
-		keywordDaoMock = new KeywordDAOMock();
-		baseCrawler = new MockZagatBaseCrawler();
-	}
+        keywordDaoMock = new KeywordDAOMock();
+        baseCrawler = new MockZagatBaseCrawler();
+    }
 
-	@Test
-	public void testFetchResults() {
-		SocialNetworkKraken kraken = new ZagatKraken(customer, keywordDaoMock, baseCrawler);
-		FilteredMessageList results = kraken.fetchAndCraftMessages();
+    @Test
+    public void testFetchResults() {
+        SocialNetworkKraken kraken = new ZagatKraken(customer, keywordDaoMock, baseCrawler);
+        FilteredMessageList results = kraken.fetchAndCraftMessages();
 
-		assertNotNull(results);
-		assertEquals(10, results.countPositivMessages());
-		assertEquals(0, results.countNegativeMessages());
-	}
+        assertNotNull(results);
+        assertEquals(10, results.countPositivMessages());
+        assertEquals(0, results.countNegativeMessages());
+    }
 
-	@Test
-	public void testName() throws Exception {
-		SocialNetworkKraken kraken = new ZagatKraken(customer, keywordDaoMock, baseCrawler);
-		assertEquals("", kraken.getCustomerNetworkKeywords().getPage());
-	}
+    @Test
+    public void testName() throws Exception {
+        SocialNetworkKraken kraken = new ZagatKraken(customer, keywordDaoMock, baseCrawler);
+        assertEquals("", kraken.getCustomerNetworkKeywords().getPage());
+    }
 
 }

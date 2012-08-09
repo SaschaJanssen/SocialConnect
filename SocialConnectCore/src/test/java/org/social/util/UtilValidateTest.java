@@ -10,30 +10,30 @@ import org.social.core.util.UtilValidate;
 
 public class UtilValidateTest {
 
-	@Before
-	public void setUp() throws Exception {
-	}
+    @Before
+    public void setUp() throws Exception {
+    }
 
-	@After
-	public void tearDown() throws Exception {
-	}
+    @After
+    public void tearDown() throws Exception {
+    }
 
-	@Test
-	public void testStirng_IsEmpty() {
-		assertTrue(UtilValidate.isEmpty(""));
-		assertTrue(UtilValidate.isEmpty(null));
-		assertTrue(UtilValidate.isEmpty(new String()));
+    @Test
+    public void testStirng_IsEmpty() {
+        assertTrue(UtilValidate.isEmpty(""));
+        assertTrue(UtilValidate.isEmpty(null));
+        assertTrue(UtilValidate.isEmpty(new String()));
 
-		assertFalse(UtilValidate.isEmpty("Foo"));
-	}
+        assertFalse(UtilValidate.isEmpty("Foo"));
+    }
 
-	@Test
-	public void testStirng_IsNotEmpty() throws Exception {
-		assertTrue(UtilValidate.isNotEmpty("Baa"));
+    @Test
+    public void testStirng_IsNotEmpty() throws Exception {
+        assertTrue(UtilValidate.isNotEmpty("Baa"));
 
-		assertFalse(UtilValidate.isNotEmpty(""));
-		assertFalse(UtilValidate.isNotEmpty(null));
-		assertFalse(UtilValidate.isNotEmpty(new String()));
-	}
+        assertFalse(UtilValidate.isNotEmpty(""));
+        assertFalse(UtilValidate.isNotEmpty(null));
+        assertFalse(UtilValidate.isNotEmpty(new String()));
+    }
 
 }

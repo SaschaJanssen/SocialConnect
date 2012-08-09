@@ -7,49 +7,49 @@ import org.social.core.entity.domain.Messages;
 
 public class FilteredMessageList {
 
-	private CopyOnWriteArrayList<Messages> negativeList = null;
-	private CopyOnWriteArrayList<Messages> positiveList = null;
+    private CopyOnWriteArrayList<Messages> negativeList = null;
+    private CopyOnWriteArrayList<Messages> positiveList = null;
 
-	public FilteredMessageList() {
-		this.negativeList = new CopyOnWriteArrayList<Messages>();
-		this.positiveList = new CopyOnWriteArrayList<Messages>();
-	}
+    public FilteredMessageList() {
+        negativeList = new CopyOnWriteArrayList<Messages>();
+        positiveList = new CopyOnWriteArrayList<Messages>();
+    }
 
-	public void addAll(FilteredMessageList filteredMessageList) {
-		negativeList.addAll(filteredMessageList.getNegativeList());
-		addAllToPositiveList(filteredMessageList.getPositivList());
-	}
+    public void addAll(FilteredMessageList filteredMessageList) {
+        negativeList.addAll(filteredMessageList.getNegativeList());
+        addAllToPositiveList(filteredMessageList.getPositivList());
+    }
 
-	public void addAllToPositiveList(List<Messages> messages) {
-		positiveList.addAll(messages);
-	}
+    public void addAllToPositiveList(List<Messages> messages) {
+        positiveList.addAll(messages);
+    }
 
-	public int size() {
-		return countNegativeMessages() + countPositivMessages();
-	}
+    public int size() {
+        return countNegativeMessages() + countPositivMessages();
+    }
 
-	public List<Messages> getNegativeList() {
-		return this.negativeList;
-	}
+    public List<Messages> getNegativeList() {
+        return negativeList;
+    }
 
-	public List<Messages> getPositivList() {
-		return this.positiveList;
-	}
+    public List<Messages> getPositivList() {
+        return positiveList;
+    }
 
-	public int countNegativeMessages() {
-		return this.negativeList.size();
-	}
+    public int countNegativeMessages() {
+        return negativeList.size();
+    }
 
-	public int countPositivMessages() {
-		return this.positiveList.size();
-	}
+    public int countPositivMessages() {
+        return positiveList.size();
+    }
 
-	public void setPositiveList(List<Messages> messages) {
-		this.positiveList.addAll(messages);
-	}
+    public void setPositiveList(List<Messages> messages) {
+        positiveList.addAll(messages);
+    }
 
-	public void setNegativeList(List<Messages> messages) {
-		this.negativeList.addAll(messages);
-	}
+    public void setNegativeList(List<Messages> messages) {
+        negativeList.addAll(messages);
+    }
 
 }

@@ -16,206 +16,206 @@ import org.social.core.util.UtilDateTime;
 @Table(name = "MESSAGES")
 public class Messages {
 
-	private Long messageId;
-	private String message;
-	private String networkUserId;
-	private String language;
-	private String networkId;
-	private String networkUser;
-	private String geoLocation;
-	private Timestamp networkMessageDate;
-	private Timestamp messageReceivedDate;
-	private Long customerId;
-	private String reliabilityId;
-	private String sentimentId;
-	private String networkUserRating;
-	private Timestamp createdTs;
-	private Timestamp lastUpdatedTs;
+    private Long messageId;
+    private String message;
+    private String networkUserId;
+    private String language;
+    private String networkId;
+    private String networkUser;
+    private String geoLocation;
+    private Timestamp networkMessageDate;
+    private Timestamp messageReceivedDate;
+    private Long customerId;
+    private String reliabilityId;
+    private String sentimentId;
+    private String networkUserRating;
+    private Timestamp createdTs;
+    private Timestamp lastUpdatedTs;
 
-	public Messages() {
-		this.createdTs = UtilDateTime.nowTimestamp();
-		this.reliabilityId = Classification.NOT_CLASSIFIED.getName();
-		this.sentimentId = Classification.NOT_CLASSIFIED.getName();
-	}
+    public Messages() {
+        createdTs = UtilDateTime.nowTimestamp();
+        reliabilityId = Classification.NOT_CLASSIFIED.getName();
+        sentimentId = Classification.NOT_CLASSIFIED.getName();
+    }
 
-	public Messages(String networkId) {
-		this();
-		this.networkId = networkId;
-	}
+    public Messages(String networkId) {
+        this();
+        this.networkId = networkId;
+    }
 
-	@Id
-	@GeneratedValue(generator = "increment")
-	@GenericGenerator(name = "increment", strategy = "increment")
-	@Column(name = "MESSAGE_ID")
-	public Long getMessageId() {
-		return messageId;
-	}
+    @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
+    @Column(name = "MESSAGE_ID")
+    public Long getMessageId() {
+        return messageId;
+    }
 
-	public void setMessageId(Long messageId) {
-		this.messageId = messageId;
-	}
+    public void setMessageId(Long messageId) {
+        this.messageId = messageId;
+    }
 
-	@Column(name = "MESSAGE")
-	public String getMessage() {
-		return message;
-	}
+    @Column(name = "MESSAGE")
+    public String getMessage() {
+        return message;
+    }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-	@Column(name = "GEO_LOCATION")
-	public String getGeoLocation() {
-		return geoLocation;
-	}
+    @Column(name = "GEO_LOCATION")
+    public String getGeoLocation() {
+        return geoLocation;
+    }
 
-	public void setGeoLocation(String geoLocation) {
-		this.geoLocation = geoLocation;
-	}
+    public void setGeoLocation(String geoLocation) {
+        this.geoLocation = geoLocation;
+    }
 
-	@Column(name = "CREATED_TS")
-	public Timestamp getCreatedTs() {
-		return createdTs;
-	}
+    @Column(name = "CREATED_TS")
+    public Timestamp getCreatedTs() {
+        return createdTs;
+    }
 
-	public void setCreatedTs(Timestamp createdTs) {
-		this.createdTs = createdTs;
-	}
+    public void setCreatedTs(Timestamp createdTs) {
+        this.createdTs = createdTs;
+    }
 
-	@Column(name = "LAST_UPDATED_TS")
-	public Timestamp getLastUpdatedTs() {
-		return lastUpdatedTs;
-	}
+    @Column(name = "LAST_UPDATED_TS")
+    public Timestamp getLastUpdatedTs() {
+        return lastUpdatedTs;
+    }
 
-	public void setLastUpdatedTs(Timestamp lastUpdatedTs) {
-		this.lastUpdatedTs = lastUpdatedTs;
-	}
+    public void setLastUpdatedTs(Timestamp lastUpdatedTs) {
+        this.lastUpdatedTs = lastUpdatedTs;
+    }
 
-	@Column(name = "NETWORK_USER_ID")
-	public String getNetworkUserId() {
-		return networkUserId;
-	}
+    @Column(name = "NETWORK_USER_ID")
+    public String getNetworkUserId() {
+        return networkUserId;
+    }
 
-	public void setNetworkUserId(String fromUserId) {
-		this.networkUserId = fromUserId;
-	}
+    public void setNetworkUserId(String fromUserId) {
+        networkUserId = fromUserId;
+    }
 
-	@Column(name = "LANGUAGE")
-	public String getLanguage() {
-		return language;
-	}
+    @Column(name = "LANGUAGE")
+    public String getLanguage() {
+        return language;
+    }
 
-	public void setLanguage(String language) {
-		this.language = language;
-	}
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 
-	@Column(name = "NETWORK_ID")
-	public String getNetworkId() {
-		return networkId;
-	}
+    @Column(name = "NETWORK_ID")
+    public String getNetworkId() {
+        return networkId;
+    }
 
-	public void setNetworkId(String networkId) {
-		this.networkId = networkId;
-	}
+    public void setNetworkId(String networkId) {
+        this.networkId = networkId;
+    }
 
-	@Column(name = "NETWORK_USER")
-	public String getNetworkUser() {
-		return networkUser;
-	}
+    @Column(name = "NETWORK_USER")
+    public String getNetworkUser() {
+        return networkUser;
+    }
 
-	public void setNetworkUser(String networkUser) {
-		this.networkUser = networkUser;
-	}
+    public void setNetworkUser(String networkUser) {
+        this.networkUser = networkUser;
+    }
 
-	@Column(name = "NETWORK_MESSAGE_DATE")
-	public Timestamp getNetworkMessageDate() {
-		return networkMessageDate;
-	}
+    @Column(name = "NETWORK_MESSAGE_DATE")
+    public Timestamp getNetworkMessageDate() {
+        return networkMessageDate;
+    }
 
-	public void setNetworkMessageDate(Timestamp networkMessageDate) {
-		this.networkMessageDate = networkMessageDate;
-	}
+    public void setNetworkMessageDate(Timestamp networkMessageDate) {
+        this.networkMessageDate = networkMessageDate;
+    }
 
-	@Column(name = "MESSAGE_RECEIVED_DATE")
-	public Timestamp getMessageReceivedDate() {
-		return messageReceivedDate;
-	}
+    @Column(name = "MESSAGE_RECEIVED_DATE")
+    public Timestamp getMessageReceivedDate() {
+        return messageReceivedDate;
+    }
 
-	public void setMessageReceivedDate(Timestamp messageReceivedDate) {
-		this.messageReceivedDate = messageReceivedDate;
-	}
+    public void setMessageReceivedDate(Timestamp messageReceivedDate) {
+        this.messageReceivedDate = messageReceivedDate;
+    }
 
-	@Column(name = "CUSTOMER_ID")
-	public Long getCustomerId() {
-		return customerId;
-	}
+    @Column(name = "CUSTOMER_ID")
+    public Long getCustomerId() {
+        return customerId;
+    }
 
-	public void setCustomerId(Long customerId) {
-		this.customerId = customerId;
-	}
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
 
-	@Column(name = "RELIABILITY_ID")
-	public String getReliabilityId() {
-		return reliabilityId;
-	}
+    @Column(name = "RELIABILITY_ID")
+    public String getReliabilityId() {
+        return reliabilityId;
+    }
 
-	@Column(name = "NETWORK_USER_RATING")
-	public String getNetworkUserRating() {
-		return networkUserRating;
-	}
+    @Column(name = "NETWORK_USER_RATING")
+    public String getNetworkUserRating() {
+        return networkUserRating;
+    }
 
-	public void setNetworkUserRating(String networkUserRating) {
-		this.networkUserRating = networkUserRating;
-	}
+    public void setNetworkUserRating(String networkUserRating) {
+        this.networkUserRating = networkUserRating;
+    }
 
-	public void setReliabilityId(String reliabilityId) {
-		this.reliabilityId = reliabilityId;
-	}
+    public void setReliabilityId(String reliabilityId) {
+        this.reliabilityId = reliabilityId;
+    }
 
-	@Column(name = "SENTIMENT_ID")
-	public String getSentimentId() {
-		return sentimentId;
-	}
+    @Column(name = "SENTIMENT_ID")
+    public String getSentimentId() {
+        return sentimentId;
+    }
 
-	public void setSentimentId(String sentimentId) {
-		this.sentimentId = sentimentId;
-	}
+    public void setSentimentId(String sentimentId) {
+        this.sentimentId = sentimentId;
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder("[");
-		builder.append("messageId=");
-		builder.append(messageId);
-		builder.append(", message=");
-		builder.append(message);
-		builder.append(", networkUserId=");
-		builder.append(networkUserId);
-		builder.append(", language=");
-		builder.append(language);
-		builder.append(", networkId=");
-		builder.append(networkId);
-		builder.append(", networkUser=");
-		builder.append(networkUser);
-		builder.append(", geoLocation=");
-		builder.append(geoLocation);
-		builder.append(", networkMessageDate=");
-		builder.append(networkMessageDate);
-		builder.append(", messageReceivedDate=");
-		builder.append(messageReceivedDate);
-		builder.append(", customerId=");
-		builder.append(customerId);
-		builder.append(", networkUserRating=");
-		builder.append(networkUserRating);
-		builder.append(", reliabilityId=");
-		builder.append(reliabilityId);
-		builder.append(", sentimentId=");
-		builder.append(sentimentId);
-		builder.append(", createdTs=");
-		builder.append(createdTs);
-		builder.append(", lastUpdatedTs=");
-		builder.append(lastUpdatedTs);
-		builder.append("]");
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("[");
+        builder.append("messageId=");
+        builder.append(messageId);
+        builder.append(", message=");
+        builder.append(message);
+        builder.append(", networkUserId=");
+        builder.append(networkUserId);
+        builder.append(", language=");
+        builder.append(language);
+        builder.append(", networkId=");
+        builder.append(networkId);
+        builder.append(", networkUser=");
+        builder.append(networkUser);
+        builder.append(", geoLocation=");
+        builder.append(geoLocation);
+        builder.append(", networkMessageDate=");
+        builder.append(networkMessageDate);
+        builder.append(", messageReceivedDate=");
+        builder.append(messageReceivedDate);
+        builder.append(", customerId=");
+        builder.append(customerId);
+        builder.append(", networkUserRating=");
+        builder.append(networkUserRating);
+        builder.append(", reliabilityId=");
+        builder.append(reliabilityId);
+        builder.append(", sentimentId=");
+        builder.append(sentimentId);
+        builder.append(", createdTs=");
+        builder.append(createdTs);
+        builder.append(", lastUpdatedTs=");
+        builder.append(lastUpdatedTs);
+        builder.append("]");
 
-		return builder.toString();
-	}
+        return builder.toString();
+    }
 }

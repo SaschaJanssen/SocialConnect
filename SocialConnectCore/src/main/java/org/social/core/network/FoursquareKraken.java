@@ -20,63 +20,63 @@ import org.social.core.util.UtilDateTime;
 
 public class FoursquareKraken extends SocialNetworkKraken {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	private final SocialNetworkConnection connection;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final SocialNetworkConnection connection;
 
-	public FoursquareKraken(Customers customer, KeywordDAO keywordDao, SocialNetworkConnection fbConnection) {
-		super(customer, keywordDao);
-		connection = fbConnection;
-		getCustomersKeywords(Networks.FOURSQUARE.getName());
-	}
+    public FoursquareKraken(Customers customer, KeywordDAO keywordDao, SocialNetworkConnection fbConnection) {
+        super(customer, keywordDao);
+        connection = fbConnection;
+        getCustomersKeywords(Networks.FOURSQUARE.getName());
+    }
 
-	@Override
-	public FilteredMessageList fetchAndCraftMessages() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Fetch posts from Foursquare for customer: " + super.customer.getCustomerId());
-		}
+    @Override
+    public FilteredMessageList fetchAndCraftMessages() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Fetch posts from Foursquare for customer: " + super.customer.getCustomerId());
+        }
 
-		Query query = buildQueryFromKeywords();
+        Query query = buildQueryFromKeywords();
 
-		List<JSONObject> searchResult = connection.getRemoteData(query);
-		List<Messages> resultMessages = extractMessageData(searchResult);
+        List<JSONObject> searchResult = connection.getRemoteData(query);
+        List<Messages> resultMessages = extractMessageData(searchResult);
 
-		FilteredMessageList filteredResultMessages = sentimentMessages(resultMessages);
+        FilteredMessageList filteredResultMessages = sentimentMessages(resultMessages);
 
-		return filteredResultMessages;
-	}
+        return filteredResultMessages;
+    }
 
-	private Query buildQueryFromKeywords() {
-		Query query = new FoursquareQuery(super.customerNetworkKeywords);
-		if(customer.getLastNetworkdAccess() != null) {
-			query.setSince(customer.getLastNetworkdAccess().toString());
-		}
-		return query;
-	}
+    private Query buildQueryFromKeywords() {
+        Query query = new FoursquareQuery(super.customerNetworkKeywords);
+        if (customer.getLastNetworkdAccess() != null) {
+            query.setSince(customer.getLastNetworkdAccess().toString());
+        }
+        return query;
+    }
 
-	private List<Messages> extractMessageData(List<JSONObject> searchResult) {
+    private List<Messages> extractMessageData(List<JSONObject> searchResult) {
 
-		List<Messages> results = new ArrayList<Messages>();
+        List<Messages> results = new ArrayList<Messages>();
 
-		for (JSONObject object : searchResult) {
-			Messages messageData = new Messages(Networks.FOURSQUARE.getName());
+        for (JSONObject object : searchResult) {
+            Messages messageData = new Messages(Networks.FOURSQUARE.getName());
 
-			messageData.setCustomerId(super.customer.getCustomerId());
+            messageData.setCustomerId(super.customer.getCustomerId());
 
-			JSONObject user = object.getJSONObject("user");
-			messageData.setNetworkUser(user.getString("firstName"));
-			messageData.setNetworkUserId(user.getString("id"));
+            JSONObject user = object.getJSONObject("user");
+            messageData.setNetworkUser(user.getString("firstName"));
+            messageData.setNetworkUserId(user.getString("id"));
 
-			String messageDate = object.getString("createdAt");
-			messageData.setNetworkMessageDate(UtilDateTime.toTimestamp(messageDate));
+            String messageDate = object.getString("createdAt");
+            messageData.setNetworkMessageDate(UtilDateTime.toTimestamp(messageDate));
 
-			messageData.setMessage(object.getString("text"));
-			messageData.setMessageReceivedDate(UtilDateTime.nowTimestamp());
+            messageData.setMessage(object.getString("text"));
+            messageData.setMessageReceivedDate(UtilDateTime.nowTimestamp());
 
-			messageData.setReliabilityId(Classification.RELIABLE.getName());
-			messageData.setNetworkUserRating("n/a");
-			results.add(messageData);
-		}
+            messageData.setReliabilityId(Classification.RELIABLE.getName());
+            messageData.setNetworkUserRating("n/a");
+            results.add(messageData);
+        }
 
-		return results;
-	}
+        return results;
+    }
 }

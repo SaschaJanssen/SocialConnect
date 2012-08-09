@@ -10,21 +10,21 @@ import org.social.core.entity.helper.KeywordDAO;
 
 public class KeywordDAOMock implements KeywordDAO {
 
-	@Override
-	public List<Keywords> getMappedKeywordByCustomerAndNetwork(Long customerId, String networkId) {
-		List<Keywords> keywordListForNetwork = new ArrayList<Keywords>();
-		Keywords keywords = new Keywords();
-		keywords.setCustomerId(1L);
-		keywords.setKeywordTypeId(KeywordType.QUERY.getName());
-		keywords.setKeyword("Vapiano");
-		keywordListForNetwork.add(keywords);
-		return keywordListForNetwork;
-	}
+    @Override
+    public List<Keywords> getMappedKeywordByCustomerAndNetwork(Long customerId, String networkId) {
+        List<Keywords> keywordListForNetwork = new ArrayList<Keywords>();
+        Keywords keywords = new Keywords();
+        keywords.setCustomerId(1L);
+        keywords.setKeywordTypeId(KeywordType.QUERY.getName());
+        keywords.setKeyword("Vapiano");
+        keywordListForNetwork.add(keywords);
+        return keywordListForNetwork;
+    }
 
-	@Override
-	public Set<String> getUserNetworks(Long customerId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Set<String> getUserNetworks(Long customerId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

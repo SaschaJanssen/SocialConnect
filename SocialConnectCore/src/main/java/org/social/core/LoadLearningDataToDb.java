@@ -16,56 +16,56 @@ import org.social.core.util.UtilValidate;
 
 public class LoadLearningDataToDb {
 
-	private static Logger logger = LoggerFactory.getLogger(LoadLearningDataToDb.class);
+    private static Logger logger = LoggerFactory.getLogger(LoadLearningDataToDb.class);
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		LoadLearningDataToDb loader = new LoadLearningDataToDb();
-		loader.loadSentimentData();
-	}
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        LoadLearningDataToDb loader = new LoadLearningDataToDb();
+        loader.loadSentimentData();
+    }
 
-	private void loadSentimentData() {
-		File fi = new File("src/test/resources/sentimentLearningTestData");
-		List<String> lr = new ArrayList<String>();
-		BufferedReader bufferedFileReader = null;
-		try {
-			bufferedFileReader = new BufferedReader(new FileReader(fi));
-			String lineInFile;
-			while ((lineInFile = bufferedFileReader.readLine()) != null) {
-				if (UtilValidate.isNotEmpty(lineInFile)) {
-					lr.add(lineInFile);
-				}
-			}
+    private void loadSentimentData() {
+        File fi = new File("src/test/resources/sentimentLearningTestData");
+        List<String> lr = new ArrayList<String>();
+        BufferedReader bufferedFileReader = null;
+        try {
+            bufferedFileReader = new BufferedReader(new FileReader(fi));
+            String lineInFile;
+            while ((lineInFile = bufferedFileReader.readLine()) != null) {
+                if (UtilValidate.isNotEmpty(lineInFile)) {
+                    lr.add(lineInFile);
+                }
+            }
 
-		} catch (IOException e) {
-			logger.error("", e);
-		} finally {
-			try {
-				if (bufferedFileReader != null) {
-					bufferedFileReader.close();
-				}
-			} catch (IOException e) {
-				logger.error("", e);
-			}
-		}
+        } catch (IOException e) {
+            logger.error("", e);
+        } finally {
+            try {
+                if (bufferedFileReader != null) {
+                    bufferedFileReader.close();
+                }
+            } catch (IOException e) {
+                logger.error("", e);
+            }
+        }
 
-		List<LearningData> learningData = new ArrayList<LearningData>();
-		for (String string : lr) {
-			String[] split = string.split("§");
+        List<LearningData> learningData = new ArrayList<LearningData>();
+        for (String string : lr) {
+            String[] split = string.split("§");
 
-			LearningData ld = new LearningData();
-			ld.setClassificationTypeId("SENTIMENT");
-			ld.setLearningData(split[0]);
-			ld.setLastUpdatedTs(UtilDateTime.nowTimestamp());
-			ld.setClassificationId(split[1]);
+            LearningData ld = new LearningData();
+            ld.setClassificationTypeId("SENTIMENT");
+            ld.setLearningData(split[0]);
+            ld.setLastUpdatedTs(UtilDateTime.nowTimestamp());
+            ld.setClassificationId(split[1]);
 
-			learningData.add(ld);
-		}
+            learningData.add(ld);
+        }
 
-		LearningDAO learningDao = new LearningDAO();
-		learningDao.storeLearningData(learningData);
-	}
+        LearningDAO learningDao = new LearningDAO();
+        learningDao.storeLearningData(learningData);
+    }
 
 }

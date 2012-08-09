@@ -15,51 +15,51 @@ import org.social.core.util.UtilDateTime;
 @Table(name = "CUSTOMERS")
 public class Customers {
 
-	private Long customerId;
-	private Timestamp lastNetworkdAccess;
-	private Timestamp createdTs;
-	private Timestamp lastUpdatedTs;
+    private Long customerId;
+    private Timestamp lastNetworkdAccess;
+    private Timestamp createdTs;
+    private Timestamp lastUpdatedTs;
 
-	public Customers() {
-		this.createdTs = UtilDateTime.nowTimestamp();
-	}
+    public Customers() {
+        createdTs = UtilDateTime.nowTimestamp();
+    }
 
-	@Id
-	@GeneratedValue(generator = "increment")
-	@GenericGenerator(name = "increment", strategy = "increment")
-	@Column(name = "CUSTOMER_ID")
-	public Long getCustomerId() {
-		return customerId;
-	}
+    @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
+    @Column(name = "CUSTOMER_ID")
+    public Long getCustomerId() {
+        return customerId;
+    }
 
-	public void setCustomerId(Long customerId) {
-		this.customerId = customerId;
-	}
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
 
-	@Column(name = "LAST_NETWORK_ACCESS")
-	public Timestamp getLastNetworkdAccess() {
-		return lastNetworkdAccess;
-	}
+    @Column(name = "LAST_NETWORK_ACCESS")
+    public Timestamp getLastNetworkdAccess() {
+        return lastNetworkdAccess;
+    }
 
-	public void setLastNetworkdAccess(Timestamp lastNetworkdAccess) {
-		this.lastNetworkdAccess = lastNetworkdAccess;
-	}
+    public void setLastNetworkdAccess(Timestamp lastNetworkdAccess) {
+        this.lastNetworkdAccess = lastNetworkdAccess;
+    }
 
-	@Column(name = "CREATED_TS")
-	public Timestamp getCreatedTs() {
-		return createdTs;
-	}
+    @Column(name = "CREATED_TS")
+    public Timestamp getCreatedTs() {
+        return createdTs;
+    }
 
-	public void setCreatedTs(Timestamp createdTs) {
-		this.createdTs = createdTs;
-	}
+    public void setCreatedTs(Timestamp createdTs) {
+        this.createdTs = createdTs;
+    }
 
-	@Column(name = "LAST_UPDATED_TS")
-	public Timestamp getLastUpdatedTs() {
-		return lastUpdatedTs;
-	}
+    @Column(name = "LAST_UPDATED_TS")
+    public Timestamp getLastUpdatedTs() {
+        return lastUpdatedTs;
+    }
 
-	public void setLastUpdatedTs(Timestamp lastUpdatedTs) {
-		this.lastUpdatedTs = lastUpdatedTs;
-	}
+    public void setLastUpdatedTs(Timestamp lastUpdatedTs) {
+        this.lastUpdatedTs = lastUpdatedTs;
+    }
 }

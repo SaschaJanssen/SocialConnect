@@ -9,50 +9,59 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.social.core.entity.domain.Keywords;
 
-public class KeywordDAOImpl extends AbstractDAO implements KeywordDAO{
+public class KeywordDAOImpl extends AbstractDAO implements KeywordDAO {
 
-	/* (non-Javadoc)
-	 * @see org.social.core.entity.helper.KeywordDAO#getMappedKeywordByCustomerAndNetwork(java.lang.Long, java.lang.String)
-	 */
-	@Override
-	public List<Keywords> getMappedKeywordByCustomerAndNetwork(Long customerId, String networkId) {
-		Session session = super.beginAndGetSession();
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.social.core.entity.helper.KeywordDAO#getMappedKeywordByCustomerAndNetwork
+     * (java.lang.Long, java.lang.String)
+     */
+    @Override
+    public List<Keywords> getMappedKeywordByCustomerAndNetwork(Long customerId, String networkId) {
+        Session session = super.beginAndGetSession();
 
-		Query keywordQuery = session.createQuery("from Keywords kw where id.customerId=" + customerId + " and " + " id.networkId='" + networkId + "'");
-		List<Keywords> keywordsForCustomer = queryForList(keywordQuery);
+        Query keywordQuery = session.createQuery("from Keywords kw where id.customerId=" + customerId + " and "
+                + " id.networkId='" + networkId + "'");
+        List<Keywords> keywordsForCustomer = queryForList(keywordQuery);
 
-		super.commitSession(session);
-		return keywordsForCustomer;
-	}
+        super.commitSession(session);
+        return keywordsForCustomer;
+    }
 
-	private List<Keywords> queryForList(Query keywordQuery) {
-		@SuppressWarnings("unchecked")
-		List<Keywords> mentionesKeys = Collections.checkedList(keywordQuery.list(), Keywords.class);
-		return mentionesKeys;
-	}
+    private List<Keywords> queryForList(Query keywordQuery) {
+        @SuppressWarnings("unchecked")
+        List<Keywords> mentionesKeys = Collections.checkedList(keywordQuery.list(), Keywords.class);
+        return mentionesKeys;
+    }
 
-	private List<String> queryForStringList(Query keywordQuery) {
-		@SuppressWarnings("unchecked")
-		List<String> mentionesKeys = Collections.checkedList(keywordQuery.list(), String.class);
-		return mentionesKeys;
-	}
+    private List<String> queryForStringList(Query keywordQuery) {
+        @SuppressWarnings("unchecked")
+        List<String> mentionesKeys = Collections.checkedList(keywordQuery.list(), String.class);
+        return mentionesKeys;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.social.core.entity.helper.KeywordDAO#getUserNetworks(java.lang.Long)
-	 */
-	@Override
-	public Set<String> getUserNetworks(Long customerId) {
-		Session session = super.beginAndGetSession();
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.social.core.entity.helper.KeywordDAO#getUserNetworks(java.lang.Long)
+     */
+    @Override
+    public Set<String> getUserNetworks(Long customerId) {
+        Session session = super.beginAndGetSession();
 
-		Query keywordQuery = session.createQuery("select distinct networkId from Keywords kw where kw.customerId=" + customerId + "");
+        Query keywordQuery = session.createQuery("select distinct networkId from Keywords kw where kw.customerId="
+                + customerId + "");
 
-		List<String> netwroks = queryForStringList(keywordQuery);
-		super.commitSession(session);
+        List<String> netwroks = queryForStringList(keywordQuery);
+        super.commitSession(session);
 
-		Set<String> networksForCustomer = new HashSet<String>();
-		networksForCustomer.addAll(netwroks);
+        Set<String> networksForCustomer = new HashSet<String>();
+        networksForCustomer.addAll(netwroks);
 
-		return networksForCustomer;
-	}
+        return networksForCustomer;
+    }
 
 }

@@ -18,44 +18,43 @@ import org.social.core.query.YelpQuery;
 
 public class YelpKraken extends SocialNetworkKraken {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private final BaseCrawler crawler;
+    private final BaseCrawler crawler;
 
-	public YelpKraken(Customers customer, KeywordDAO keywordDao, BaseCrawler crawler) {
-		super(customer, keywordDao);
-		this.customer = customer;
-		this.crawler = crawler;
+    public YelpKraken(Customers customer, KeywordDAO keywordDao, BaseCrawler crawler) {
+        super(customer, keywordDao);
+        this.customer = customer;
+        this.crawler = crawler;
 
-		getCustomersKeywords(Networks.YELP.getName());
-	}
+        getCustomersKeywords(Networks.YELP.getName());
+    }
 
-	@Override
-	public FilteredMessageList fetchAndCraftMessages() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Fetch information from YELP for customer: " + this.customer.getCustomerId());
-		}
+    @Override
+    public FilteredMessageList fetchAndCraftMessages() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Fetch information from YELP for customer: " + customer.getCustomerId());
+        }
 
-		Query query = buildQueryFromKeywords();
+        Query query = buildQueryFromKeywords();
 
-		YelpSocialCrawler yelpCrawler = new YelpSocialCrawler(this.crawler, query.getSearchUrl(),
-				query.constructQuery());
+        YelpSocialCrawler yelpCrawler = new YelpSocialCrawler(crawler, query.getSearchUrl(), query.constructQuery());
 
-		List<Messages> resultMessages = new ArrayList<Messages>();
-		resultMessages = yelpCrawler.crawl(customer);
+        List<Messages> resultMessages = new ArrayList<Messages>();
+        resultMessages = yelpCrawler.crawl(customer);
 
-		return sentimentMessages(resultMessages);
-	}
+        return sentimentMessages(resultMessages);
+    }
 
-	private Query buildQueryFromKeywords() {
-		Query yelpQuery = new YelpQuery(super.customerNetworkKeywords);
+    private Query buildQueryFromKeywords() {
+        Query yelpQuery = new YelpQuery(super.customerNetworkKeywords);
 
-		Timestamp sinceTs = this.customer.getLastNetworkdAccess();
-		if (sinceTs != null) {
-			String since = sinceTs.toString();
-			yelpQuery.setSince(since);
-		}
+        Timestamp sinceTs = customer.getLastNetworkdAccess();
+        if (sinceTs != null) {
+            String since = sinceTs.toString();
+            yelpQuery.setSince(since);
+        }
 
-		return yelpQuery;
-	}
+        return yelpQuery;
+    }
 }

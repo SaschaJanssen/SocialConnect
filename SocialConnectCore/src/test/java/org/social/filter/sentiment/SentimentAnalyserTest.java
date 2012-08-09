@@ -24,91 +24,91 @@ import org.social.core.util.UtilValidate;
 
 public class SentimentAnalyserTest {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
-	private SentimentAnalyser analyser;
+    private SentimentAnalyser analyser;
 
-	@Before
-	public void setUp() {
-		Classifier<String, String> classifier = BayesClassifier.getInstance();
-		File fi = new File("src/test/resources/sentimentLearningTestData");
-		BufferedReader bufferedFileReader = null;
-		try {
-			bufferedFileReader = new BufferedReader(new FileReader(fi));
-			String lineInFile;
-			while ((lineInFile = bufferedFileReader.readLine()) != null) {
-				if (UtilValidate.isNotEmpty(lineInFile)) {
-					String[] split = lineInFile.split("§");
+    @Before
+    public void setUp() {
+        Classifier<String, String> classifier = BayesClassifier.getInstance();
+        File fi = new File("src/test/resources/sentimentLearningTestData");
+        BufferedReader bufferedFileReader = null;
+        try {
+            bufferedFileReader = new BufferedReader(new FileReader(fi));
+            String lineInFile;
+            while ((lineInFile = bufferedFileReader.readLine()) != null) {
+                if (UtilValidate.isNotEmpty(lineInFile)) {
+                    String[] split = lineInFile.split("§");
 
-					List<String> t = UtilLucene.ngramString(split[0]);
-					classifier.learn(split[1], t);
-				}
-			}
+                    List<String> t = UtilLucene.ngramString(split[0]);
+                    classifier.learn(split[1], t);
+                }
+            }
 
-		} catch (IOException e) {
-			logger.error("", e);
-		} finally {
-			try {
-				if (bufferedFileReader != null) {
-					bufferedFileReader.close();
-				}
-			} catch (IOException e) {
-				logger.error("", e);
-			}
-		}
+        } catch (IOException e) {
+            logger.error("", e);
+        } finally {
+            try {
+                if (bufferedFileReader != null) {
+                    bufferedFileReader.close();
+                }
+            } catch (IOException e) {
+                logger.error("", e);
+            }
+        }
 
-		analyser = SentimentAnalyser.getInstance();
-	}
+        analyser = SentimentAnalyser.getInstance();
+    }
 
-	@Test
-	public void testSentiment() {
+    @Test
+    public void testSentiment() {
 
-		Messages m = new Messages();
-		m.setMessage("I want a five guys burger and done cajun fries so damn bad");
+        Messages m = new Messages();
+        m.setMessage("I want a five guys burger and done cajun fries so damn bad");
 
-		List<Messages> fm = new ArrayList<Messages>();
-		fm.add(m);
+        List<Messages> fm = new ArrayList<Messages>();
+        fm.add(m);
 
-		List<Messages> fml = analyser.sentiment(fm);
-		assertEquals(Classification.POSITIVE.getName(), fml.get(0).getSentimentId());
-	}
+        List<Messages> fml = analyser.sentiment(fm);
+        assertEquals(Classification.POSITIVE.getName(), fml.get(0).getSentimentId());
+    }
 
-	@Test
-	public void testSentimentMultibleMessages() throws Exception {
-		File fi = new File("src/test/resources/sentimentTestData");
-		List<String> lr = new ArrayList<String>();
-		BufferedReader bufferedFileReader = null;
+    @Test
+    public void testSentimentMultibleMessages() throws Exception {
+        File fi = new File("src/test/resources/sentimentTestData");
+        List<String> lr = new ArrayList<String>();
+        BufferedReader bufferedFileReader = null;
 
-		try {
-			bufferedFileReader = new BufferedReader(new FileReader(fi));
-			String lineInFile;
-			while ((lineInFile = bufferedFileReader.readLine()) != null) {
-				if (UtilValidate.isNotEmpty(lineInFile)) {
-					lr.add(lineInFile);
-				}
-			}
+        try {
+            bufferedFileReader = new BufferedReader(new FileReader(fi));
+            String lineInFile;
+            while ((lineInFile = bufferedFileReader.readLine()) != null) {
+                if (UtilValidate.isNotEmpty(lineInFile)) {
+                    lr.add(lineInFile);
+                }
+            }
 
-		} finally {
-			if (bufferedFileReader != null) {
-				bufferedFileReader.close();
-			}
-		}
+        } finally {
+            if (bufferedFileReader != null) {
+                bufferedFileReader.close();
+            }
+        }
 
-		List<Messages> fm = new ArrayList<Messages>();
+        List<Messages> fm = new ArrayList<Messages>();
 
-		for (String string : lr) {
-			Messages m = new Messages();
-			m.setMessage(string);
+        for (String string : lr) {
+            Messages m = new Messages();
+            m.setMessage(string);
 
-			fm.add(m);
-		}
+            fm.add(m);
+        }
 
-		analyser.sentiment(fm);
+        analyser.sentiment(fm);
 
-		for (Messages msg : fm) {
-			assertFalse(Classification.NOT_CLASSIFIED.isClassification(msg.getSentimentId()));
-		}
+        for (Messages msg : fm) {
+            assertFalse(Classification.NOT_CLASSIFIED.isClassification(msg.getSentimentId()));
+        }
 
-	}
+    }
 
 }

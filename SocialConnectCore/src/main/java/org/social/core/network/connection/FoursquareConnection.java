@@ -27,112 +27,111 @@ import org.social.core.util.UtilValidate;
 
 public class FoursquareConnection implements SocialNetworkConnection {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private HttpClient httpClient;
+    private HttpClient httpClient;
 
-	public FoursquareConnection() {
-		httpClient = new DefaultHttpClient();
+    public FoursquareConnection() {
+        httpClient = new DefaultHttpClient();
 
-		setHttpsProxy();
-	}
+        setHttpsProxy();
+    }
 
-	private void setHttpsProxy() {
+    private void setHttpsProxy() {
 
-		String host = System.getProperty("https.proxyHost");
-		String portString = System.getProperty("https.proxyPort");
+        String host = System.getProperty("https.proxyHost");
+        String portString = System.getProperty("https.proxyPort");
 
-		if (UtilValidate.isNotEmpty(host) && UtilValidate.isNotEmpty(portString)) {
-			int port = Integer.parseInt(portString);
+        if (UtilValidate.isNotEmpty(host) && UtilValidate.isNotEmpty(portString)) {
+            int port = Integer.parseInt(portString);
 
-			HttpHost proxy = new HttpHost(host, port);
-			httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
-		}
-	}
+            HttpHost proxy = new HttpHost(host, port);
+            httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+        }
+    }
 
-	@Override
-	public List<JSONObject> getRemoteData(Query query) {
-		List<JSONObject> resultMessages = new ArrayList<JSONObject>();
-		String constructedQuery = query.constructQuery();
+    @Override
+    public List<JSONObject> getRemoteData(Query query) {
+        List<JSONObject> resultMessages = new ArrayList<JSONObject>();
+        String constructedQuery = query.constructQuery();
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Foursquare GET Request: " + constructedQuery);
-		}
+        if (logger.isDebugEnabled()) {
+            logger.debug("Foursquare GET Request: " + constructedQuery);
+        }
 
-		String responseBody = readDataFromUrl(constructedQuery);
+        String responseBody = readDataFromUrl(constructedQuery);
 
-		JSONObject json = null;
-		try {
-			json = (JSONObject) JSONSerializer.toJSON(responseBody);
-		} catch (JSONException je) {
-			logger.error(je.getMessage());
-			return resultMessages;
-		}
+        JSONObject json = null;
+        try {
+            json = (JSONObject) JSONSerializer.toJSON(responseBody);
+        } catch (JSONException je) {
+            logger.error(je.getMessage());
+            return resultMessages;
+        }
 
-		if (json.containsKey("response")) {
-			resultMessages.addAll(extractTips(json.getJSONObject("response"), query.getSince()));
-		}
+        if (json.containsKey("response")) {
+            resultMessages.addAll(extractTips(json.getJSONObject("response"), query.getSince()));
+        }
 
-		return resultMessages;
-	}
+        return resultMessages;
+    }
 
-	private List<JSONObject> extractTips(JSONObject jsonObject, String lastUserAccess) {
-		List<JSONObject> resultMessages = new ArrayList<JSONObject>();
+    private List<JSONObject> extractTips(JSONObject jsonObject, String lastUserAccess) {
+        List<JSONObject> resultMessages = new ArrayList<JSONObject>();
 
-		Timestamp lastUserAccessTs = UtilDateTime.stirngToTimestamp(lastUserAccess);
+        Timestamp lastUserAccessTs = UtilDateTime.stirngToTimestamp(lastUserAccess);
 
-		JSONObject tips = jsonObject.getJSONObject("tips");
-		JSONArray tipItems = tips.getJSONArray("items");
+        JSONObject tips = jsonObject.getJSONObject("tips");
+        JSONArray tipItems = tips.getJSONArray("items");
 
-		for (Object tip : tipItems) {
-			JSONObject joTip = (JSONObject) tip;
+        for (Object tip : tipItems) {
+            JSONObject joTip = (JSONObject) tip;
 
-			String createdAt = joTip.getString("createdAt");
-			Timestamp createdAtTs = UtilDateTime.toTimestamp(createdAt);
+            String createdAt = joTip.getString("createdAt");
+            Timestamp createdAtTs = UtilDateTime.toTimestamp(createdAt);
 
-			boolean isMessageBefore = UtilDateTime
-					.isMessageDateBeforeLastNetworkAccess(createdAtTs, lastUserAccessTs);
-			if (isMessageBefore) {
-				break;
-			}
+            boolean isMessageBefore = UtilDateTime.isMessageDateBeforeLastNetworkAccess(createdAtTs, lastUserAccessTs);
+            if (isMessageBefore) {
+                break;
+            }
 
-			resultMessages.add(joTip);
-		}
+            resultMessages.add(joTip);
+        }
 
-		return resultMessages;
-	}
+        return resultMessages;
+    }
 
-	private String readDataFromUrl(String queryUrl) {
+    private String readDataFromUrl(String queryUrl) {
 
-		StringBuilder resultStringBuilder = null;
-		BufferedReader in = null;
-		try {
-			HttpUriRequest req = new HttpGet(queryUrl);
+        StringBuilder resultStringBuilder = null;
+        BufferedReader in = null;
+        try {
+            HttpUriRequest req = new HttpGet(queryUrl);
 
-			HttpResponse resp = httpClient.execute(req);
+            HttpResponse resp = httpClient.execute(req);
 
-			in = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
+            in = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
 
-			resultStringBuilder = new StringBuilder();
-			String inputLine;
-			while ((inputLine = in.readLine()) != null) {
-				resultStringBuilder.append(inputLine);
-			}
+            resultStringBuilder = new StringBuilder();
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                resultStringBuilder.append(inputLine);
+            }
 
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage());
-				}
-			}
-		}
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage());
+                }
+            }
+        }
 
-		return resultStringBuilder.toString();
+        return resultStringBuilder.toString();
 
-	}
+    }
 
 }
