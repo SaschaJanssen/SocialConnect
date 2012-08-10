@@ -26,13 +26,13 @@ public class JsoupBaseCrwaler implements BaseCrawler {
             } catch (IOException e) {
                 ex = e;
                 if (logger.isWarnEnabled()) {
-                    logger.warn("Got a" + e.getMessage() + " Exception, try a again to fetch data from remote address.");
+                    logger.warn("Got a " + e.getMessage() + " Exception, try a again to fetch data from remote address. At request: " + url);
                 }
                 tries++;
             }
         }
 
-        throw new IOException("After " + maxTriesToGetRemoteData + " runs, gave up on fatching data from remote url "
+        throw new IOException("After " + maxTriesToGetRemoteData + " runs, gave up on fatching data from remote url: "
                 + url, ex);
     }
 
