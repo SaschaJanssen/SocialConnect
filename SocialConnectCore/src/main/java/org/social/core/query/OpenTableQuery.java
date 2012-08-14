@@ -1,17 +1,20 @@
 package org.social.core.query;
 
 import org.social.core.data.CustomerNetworkKeywords;
+import org.social.core.util.UtilProperties;
 
 public class OpenTableQuery extends Query {
 
-    private final String searchUrl = "http://reviews.opentable.com";
-    private final String postFix = "/reviews.htm";
+    private final String searchUrl;
+    private final String postFix;
     private String endpoint;
     private String since;
 
     public OpenTableQuery(CustomerNetworkKeywords customerNetworkKeywords) {
         super(customerNetworkKeywords);
         setEndpoint(customerNetworkKeywords.getPage());
+        searchUrl = UtilProperties.getPropertyValue("conf/openTable.properties", "searchUrl");
+        postFix = UtilProperties.getPropertyValue("conf/openTable.properties", "postfix");
     }
 
     @Override

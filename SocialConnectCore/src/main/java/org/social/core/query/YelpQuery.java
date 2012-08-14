@@ -1,10 +1,11 @@
 package org.social.core.query;
 
 import org.social.core.data.CustomerNetworkKeywords;
+import org.social.core.util.UtilProperties;
 
 public class YelpQuery extends Query {
 
-    private final String searchUrl = "https://www.yelp.com";
+    private final String searchUrl;
 
     private String endpoint;
     private String since;
@@ -13,6 +14,7 @@ public class YelpQuery extends Query {
         super(customerNetworkKeywords);
 
         setEndpoint(customerNetworkKeywords.getPage());
+        searchUrl = UtilProperties.getPropertyValue("conf/yelp.properties", "searchUrl");
     }
 
     @Override

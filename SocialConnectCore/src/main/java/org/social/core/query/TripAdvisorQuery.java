@@ -1,10 +1,11 @@
 package org.social.core.query;
 
 import org.social.core.data.CustomerNetworkKeywords;
+import org.social.core.util.UtilProperties;
 
 public class TripAdvisorQuery extends Query {
 
-    private final String searchUrl = "http://www.tripadvisor.com";
+    private final String searchUrl;
 
     private String endpoint;
     private String since;
@@ -13,6 +14,7 @@ public class TripAdvisorQuery extends Query {
         super(customerNetworkKeywords);
 
         setEndpoint(customerNetworkKeywords.getPage());
+        searchUrl = UtilProperties.getPropertyValue("conf/tripAdvisor.properties", "searchUrl");
     }
 
     @Override

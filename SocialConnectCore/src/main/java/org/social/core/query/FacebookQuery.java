@@ -6,11 +6,12 @@ import java.net.URLEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.data.CustomerNetworkKeywords;
+import org.social.core.util.UtilProperties;
 import org.social.core.util.UtilValidate;
 
 public class FacebookQuery extends Query {
 
-    private final String searchUrl = "https://graph.facebook.com/search";
+    private final String searchUrl;
     // private final String searchUrl = "search";
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -25,6 +26,7 @@ public class FacebookQuery extends Query {
         super(networkKeywords);
 
         setQuery(networkKeywords.getQueryForNetwork());
+        searchUrl = UtilProperties.getPropertyValue("conf/fb.properties", "searchUrl");
     }
 
     private void setQuery(String query) {

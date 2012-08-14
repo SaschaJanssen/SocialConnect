@@ -6,11 +6,12 @@ import java.net.URLEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.data.CustomerNetworkKeywords;
+import org.social.core.util.UtilProperties;
 import org.social.core.util.UtilValidate;
 
 public class TwitterQuery extends Query {
 
-    private final String searchUrl = "https://search.twitter.com/search.json";
+    private final String searchUrl;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -29,6 +30,7 @@ public class TwitterQuery extends Query {
         setQuery(cnk.getQueryForNetwork());
         setHash(cnk.getHashForNetwork());
         setMentioned(cnk.getMentionedForNetwork());
+        searchUrl = UtilProperties.getPropertyValue("conf/twitter.properties", "searchUrl");
     }
 
     private void setQuery(String direct) {
