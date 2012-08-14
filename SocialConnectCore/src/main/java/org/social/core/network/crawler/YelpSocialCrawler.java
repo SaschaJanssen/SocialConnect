@@ -3,6 +3,7 @@ package org.social.core.network.crawler;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.social.core.constants.Networks;
+import org.social.core.exceptions.ItemNotFoundException;
 
 public class YelpSocialCrawler extends SocialCrawler {
 
@@ -84,7 +85,7 @@ public class YelpSocialCrawler extends SocialCrawler {
     }
 
     @Override
-    public String getNextPageFromPagination(Element body) {
+    public String getNextPageFromPagination(Element body) throws ItemNotFoundException {
         Element currentPaginationElement = getPaginationCurrentSelectedData(body);
         String nextLink = null;
 
@@ -115,6 +116,11 @@ public class YelpSocialCrawler extends SocialCrawler {
     protected String getUserIdFromUserInfo(Element userInfo) {
         String href = userInfo.attr("href");
         return href.substring(href.indexOf("=") + 1);
+    }
+
+    @Override
+    protected String getUserNameFromUserInfo(Element userInfo) {
+        return userInfo.text();
     }
 
 }

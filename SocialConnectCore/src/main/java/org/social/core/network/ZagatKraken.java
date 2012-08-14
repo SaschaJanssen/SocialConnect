@@ -11,6 +11,7 @@ import org.social.core.data.FilteredMessageList;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 import org.social.core.entity.helper.KeywordDAO;
+import org.social.core.exceptions.ItemNotFoundException;
 import org.social.core.network.crawler.BaseCrawler;
 import org.social.core.network.crawler.SocialCrawler;
 import org.social.core.network.crawler.ZagatSocialCrawler;
@@ -41,7 +42,11 @@ public class ZagatKraken extends SocialNetworkKraken {
         SocialCrawler otCrawler = new ZagatSocialCrawler(crawler, query.getSearchUrl(), query.constructQuery());
 
         List<Messages> resultMessages = new ArrayList<Messages>();
-        resultMessages = otCrawler.crawl(customer);
+        try {
+            resultMessages = otCrawler.crawl(customer);
+        } catch (ItemNotFoundException e) {
+            logger.error(e.getMessage(), e);
+        }
 
         return sentimentMessages(resultMessages);
     }

@@ -153,4 +153,9 @@ public class TripAdvisorSocialCrawler extends SocialCrawler {
     protected String getUserIdFromUserInfo(Element userInfo) {
         return "n/a";
     }
+
+    @Override
+    protected String getUserNameFromUserInfo(Element userInfo) {
+        return userInfo.text();
+    }
 }

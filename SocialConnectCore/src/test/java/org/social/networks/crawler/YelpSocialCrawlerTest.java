@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
+import org.social.core.exceptions.ItemNotFoundException;
 import org.social.core.network.crawler.SocialCrawler;
 import org.social.core.network.crawler.YelpSocialCrawler;
 
@@ -65,7 +66,7 @@ public class YelpSocialCrawlerTest {
     }
 
     @Test
-    public void testParseDocument() {
+    public void testParseDocument() throws ItemNotFoundException {
         Customers customer = new Customers();
         customer.setCustomerId(1L);
 

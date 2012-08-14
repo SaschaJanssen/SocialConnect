@@ -48,6 +48,6 @@ public class QypeConnectionITCase extends SocialITCase {
 		List<JSONObject> result = con.getRemoteData(query);
 
 		assertNotNull(result);
-		assertTrue(result.size() >= 2);
+		assertTrue(result.size() >= 1);
 	}
 }

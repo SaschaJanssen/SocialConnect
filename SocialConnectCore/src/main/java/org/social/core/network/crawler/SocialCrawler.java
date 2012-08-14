@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.social.core.constants.Classification;
 import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
+import org.social.core.exceptions.ItemNotFoundException;
 import org.social.core.util.UtilDateTime;
 import org.social.core.util.UtilValidate;
 
@@ -36,7 +37,7 @@ public abstract class SocialCrawler {
         this.crawler = crawler;
     }
 
-    public List<Messages> crawl(Customers customer) {
+    public List<Messages> crawl(Customers customer) throws ItemNotFoundException {
         List<Messages> extractedMessagesFilterByDate = new ArrayList<Messages>();
         anyMoreNewMessages = true;
 
@@ -100,24 +101,28 @@ public abstract class SocialCrawler {
         return crawler.crwal(baseUrl + endpoint);
     }
 
-    public Elements getReviewDataContainer(Element body) {
-        return body.select(getReviewContainerCssClassName());
+    public Elements getReviewDataContainer(Element body) throws ItemNotFoundException {
+        Elements reviewData = selectFromElement(body, getReviewContainerCssClassName());
+        return reviewData;
     }
 
     protected abstract String getReviewContainerCssClassName();
 
-    public Element getPaginationCurrentSelectedData(Element body) {
-        Element pagination = body.select(getPaginationControlsCssClassName()).first();
-        return pagination.select(getSelectedPaginationCssClassName()).first();
+    public Element getPaginationCurrentSelectedData(Element body) throws ItemNotFoundException {
+        Elements paginationElements = selectFromElement(body, getPaginationControlsCssClassName());
+        Element pagination = paginationElements.first();
+        Elements currentSelectedPaginationElements = selectFromElement(pagination, getSelectedPaginationCssClassName());
+        return currentSelectedPaginationElements.first();
     }
 
     protected abstract String getPaginationControlsCssClassName();
 
     protected abstract String getSelectedPaginationCssClassName();
 
-    public abstract String getNextPageFromPagination(Element currentPaginationElement);
+    public abstract String getNextPageFromPagination(Element currentPaginationElement) throws ItemNotFoundException;
 
-    public List<Messages> extractReviewDataFromHtml(Elements reviewContainer, Element headerElements, Long customerId) {
+    public List<Messages> extractReviewDataFromHtml(Elements reviewContainer, Element headerElements, Long customerId)
+            throws ItemNotFoundException {
         List<Messages> resultList = new ArrayList<Messages>();
 
         Elements pageUserData = getUserData(reviewContainer);
@@ -127,17 +132,15 @@ public abstract class SocialCrawler {
             Messages returnMessage = new Messages(getNetworkName());
 
             Element reviewData = pageReviewData.get(i);
-            if (!pageUserData.isEmpty()) {
-                Element userData = pageUserData.get(i);
-                Element userInfo = userData.select(getUserNameLinkClassName()).first();
-                String networkUser = getUserNameFromUserInfo(userInfo);
-                returnMessage.setNetworkUser(networkUser);
-                String networkUserId = getUserIdFromUserInfo(userInfo);
-                returnMessage.setNetworkUserId(networkUserId);
-            } else {
-                returnMessage.setNetworkUser("n/a");
-                returnMessage.setNetworkUserId("n/a");
-            }
+
+            Element userData = pageUserData.get(i);
+            Elements selectedUserDate = selectFromElement(userData, getUserNameLinkClassName());
+            Element userInfo = selectedUserDate.first();
+            String networkUser = getUserNameFromUserInfo(userInfo);
+            returnMessage.setNetworkUser(networkUser);
+
+            String networkUserId = getUserIdFromUserInfo(userInfo);
+            returnMessage.setNetworkUserId(networkUserId);
 
             returnMessage.setCustomerId(customerId);
 
@@ -168,12 +171,13 @@ public abstract class SocialCrawler {
 
     protected abstract String getUserNameLinkClassName();
 
-    private String getNetworkUserRating(Element reviewData) {
+    private String getNetworkUserRating(Element reviewData) throws ItemNotFoundException {
         String userRating = "n/a";
         String selector = getRatingClassName();
 
         if (UtilValidate.isNotEmpty(selector)) {
-            Element ratingElement = reviewData.select(getRatingClassName()).first();
+            Elements selectedElements = selectFromElement(reviewData, getRatingClassName());
+            Element ratingElement = selectedElements.first();
             userRating = extractNetworkUserRatingData(ratingElement);
         }
 
@@ -184,36 +188,64 @@ public abstract class SocialCrawler {
 
     protected abstract String getRatingClassName();
 
-    private String getNetworkMessageDate(Element reviewData) {
-        String networkMessageDate = reviewData.select(getMessageDateClassName()).first().text();
+    private String getNetworkMessageDate(Element reviewData) throws ItemNotFoundException {
+        Elements elements = selectFromElement(reviewData, getMessageDateClassName());
+        String networkMessageDate = elements.first().text();
         return networkMessageDate;
     }
 
     protected abstract String getMessageDateClassName();
 
-    private String getUserNameFromUserInfo(Element userInfo) {
-        return userInfo.text();
-    }
+    abstract protected String getUserNameFromUserInfo(Element userInfo);
 
     protected abstract String getLanguageFromHeadMetaData(Element headerElements);
 
     abstract protected String getUserIdFromUserInfo(Element userInfo);
 
-    private String getReviewTextFromComment(Element reviewData) {
-        return reviewData.select(getReviewCommentCssClassName()).first().text();
+    private String getReviewTextFromComment(Element reviewData) throws ItemNotFoundException {
+        Elements reviewComments = selectFromElement(reviewData, getReviewCommentCssClassName());
+        return reviewComments.first().text();
     }
 
     protected abstract String getReviewCommentCssClassName();
 
-    private Elements getReviewData(Elements reviewContainer) {
-        return reviewContainer.select(getReviewDataCssClassName());
+    private Elements getReviewData(Elements reviewContainer) throws ItemNotFoundException {
+        return selectFromElement(reviewContainer, getReviewDataCssClassName());
     }
 
     protected abstract String getReviewDataCssClassName();
 
-    private Elements getUserData(Elements reviewContainer) {
-        return reviewContainer.select(getUserDataCssClassName());
+    private Elements getUserData(Elements reviewContainer) throws ItemNotFoundException {
+        return selectFromElement(reviewContainer, getUserDataCssClassName());
     }
 
     protected abstract String getUserDataCssClassName();
+
+    private Elements selectFromElement(Element toSelectFrom, String htmlIdentifierToSelect)
+            throws ItemNotFoundException {
+        Elements selectedElements = toSelectFrom.select(htmlIdentifierToSelect);
+
+        checkIfAnElementWasFound(htmlIdentifierToSelect, selectedElements);
+
+        return selectedElements;
+    }
+
+    private Elements selectFromElement(Elements toSelectFrom, String htmlIdentifierToSelect)
+            throws ItemNotFoundException {
+        Elements selectedElements = toSelectFrom.select(htmlIdentifierToSelect);
+
+        checkIfAnElementWasFound(htmlIdentifierToSelect, selectedElements);
+
+        return selectedElements;
+    }
+
+    private void checkIfAnElementWasFound(String htmlIdentifierToSelect, Elements selectedElements)
+            throws ItemNotFoundException {
+
+        if (selectedElements.isEmpty()) {
+            throw new ItemNotFoundException("The Element: " + htmlIdentifierToSelect
+                    + " could not be found. The Element ID is maybe out of date, check the HTML source from: "
+                    + baseUrl);
+        }
+    }
 }

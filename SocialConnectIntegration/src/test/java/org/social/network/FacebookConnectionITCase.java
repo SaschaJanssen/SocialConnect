@@ -48,6 +48,6 @@ public class FacebookConnectionITCase extends SocialITCase {
 		List<JSONObject> result = con.getRemoteData(query);
 
 		assertNotNull(result);
-		assertTrue(result.size() >= 25);
+		assertTrue(result.size() >= 1);
 	}
 }

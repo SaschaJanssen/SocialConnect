@@ -7,10 +7,10 @@ public class OpenTableSocialCrawler extends SocialCrawler {
 
     private final String ratingClassName = "span.BVRRRatingNumber";
     private final String messageDateClassName = "span.BVRRAdditionalFielddinedate";
-    private final String userNameLinkClassName = "";
-    private final String reviewCommentCssClassName = "span.BVRRReviewText";
+    private final String userNameLinkClassName = "div.BVRRCustomOTNickname";
+    private final String reviewCommentCssClassName = "div.BVRRReviewTextContainer";
     private final String reviewDataCssClassName = "div.BVRRReviewDisplayStyle5BodyContent";
-    private final String userDataCssClassName = "div.user-passport";
+    private final String userDataCssClassName = "div.BVRRCustomOTNickname";
     private final String selectedPaginationCssClassName = "span.BVRRSelectedPageNumber";
     private final String paginationControlsCssClassName = "div.BVRRPageBasedPager";
     private final String reviewContainerCssClassName = "div.BVRRSDisplayContentBody";
@@ -93,6 +93,11 @@ public class OpenTableSocialCrawler extends SocialCrawler {
 
     @Override
     protected String getUserIdFromUserInfo(Element userInfo) {
+        return "n/a";
+    }
+
+    @Override
+    protected String getUserNameFromUserInfo(Element userInfo) {
         return "n/a";
     }
 }

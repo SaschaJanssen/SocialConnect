@@ -101,4 +101,9 @@ public class ZagatSocialCrawler extends SocialCrawler {
 
         return splited[2];
     }
+
+    @Override
+    protected String getUserNameFromUserInfo(Element userInfo) {
+        return userInfo.text();
+    }
 }
