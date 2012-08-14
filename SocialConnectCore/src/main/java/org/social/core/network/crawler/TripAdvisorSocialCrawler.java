@@ -5,69 +5,16 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.social.core.constants.Networks;
+import org.social.core.exceptions.ItemNotFoundException;
 
 public class TripAdvisorSocialCrawler extends SocialCrawler {
-
-    private final String ratingClassName = "span.rate";
-    private final String messageDateClassName = "span.ratingDate";
-    private final String userNameLinkClassName = "span.expand_inline";
-    private final String reviewCommentCssClassName = "p.partial_entry";
-    private final String reviewDataCssClassName = "div.basic_review";
-    private final String userDataCssClassName = "div.member_info";
-    private final String selectedPaginationCssClassName = "span.pageDisplay";
-    private final String paginationControlsCssClassName = "div.pgLinks";
-    private final String reviewContainerCssClassName = "div.review_collection";
 
     private String[] splitedBaseUrls = null;
 
     public TripAdvisorSocialCrawler(BaseCrawler crawler, String baseUrl, String endpoint) {
         super(crawler, baseUrl, endpoint);
-    }
-
-    @Override
-    protected String getPaginationControlsCssClassName() {
-        return paginationControlsCssClassName;
-    }
-
-    @Override
-    protected String getSelectedPaginationCssClassName() {
-        return selectedPaginationCssClassName;
-    }
-
-    @Override
-    protected String getUserNameLinkClassName() {
-        return userNameLinkClassName;
-    }
-
-    @Override
-    protected String getRatingClassName() {
-        return ratingClassName;
-    }
-
-    @Override
-    protected String getMessageDateClassName() {
-        return messageDateClassName;
-    }
-
-    @Override
-    protected String getReviewCommentCssClassName() {
-        return reviewCommentCssClassName;
-    }
-
-    @Override
-    protected String getReviewDataCssClassName() {
-        return reviewDataCssClassName;
-    }
-
-    @Override
-    protected String getUserDataCssClassName() {
-        return userDataCssClassName;
-    }
-
-    @Override
-    protected String getReviewContainerCssClassName() {
-        return reviewContainerCssClassName;
     }
 
     @Override
@@ -85,14 +32,19 @@ public class TripAdvisorSocialCrawler extends SocialCrawler {
     }
 
     @Override
-    public String getNextPageFromPagination(Element body) {
+    public String getNextPageFromPagination(Element body) throws ItemNotFoundException {
         String nextPage = null;
 
-        Element pagination = body.select(getPaginationControlsCssClassName()).first();
+
+        Elements paginationElements = selectFromElement(body, paginationControlsCssClassName);
+        Element pagination = paginationElements.first();
+
         Element nextPageLink = pagination.select("span.sprite-pageNext").first();
 
         if (nextPageLink != null) {
-            String currentPage = pagination.select(getSelectedPaginationCssClassName()).first().text();
+            Elements selectedElements = selectFromElement(pagination, selectedPaginationCssClassName);
+
+            String currentPage = selectedElements.first().text();
             int currentPageNo = Integer.parseInt(currentPage);
             int nextPageIndicator = currentPageNo * 10;
 
@@ -157,5 +109,10 @@ public class TripAdvisorSocialCrawler extends SocialCrawler {
     @Override
     protected String getUserNameFromUserInfo(Element userInfo) {
         return userInfo.text();
+    }
+
+    @Override
+    protected String getPropertyFileName() {
+        return "conf/tripAdvisor.properties";
     }
 }

@@ -7,63 +7,8 @@ import org.social.core.exceptions.ItemNotFoundException;
 
 public class YelpSocialCrawler extends SocialCrawler {
 
-    private final String ratingClassName = "div.rating";
-    private final String messageDateClassName = "span.date";
-    private final String userNameLinkClassName = "li.user-name a";
-    private final String reviewCommentCssClassName = "p.review_comment";
-    private final String reviewDataCssClassName = "div.media-story";
-    private final String userDataCssClassName = "div.user-passport";
-    private final String selectedPaginationCssClassName = "span.highlight2";
-    private final String paginationControlsCssCLassName = "div.pagination_controls";
-    private final String reviewContainerCssClassName = "div.media-block-no-margin";
-
     public YelpSocialCrawler(BaseCrawler crawler, String baseUrl, String endpoint) {
         super(crawler, baseUrl, endpoint);
-    }
-
-    @Override
-    protected String getPaginationControlsCssClassName() {
-        return paginationControlsCssCLassName;
-    }
-
-    @Override
-    protected String getSelectedPaginationCssClassName() {
-        return selectedPaginationCssClassName;
-    }
-
-    @Override
-    protected String getUserNameLinkClassName() {
-        return userNameLinkClassName;
-    }
-
-    @Override
-    protected String getRatingClassName() {
-        return ratingClassName;
-    }
-
-    @Override
-    protected String getMessageDateClassName() {
-        return messageDateClassName;
-    }
-
-    @Override
-    protected String getReviewCommentCssClassName() {
-        return reviewCommentCssClassName;
-    }
-
-    @Override
-    protected String getReviewDataCssClassName() {
-        return reviewDataCssClassName;
-    }
-
-    @Override
-    protected String getUserDataCssClassName() {
-        return userDataCssClassName;
-    }
-
-    @Override
-    protected String getReviewContainerCssClassName() {
-        return reviewContainerCssClassName;
     }
 
     @Override
@@ -121,6 +66,11 @@ public class YelpSocialCrawler extends SocialCrawler {
     @Override
     protected String getUserNameFromUserInfo(Element userInfo) {
         return userInfo.text();
+    }
+
+    @Override
+    protected String getPropertyFileName() {
+        return "conf/yelp.properties";
     }
 
 }

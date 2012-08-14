@@ -5,63 +5,8 @@ import org.social.core.constants.Networks;
 
 public class OpenTableSocialCrawler extends SocialCrawler {
 
-    private final String ratingClassName = "span.BVRRRatingNumber";
-    private final String messageDateClassName = "span.BVRRAdditionalFielddinedate";
-    private final String userNameLinkClassName = "div.BVRRCustomOTNickname";
-    private final String reviewCommentCssClassName = "div.BVRRReviewTextContainer";
-    private final String reviewDataCssClassName = "div.BVRRReviewDisplayStyle5BodyContent";
-    private final String userDataCssClassName = "div.BVRRCustomOTNickname";
-    private final String selectedPaginationCssClassName = "span.BVRRSelectedPageNumber";
-    private final String paginationControlsCssClassName = "div.BVRRPageBasedPager";
-    private final String reviewContainerCssClassName = "div.BVRRSDisplayContentBody";
-
     public OpenTableSocialCrawler(BaseCrawler crawler, String baseUrl, String endpoint) {
         super(crawler, baseUrl, endpoint);
-    }
-
-    @Override
-    protected String getPaginationControlsCssClassName() {
-        return paginationControlsCssClassName;
-    }
-
-    @Override
-    protected String getSelectedPaginationCssClassName() {
-        return selectedPaginationCssClassName;
-    }
-
-    @Override
-    protected String getUserNameLinkClassName() {
-        return userNameLinkClassName;
-    }
-
-    @Override
-    protected String getRatingClassName() {
-        return ratingClassName;
-    }
-
-    @Override
-    protected String getMessageDateClassName() {
-        return messageDateClassName;
-    }
-
-    @Override
-    protected String getReviewCommentCssClassName() {
-        return reviewCommentCssClassName;
-    }
-
-    @Override
-    protected String getReviewDataCssClassName() {
-        return reviewDataCssClassName;
-    }
-
-    @Override
-    protected String getUserDataCssClassName() {
-        return userDataCssClassName;
-    }
-
-    @Override
-    protected String getReviewContainerCssClassName() {
-        return reviewContainerCssClassName;
     }
 
     @Override
@@ -99,5 +44,10 @@ public class OpenTableSocialCrawler extends SocialCrawler {
     @Override
     protected String getUserNameFromUserInfo(Element userInfo) {
         return "n/a";
+    }
+
+    @Override
+    protected String getPropertyFileName() {
+        return "conf/openTable.properties";
     }
 }

@@ -16,6 +16,7 @@ import org.social.core.entity.domain.Customers;
 import org.social.core.entity.domain.Messages;
 import org.social.core.exceptions.ItemNotFoundException;
 import org.social.core.util.UtilDateTime;
+import org.social.core.util.UtilProperties;
 import org.social.core.util.UtilValidate;
 
 public abstract class SocialCrawler {
@@ -30,11 +31,41 @@ public abstract class SocialCrawler {
 
     private boolean anyMoreNewMessages;
 
+    private String ratingClassName;
+    private String messageDateClassName;
+    private String userNameLinkClassName;
+    private String reviewCommentCssClassName;
+    private String reviewDataCssClassName;
+    private String userDataCssClassName;
+    private String reviewContainerCssClassName;
+
+    protected String selectedPaginationCssClassName;
+    protected String paginationControlsCssClassName;
+
     public SocialCrawler(BaseCrawler crawler, String baseUrl, String endpoint) {
         this.baseUrl = baseUrl;
         this.endpoint = endpoint;
 
         this.crawler = crawler;
+
+        loadHtmlIdentifiersFromProperty();
+    }
+
+    private void loadHtmlIdentifiersFromProperty() {
+        String crawlerProperty = getPropertyFileName();
+
+        ratingClassName = UtilProperties.getPropertyValue(crawlerProperty, "ratingClassName");
+        messageDateClassName = UtilProperties.getPropertyValue(crawlerProperty, "messageDateClassName");
+        userNameLinkClassName = UtilProperties.getPropertyValue(crawlerProperty, "userNameLinkClassName");
+        reviewCommentCssClassName = UtilProperties.getPropertyValue(crawlerProperty, "reviewCommentCssClassName");
+        reviewDataCssClassName = UtilProperties.getPropertyValue(crawlerProperty, "reviewDataCssClassName");
+        userDataCssClassName = UtilProperties.getPropertyValue(crawlerProperty, "userDataCssClassName");
+        selectedPaginationCssClassName = UtilProperties.getPropertyValue(crawlerProperty,
+                "selectedPaginationCssClassName");
+        paginationControlsCssClassName = UtilProperties.getPropertyValue(crawlerProperty,
+                "paginationControlsCssClassName");
+        reviewContainerCssClassName = UtilProperties.getPropertyValue(crawlerProperty, "reviewContainerCssClassName");
+
     }
 
     public List<Messages> crawl(Customers customer) throws ItemNotFoundException {
@@ -102,22 +133,16 @@ public abstract class SocialCrawler {
     }
 
     public Elements getReviewDataContainer(Element body) throws ItemNotFoundException {
-        Elements reviewData = selectFromElement(body, getReviewContainerCssClassName());
+        Elements reviewData = selectFromElement(body, reviewContainerCssClassName);
         return reviewData;
     }
 
-    protected abstract String getReviewContainerCssClassName();
-
     public Element getPaginationCurrentSelectedData(Element body) throws ItemNotFoundException {
-        Elements paginationElements = selectFromElement(body, getPaginationControlsCssClassName());
+        Elements paginationElements = selectFromElement(body, paginationControlsCssClassName);
         Element pagination = paginationElements.first();
-        Elements currentSelectedPaginationElements = selectFromElement(pagination, getSelectedPaginationCssClassName());
+        Elements currentSelectedPaginationElements = selectFromElement(pagination, selectedPaginationCssClassName);
         return currentSelectedPaginationElements.first();
     }
-
-    protected abstract String getPaginationControlsCssClassName();
-
-    protected abstract String getSelectedPaginationCssClassName();
 
     public abstract String getNextPageFromPagination(Element currentPaginationElement) throws ItemNotFoundException;
 
@@ -134,7 +159,7 @@ public abstract class SocialCrawler {
             Element reviewData = pageReviewData.get(i);
 
             Element userData = pageUserData.get(i);
-            Elements selectedUserDate = selectFromElement(userData, getUserNameLinkClassName());
+            Elements selectedUserDate = selectFromElement(userData, userNameLinkClassName);
             Element userInfo = selectedUserDate.first();
             String networkUser = getUserNameFromUserInfo(userInfo);
             returnMessage.setNetworkUser(networkUser);
@@ -169,14 +194,11 @@ public abstract class SocialCrawler {
 
     protected abstract String getNetworkName();
 
-    protected abstract String getUserNameLinkClassName();
-
     private String getNetworkUserRating(Element reviewData) throws ItemNotFoundException {
         String userRating = "n/a";
-        String selector = getRatingClassName();
 
-        if (UtilValidate.isNotEmpty(selector)) {
-            Elements selectedElements = selectFromElement(reviewData, getRatingClassName());
+        if (UtilValidate.isNotEmpty(ratingClassName)) {
+            Elements selectedElements = selectFromElement(reviewData, ratingClassName);
             Element ratingElement = selectedElements.first();
             userRating = extractNetworkUserRatingData(ratingElement);
         }
@@ -186,15 +208,11 @@ public abstract class SocialCrawler {
 
     protected abstract String extractNetworkUserRatingData(Element ratingElement);
 
-    protected abstract String getRatingClassName();
-
     private String getNetworkMessageDate(Element reviewData) throws ItemNotFoundException {
-        Elements elements = selectFromElement(reviewData, getMessageDateClassName());
+        Elements elements = selectFromElement(reviewData, messageDateClassName);
         String networkMessageDate = elements.first().text();
         return networkMessageDate;
     }
-
-    protected abstract String getMessageDateClassName();
 
     abstract protected String getUserNameFromUserInfo(Element userInfo);
 
@@ -203,25 +221,19 @@ public abstract class SocialCrawler {
     abstract protected String getUserIdFromUserInfo(Element userInfo);
 
     private String getReviewTextFromComment(Element reviewData) throws ItemNotFoundException {
-        Elements reviewComments = selectFromElement(reviewData, getReviewCommentCssClassName());
+        Elements reviewComments = selectFromElement(reviewData, reviewCommentCssClassName);
         return reviewComments.first().text();
     }
 
-    protected abstract String getReviewCommentCssClassName();
-
     private Elements getReviewData(Elements reviewContainer) throws ItemNotFoundException {
-        return selectFromElement(reviewContainer, getReviewDataCssClassName());
+        return selectFromElement(reviewContainer, reviewDataCssClassName);
     }
-
-    protected abstract String getReviewDataCssClassName();
 
     private Elements getUserData(Elements reviewContainer) throws ItemNotFoundException {
-        return selectFromElement(reviewContainer, getUserDataCssClassName());
+        return selectFromElement(reviewContainer, userDataCssClassName);
     }
 
-    protected abstract String getUserDataCssClassName();
-
-    private Elements selectFromElement(Element toSelectFrom, String htmlIdentifierToSelect)
+    protected Elements selectFromElement(Element toSelectFrom, String htmlIdentifierToSelect)
             throws ItemNotFoundException {
         Elements selectedElements = toSelectFrom.select(htmlIdentifierToSelect);
 
@@ -230,7 +242,7 @@ public abstract class SocialCrawler {
         return selectedElements;
     }
 
-    private Elements selectFromElement(Elements toSelectFrom, String htmlIdentifierToSelect)
+    protected Elements selectFromElement(Elements toSelectFrom, String htmlIdentifierToSelect)
             throws ItemNotFoundException {
         Elements selectedElements = toSelectFrom.select(htmlIdentifierToSelect);
 
@@ -248,4 +260,6 @@ public abstract class SocialCrawler {
                     + baseUrl);
         }
     }
+
+    protected abstract String getPropertyFileName();
 }
