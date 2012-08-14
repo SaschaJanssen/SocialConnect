@@ -242,7 +242,7 @@ public abstract class SocialCrawler {
         return selectedElements;
     }
 
-    protected Elements selectFromElement(Elements toSelectFrom, String htmlIdentifierToSelect)
+    private Elements selectFromElement(Elements toSelectFrom, String htmlIdentifierToSelect)
             throws ItemNotFoundException {
         Elements selectedElements = toSelectFrom.select(htmlIdentifierToSelect);
 

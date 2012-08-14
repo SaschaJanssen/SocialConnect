@@ -51,7 +51,7 @@ public class DataCrafter {
         return filteredMessages;
     }
 
-    public void sentimentAnalyser() {
+    private void sentimentAnalyser() {
         SentimentAnalyser sentimentAnalyser = SentimentAnalyser.getInstance();
         positiveList = sentimentAnalyser.sentiment(positiveList);
     }

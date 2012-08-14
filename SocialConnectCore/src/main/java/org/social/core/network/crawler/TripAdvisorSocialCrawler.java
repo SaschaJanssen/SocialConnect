@@ -69,7 +69,7 @@ public class TripAdvisorSocialCrawler extends SocialCrawler {
         return nextPage;
     }
 
-    public void splitBaseString(Element body) {
+    private void splitBaseString(Element body) {
         splitedBaseUrls = new String[4];
 
         Element flagLinkElement = body.select("a[href].flag_link").first();

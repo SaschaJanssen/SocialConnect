@@ -20,7 +20,7 @@ public class FilteredMessageList {
         addAllToPositiveList(filteredMessageList.getPositivList());
     }
 
-    public void addAllToPositiveList(List<Messages> messages) {
+    private void addAllToPositiveList(List<Messages> messages) {
         positiveList.addAll(messages);
     }
 
