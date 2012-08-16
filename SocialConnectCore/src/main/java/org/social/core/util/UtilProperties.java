@@ -19,7 +19,7 @@ public class UtilProperties {
     /**
      * Returns the value of the specified property name from the specified
      * resource/properties file
-     * 
+     *
      * @param resource
      *            The name of the resource - can be a file, class, or URL
      * @param name
@@ -51,7 +51,7 @@ public class UtilProperties {
 
     /**
      * Returns the specified resource/properties file
-     * 
+     *
      * @param resource
      *            The name of the resource
      * @return The properties file
@@ -90,5 +90,15 @@ public class UtilProperties {
         }
 
         return Long.parseLong(value);
+    }
+
+    public static boolean getPropertyValueAsBoolean(String resource, String name, boolean defaultValue) {
+        String value = getPropertyValue(resource, name);
+        if (UtilValidate.isEmpty(value)) {
+            logger.info("The property " + name + " is empty, retruning default value: " + defaultValue);
+            return defaultValue;
+        }
+
+        return Boolean.parseBoolean(value);
     }
 }

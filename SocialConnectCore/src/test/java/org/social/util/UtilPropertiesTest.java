@@ -3,6 +3,7 @@ package org.social.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
 
@@ -31,6 +32,12 @@ public class UtilPropertiesTest {
 
         value = UtilProperties.getPropertyValueAsLong("conf/social.properties", "schedule.period2", 6);
         assertEquals(6, value);
+    }
+
+    @Test
+    public void testValueAsBoolean() throws Exception {
+        assertFalse(UtilProperties.getPropertyValueAsBoolean("conf/social.properties", "write.user.last.network.access.to.db", false));
+        assertTrue(UtilProperties.getPropertyValueAsBoolean("conf/social.properties", "test.default", true));
     }
 
 }
