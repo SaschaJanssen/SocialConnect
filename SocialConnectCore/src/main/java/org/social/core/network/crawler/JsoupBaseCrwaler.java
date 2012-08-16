@@ -26,7 +26,9 @@ public class JsoupBaseCrwaler implements BaseCrawler {
             } catch (IOException e) {
                 ex = e;
                 if (logger.isWarnEnabled()) {
-                    logger.warn("Got a " + e.getMessage() + " Exception, try a again to fetch data from remote address. At request: " + url);
+                    logger.warn("Got a " + e.getMessage()
+                            + " Exception, try again to fetch data from remote address. Number of previous tries: " + tries
+                            + ". At request: " + url);
                 }
                 tries++;
             }
