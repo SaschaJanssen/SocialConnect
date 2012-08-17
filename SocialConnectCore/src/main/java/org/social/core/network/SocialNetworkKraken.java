@@ -14,6 +14,7 @@ public abstract class SocialNetworkKraken {
 
     protected CustomerNetworkKeywords customerNetworkKeywords;
     protected Customers customer;
+
     private KeywordDAO keywordDao;
 
     protected SocialNetworkKraken(Customers customer, KeywordDAO keywordDao) {
@@ -28,7 +29,6 @@ public abstract class SocialNetworkKraken {
     }
 
     protected void getCustomersKeywords(String networkName) {
-
         Long customerId = customer.getCustomerId();
 
         List<Keywords> keywords = keywordDao.getMappedKeywordByCustomerAndNetwork(customerId, networkName);

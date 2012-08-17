@@ -9,7 +9,7 @@ import org.social.core.entity.domain.Keywords;
 
 public class CustomerNetworkKeywords {
 
-    private final Map<String, String> networkKeywords;
+    private final Map<KeywordType, String> networkKeywords;
 
     public CustomerNetworkKeywords(List<Keywords> keywordListForNetwork) {
         networkKeywords = mapKeywords(keywordListForNetwork);
@@ -19,8 +19,8 @@ public class CustomerNetworkKeywords {
     public String getHashForNetwork() {
         String hash = "";
 
-        if (networkKeywords.containsKey(KeywordType.HASH.getName())) {
-            hash = networkKeywords.get(KeywordType.HASH.getName());
+        if (networkKeywords.containsKey(KeywordType.HASH)) {
+            hash = networkKeywords.get(KeywordType.HASH);
         }
 
         return hash;
@@ -29,8 +29,8 @@ public class CustomerNetworkKeywords {
     public String getMentionedForNetwork() {
         String mentioned = "";
 
-        if (networkKeywords.containsKey(KeywordType.MENTIONED.getName())) {
-            mentioned = networkKeywords.get(KeywordType.MENTIONED.getName());
+        if (networkKeywords.containsKey(KeywordType.MENTIONED)) {
+            mentioned = networkKeywords.get(KeywordType.MENTIONED);
         }
 
         return mentioned;
@@ -39,27 +39,27 @@ public class CustomerNetworkKeywords {
     public String getQueryForNetwork() {
         String query = "";
 
-        if (networkKeywords.containsKey(KeywordType.QUERY.getName())) {
-            query = networkKeywords.get(KeywordType.QUERY.getName());
+        if (networkKeywords.containsKey(KeywordType.QUERY)) {
+            query = networkKeywords.get(KeywordType.QUERY);
         }
 
         return query;
     }
 
-    private Map<String, String> mapKeywords(List<Keywords> keywordsForCustomer) {
-        Map<String, String> mappedKeywords = new HashMap<String, String>();
+    private Map<KeywordType, String> mapKeywords(List<Keywords> keywordsForCustomer) {
+        Map<KeywordType, String> mappedKeywords = new HashMap<KeywordType, String>();
 
         for (Keywords keyword : keywordsForCustomer) {
             String keywordType = keyword.getKeywordTypeId();
 
             if (KeywordType.HASH.isKeywordType(keywordType)) {
-                mappedKeywords.put(KeywordType.HASH.getName(), keyword.getKeyword());
+                mappedKeywords.put(KeywordType.HASH, keyword.getKeyword());
             } else if (KeywordType.MENTIONED.isKeywordType(keywordType)) {
-                mappedKeywords.put(KeywordType.MENTIONED.getName(), keyword.getKeyword());
+                mappedKeywords.put(KeywordType.MENTIONED, keyword.getKeyword());
             } else if (KeywordType.QUERY.isKeywordType(keywordType)) {
-                mappedKeywords.put(KeywordType.QUERY.getName(), keyword.getKeyword());
+                mappedKeywords.put(KeywordType.QUERY, keyword.getKeyword());
             } else if (KeywordType.PAGE.isKeywordType(keywordType)) {
-                mappedKeywords.put(KeywordType.PAGE.getName(), keyword.getKeyword());
+                mappedKeywords.put(KeywordType.PAGE, keyword.getKeyword());
             }
         }
 
@@ -69,8 +69,8 @@ public class CustomerNetworkKeywords {
     public String getPage() {
         String page = "";
 
-        if (networkKeywords.containsKey(KeywordType.PAGE.getName())) {
-            page = networkKeywords.get(KeywordType.PAGE.getName());
+        if (networkKeywords.containsKey(KeywordType.PAGE)) {
+            page = networkKeywords.get(KeywordType.PAGE);
         }
 
         return page;
