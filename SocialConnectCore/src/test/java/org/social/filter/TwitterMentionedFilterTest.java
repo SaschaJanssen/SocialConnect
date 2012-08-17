@@ -3,12 +3,14 @@ package org.social.filter;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.social.core.constants.KeywordType;
+import org.social.core.data.CustomerNetworkKeywords;
+import org.social.core.entity.domain.Keywords;
 import org.social.core.filter.TwitterMentionedFilter;
 
 public class TwitterMentionedFilterTest {
@@ -17,16 +19,25 @@ public class TwitterMentionedFilterTest {
 
     @Before
     public void setUp() throws Exception {
-        Set<String> mentionedSet = new HashSet<String>();
-        mentionedSet.add("@Vapiano");
-        mentionedSet.add("#Vapiano");
-        mentionedSet.add("#Pizza");
 
-        mentionedFilter = new TwitterMentionedFilter(mentionedSet);
-    }
+        List<Keywords> keywordListForNetwork = new ArrayList<Keywords>();
+        Keywords keywords = new Keywords();
 
-    @After
-    public void tearDown() throws Exception {
+        keywords = new Keywords();
+        keywords.setCustomerId(1L);
+        keywords.setKeywordTypeId(KeywordType.HASH.getName());
+        keywords.setKeyword("#Vapiano");
+        keywordListForNetwork.add(keywords);
+
+        keywords = new Keywords();
+        keywords.setCustomerId(1L);
+        keywords.setKeywordTypeId(KeywordType.MENTIONED.getName());
+        keywords.setKeyword("@Vapiano");
+        keywordListForNetwork.add(keywords);
+
+        CustomerNetworkKeywords cnk = new CustomerNetworkKeywords(keywordListForNetwork);
+
+        mentionedFilter = new TwitterMentionedFilter(cnk);
     }
 
     @Test
@@ -61,24 +72,6 @@ public class TwitterMentionedFilterTest {
     }
 
     @Test
-    public void testEndsWithHash() throws Exception {
-        String phrase_3 = "Bewertung zu Vapiano (Deutz, Köln,  von Golden_Ticket_Dunny): 4 von 5 Punkten. Beste #Pizza";
-        boolean matches = mentionedFilter.mentioned(phrase_3);
-        assertTrue(matches);
-    }
-
-    @Test
-    public void testStartsWithHash() throws Exception {
-        String phrase_4 = "#Pizza Bewertung zu Vapiano (Deutz, Köln,  von Golden_Ticket_Dunny): 4 von 5 Punkten";
-        boolean matches = mentionedFilter.mentioned(phrase_4);
-        assertTrue(matches);
-
-        String phrase_1 = "#pizza Bewertung zu Vapiano (Deutz, Köln,  von Golden_Ticket_Dunny): 4 von 5 Punkten";
-        matches = mentionedFilter.mentioned(phrase_1);
-        assertTrue(matches);
-    }
-
-    @Test
     public void testFakeHash() throws Exception {
         String phrase = "@Vapiano_Fake Bewertung zu Vapiano (Deutz, Köln,  von Golden_Ticket_Dunny): 4 von 5 Punkten";
         boolean matches = mentionedFilter.mentioned(phrase);
@@ -92,4 +85,41 @@ public class TwitterMentionedFilterTest {
         assertFalse(matches);
     }
 
+    @Test
+    public void testEndsWithHash() throws Exception {
+        List<Keywords> keywordListForNetwork = new ArrayList<Keywords>();
+        Keywords keywords = new Keywords();
+        keywords.setCustomerId(1L);
+        keywords.setKeywordTypeId(KeywordType.HASH.getName());
+        keywords.setKeyword("#Pizza");
+        keywordListForNetwork.add(keywords);
+
+        CustomerNetworkKeywords cnk = new CustomerNetworkKeywords(keywordListForNetwork);
+        mentionedFilter = new TwitterMentionedFilter(cnk);
+
+        String phrase_3 = "Bewertung zu Vapiano (Deutz, Köln,  von Golden_Ticket_Dunny): 4 von 5 Punkten. Beste #Pizza";
+        boolean matches = mentionedFilter.mentioned(phrase_3);
+        assertTrue(matches);
+    }
+
+    @Test
+    public void testStartsWithHash() throws Exception {
+        List<Keywords> keywordListForNetwork = new ArrayList<Keywords>();
+        Keywords keywords = new Keywords();
+        keywords.setCustomerId(1L);
+        keywords.setKeywordTypeId(KeywordType.HASH.getName());
+        keywords.setKeyword("#Pizza");
+        keywordListForNetwork.add(keywords);
+
+        CustomerNetworkKeywords cnk = new CustomerNetworkKeywords(keywordListForNetwork);
+        mentionedFilter = new TwitterMentionedFilter(cnk);
+
+        String phrase_4 = "#Pizza Bewertung zu Vapiano (Deutz, Köln,  von Golden_Ticket_Dunny): 4 von 5 Punkten";
+        boolean matches = mentionedFilter.mentioned(phrase_4);
+        assertTrue(matches);
+
+        String phrase_1 = "#pizza Bewertung zu Vapiano (Deutz, Köln,  von Golden_Ticket_Dunny): 4 von 5 Punkten";
+        matches = mentionedFilter.mentioned(phrase_1);
+        assertTrue(matches);
+    }
 }

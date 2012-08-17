@@ -1,9 +1,7 @@
 package org.social.core.data;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +10,6 @@ import org.social.core.entity.domain.Messages;
 import org.social.core.filter.TwitterMentionedFilter;
 import org.social.core.filter.sentiment.SentimentAnalyser;
 import org.social.core.filter.wordlists.WordlistFilter;
-import org.social.core.util.UtilValidate;
 
 public class DataCrafter {
 
@@ -84,9 +81,7 @@ public class DataCrafter {
             logger.debug("Create mentioned filter.");
         }
 
-        Set<String> mentionedSet = getMentionsetFromKeywords(customerKeywords);
-
-        TwitterMentionedFilter mentionFilter = new TwitterMentionedFilter(mentionedSet);
+        TwitterMentionedFilter mentionFilter = new TwitterMentionedFilter(customerKeywords);
 
         List<Messages> messagesToMove = new ArrayList<Messages>();
         for (Messages message : negativeList) {
@@ -111,18 +106,4 @@ public class DataCrafter {
             addToPositiveList(message);
         }
     }
-
-    private Set<String> getMentionsetFromKeywords(CustomerNetworkKeywords customerKeywords) {
-        Set<String> mentionedSet = new HashSet<String>();
-        String tag = customerKeywords.getHashForNetwork();
-        if (UtilValidate.isNotEmpty(tag)) {
-            mentionedSet.add(tag);
-        }
-        tag = customerKeywords.getMentionedForNetwork();
-        if (UtilValidate.isNotEmpty(tag)) {
-            mentionedSet.add(tag);
-        }
-        return mentionedSet;
-    }
-
 }
