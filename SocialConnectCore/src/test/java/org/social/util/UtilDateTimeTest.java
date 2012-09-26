@@ -86,8 +86,12 @@ public class UtilDateTimeTest {
 
     @Test
     public void testConvertToTimestamp_YelpTimeFormat() throws Exception {
-        String tsString = "7/8/2012";
+        String tsString = "Updated - 7/8/2012";
         Timestamp ts = UtilDateTime.toTimestamp(tsString);
+        assertEquals("2012-07-08 23:59:59.0", ts.toString());
+
+        tsString = "7/8/2012";
+        ts = UtilDateTime.toTimestamp(tsString);
         assertEquals("2012-07-08 23:59:59.0", ts.toString());
 
         tsString = "12/20/2012";

@@ -52,7 +52,8 @@ public class UtilDateTime {
             calendar = toCalendarFromFbTime(dateString);
         } else if (dateString.matches("\\w{1,3}, \\d{1,2} \\w{1,3} .*")) {
             calendar = toCalendarFromTwitterTime(dateString);
-        } else if (dateString.matches("\\d{1,2}/\\d{1,2}/\\d{4,4}")) {
+        } else if (dateString.matches("\\d{1,2}/\\d{1,2}/\\d{4,4}")
+                || dateString.matches("Updated - \\d{1,2}/\\d{1,2}/\\d{4,4}")) {
             calendar = toCalendarFromYelpTime(dateString);
         } else if (dateString.matches("Reviewed .*")) {
             calendar = toCalendarFromTripAdvisorUsTime(dateString);
@@ -137,6 +138,9 @@ public class UtilDateTime {
 
     // create Calendar from date time string 12/20/2012
     private static Calendar toCalendarFromYelpTime(String dateString) {
+        if (dateString.startsWith("Updated - ")) {
+            dateString = dateString.replace("Updated - ", "");
+        }
         String pattern = "MM/dd/yyyy";
 
         Calendar calendar = parseDateTimeToCalendar(dateString, pattern, Locale.ENGLISH);
