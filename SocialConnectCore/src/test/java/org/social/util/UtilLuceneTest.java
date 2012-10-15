@@ -23,4 +23,10 @@ public class UtilLuceneTest {
                 "Service is exceptionally bad");
         assertEquals("[service, exceptionally, bad]", result.toString());
     }
+    
+    @Test
+    public void testAnalyser() throws Exception {
+        String result = UtilLucene.standardsAnalyzer("@CEP_AceTurtle09 I haven't...but I want Five Guys burger and fries tho :-/");
+        assertEquals("cep_aceturtle09 i haven't i want five guys burger fries tho ", result);
+    }
 }

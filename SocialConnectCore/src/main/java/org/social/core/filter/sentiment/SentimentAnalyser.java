@@ -1,14 +1,13 @@
 package org.social.core.filter.sentiment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.social.core.constants.Classification;
 import org.social.core.entity.domain.Messages;
-import org.social.core.filter.classifier.bayes.BayesClassifier;
-import org.social.core.filter.classifier.bayes.Classifier;
-import org.social.core.util.UtilLucene;
+import org.social.core.filter.classifier.BaseClassifier;
 
 public class SentimentAnalyser {
 
@@ -20,27 +19,24 @@ public class SentimentAnalyser {
         return sentimentAnalyser;
     }
 
-    public List<Messages> sentiment(List<Messages> filteredMessageList) {
-        return bayesClassifier(filteredMessageList);
-    }
+    public List<Messages> sentiment(List<Messages> unfilteredMessageList) {
+        BaseClassifier classifier = null;
+        try {
+            classifier = BaseClassifier.getTrainedInstance();
+        } catch (IllegalStateException e) {
+            logger.error("The classifier throws the following error. This message will not be classified.", e);
+            return unfilteredMessageList;
+        }
 
-    private List<Messages> bayesClassifier(List<Messages> reliableMessageList) {
-        Classifier<String, String> classifier = BayesClassifier.getInstance();
+        List<Messages> filteredMessageList = new ArrayList<Messages>();
+        for (Messages msgData : unfilteredMessageList) {
 
-        for (Messages msgData : reliableMessageList) {
-            List<String> unClassifiedText = UtilLucene.ngramString(msgData.getMessage());
-
-            String classification = null;
-            try {
-                classification = classifier.classify(unClassifiedText).getCategory();
-            } catch (IllegalStateException e) {
-                logger.warn("Classifier throw the following Exception. Classification will be skiped.");
-                break;
-            }
+            String classification = classifier.classify(msgData.getMessage());
 
             if (logger.isDebugEnabled()) {
                 logger.debug("Message: " + msgData.getMessage() + " classified as: " + classification);
             }
+
             if (Classification.POSITIVE.isClassification(classification)) {
                 msgData.setSentimentId(Classification.POSITIVE.getName());
             } else if (Classification.NEGATIVE.isClassification(classification)) {
@@ -48,7 +44,10 @@ public class SentimentAnalyser {
             } else {
                 msgData.setSentimentId(Classification.NEUTRAL.getName());
             }
+            
+            filteredMessageList.add(msgData);
         }
-        return reliableMessageList;
+
+        return filteredMessageList;
     }
 }

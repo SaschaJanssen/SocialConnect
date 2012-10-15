@@ -12,6 +12,7 @@ import org.apache.lucene.analysis.StopFilter;
 import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.shingle.ShingleMatrixFilter;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.util.Version;
@@ -25,6 +26,15 @@ public class UtilLucene {
 
         List<String> result = streamAttributesToList(stream);
         return result;
+    }
+    
+    public static String standardsAnalyzer(String phrase) {
+        
+        Analyzer analyzer = new StandardAnalyzer(version);
+        TokenStream tokenStream = analyzer.tokenStream(" ", new StringReader(phrase));
+        analyzer.close();
+        
+        return streamAttributesToString(tokenStream);
     }
 
     public static List<String> ngramString(String phrase) {
@@ -60,6 +70,28 @@ public class UtilLucene {
         }
 
         return result;
+    }
+    
+    private static String streamAttributesToString(TokenStream stream) {
+        StringBuilder stringBuilder = new StringBuilder();
+        
+        try {
+            while (stream.incrementToken()) {
+                stringBuilder.append(stream.getAttribute(CharTermAttribute.class).toString());
+                stringBuilder.append(" ");
+            }
+        } catch (IOException e) {
+            // not thrown b/c we're using a string reader...
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                stream.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        
+        return stringBuilder.toString();
     }
 
 }
