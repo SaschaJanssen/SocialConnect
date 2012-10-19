@@ -33,16 +33,16 @@ public class ClassifiersTest {
     public void setUp() throws Exception {
         masterJ48 = j48ClassificationString.split(",");
         masterBayes = bayesClassificationString.split(",");
-        
+
         trainingDataSet = readLearningData();
         testDataSet = readTestDataFile();
     }
-    
+
     @Test(expected = IllegalStateException.class)
     public void testFailGetTrainedInstance() throws Exception {
         BaseClassifier.getTrainedInstance();
     }
-    
+
     @Test(expected = IllegalStateException.class)
     public void testInitFail() throws Exception {
         BaseClassifier classifier = new BayesClassifier();
@@ -54,7 +54,8 @@ public class ClassifiersTest {
     public void testWekaClassifierBayes() throws Exception {
         BaseClassifier classifier = new BayesClassifier();
         classifier.init(trainingDataSet);
-        List<String> result = classifier.classify(testDataSet);
+
+        List<String> result = BaseClassifier.getTrainedInstance().classify(testDataSet);
 
         assertEquals(masterBayes.length, result.size());
 
@@ -62,29 +63,52 @@ public class ClassifiersTest {
             assertEquals(masterBayes[i], result.get(i));
         }
     }
-    
+
     @Test
-    public void testWekaClassifierWithSingleString() throws Exception {
+    public void testWekaClassifierWithSingleStringBayes() throws Exception {
+        BaseClassifier classifier = new BayesClassifier();
+        classifier.init(trainingDataSet);
+        String result = BaseClassifier.getTrainedInstance().classify(testDataSet.get(0));
+        assertEquals("NEUTRAL", result);
+
+        result = BaseClassifier.getTrainedInstance().classify(testDataSet.get(1));
+        assertEquals("POSITIVE", result);
+
+        result = BaseClassifier.getTrainedInstance().classify(testDataSet.get(4));
+        assertEquals("NEGATIVE", result);
+    }
+
+    @Test
+    public void testWekaClassifierWithSingleStringJ48() throws Exception {
         BaseClassifier classifier = new J48Classifier();
         classifier.init(trainingDataSet);
-        String result = classifier.classify(testDataSet.get(0));
+        String result = BaseClassifier.getTrainedInstance().classify(testDataSet.get(0));
         assertEquals("NEUTRAL", result);
+
+        result = BaseClassifier.getTrainedInstance().classify(testDataSet.get(6));
+        assertEquals("POSITIVE", result);
+
+        result = BaseClassifier.getTrainedInstance().classify(testDataSet.get(39));
+        assertEquals("NEGATIVE", result);
+
+        result = BaseClassifier.getTrainedInstance().classify(testDataSet.get(41));
+        assertEquals("POSITIVE", result);
     }
-    
 
     @Test
     public void testWekaClassifierJ48() {
         BaseClassifier classifier = new J48Classifier();
         classifier.init(trainingDataSet);
-        List<String> result = classifier.classify(testDataSet);
+        List<String> result = BaseClassifier.getTrainedInstance().classify(testDataSet);
 
         assertEquals(masterJ48.length, result.size());
 
         for (int i = 0; i < masterJ48.length; i++) {
             assertEquals(masterJ48[i], result.get(i));
         }
+
     }
-    
+
     @Test
     public void testGetTrainedInstance() throws Exception {
         new J48Classifier();
@@ -92,7 +116,7 @@ public class ClassifiersTest {
         assertNotNull(classifier);
         assertTrue(classifier instanceof J48Classifier);
     }
-    
+
     private List<LearningData> readLearningData() {
         List<LearningData> result = new ArrayList<LearningData>();
 
@@ -137,6 +161,7 @@ public class ClassifiersTest {
         List<String> testData = new ArrayList<String>();
 
         BufferedReader br = getFileReader("src/test/resources/sentimentTestData");
+        // BufferedReader br = getFileReader("src/test/resources/sentTest_2");
 
         String line = null;
         try {

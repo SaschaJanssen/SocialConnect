@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.social.core.entity.domain.LearningData;
 import org.social.core.util.UtilLucene;
 
@@ -19,6 +21,8 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.StringToWordVector;
 
 public abstract class BaseClassifier {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     protected Instances train = null;
     protected Classifier classifier = null;
@@ -57,7 +61,7 @@ public abstract class BaseClassifier {
             Instances fillteredTrainData = filterInstances(train);
             buildClassifier(fillteredTrainData);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("", e);
         }
     }
 
@@ -102,7 +106,7 @@ public abstract class BaseClassifier {
         try {
             result = classifyDataSet(dataset, classAttributes);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("", e);
         }
         return result;
     }
@@ -119,7 +123,7 @@ public abstract class BaseClassifier {
             predictedValue = classifyData(instance, classAttributes);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("", e);
         }
         return predictedValue;
     }
@@ -175,7 +179,7 @@ public abstract class BaseClassifier {
     private Instance createInstanceForClassification(String dataForTest) {
         dataForTest = UtilLucene.standardsAnalyzer(dataForTest);
 
-        Attribute string = new Attribute("text", (FastVector) null);
+        Attribute string = train.attribute("text");
         Attribute classification = train.classAttribute();
 
         FastVector attributes = new FastVector();

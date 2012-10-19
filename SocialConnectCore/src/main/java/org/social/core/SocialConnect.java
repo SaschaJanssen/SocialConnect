@@ -13,9 +13,8 @@ import org.social.core.entity.helper.KeywordDAOImpl;
 import org.social.core.entity.helper.LearningDAO;
 import org.social.core.entity.helper.MessageDAO;
 import org.social.core.filter.classifier.BaseClassifier;
-import org.social.core.filter.classifier.J48Classifier;
+import org.social.core.filter.classifier.BayesClassifier;
 import org.social.core.util.UtilDateTime;
-import org.social.core.util.UtilLucene;
 import org.social.core.util.UtilProperties;
 
 public class SocialConnect {
@@ -56,8 +55,8 @@ public class SocialConnect {
     private void initializeClassifier() {
         LearningDAO learningDao = new LearningDAO();
         List<LearningData> learningData = learningDao.getLearningData();
-        
-        BaseClassifier classifier = new J48Classifier();
+
+        BaseClassifier classifier = new BayesClassifier();
         classifier.init(learningData);
     }
 
